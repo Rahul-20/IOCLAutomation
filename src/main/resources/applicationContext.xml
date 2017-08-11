@@ -1,0 +1,72 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util.xsd 
+	">
+
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.rainiersoft.iocl" />
+	<context:component-scan base-package="com.rainiersoft.iocl.services" />
+	<context:component-scan base-package="com.rainiersoft.iocl.dao" />
+	<context:component-scan base-package="com.rainiersoft.iocl.dao.impl" />
+	<context:component-scan base-package="com.rainiersoft.iocl.model" />
+	<context:component-scan base-package="com.rainiersoft.iocl.security" />
+	<context:component-scan base-package="com.rainiersoft.iocl.resources" />
+	<context:component-scan base-package="com.rainiersoft.iocl.exception" />
+
+	<!-- properties files -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="false" />
+		<property name="locations">
+			<list>
+				<value>classpath:database.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- DB-pool rule-engine/ -->
+	<bean id="ioclDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="initialSize" value="${db.pool.initialSize}" />
+		<property name="minIdle" value="${db.pool.minIdle}" />
+		<property name="maxIdle" value="${db.pool.maxIdle}" />
+		<property name="maxActive" value="${db.pool.maxActive}" />
+		<property name="maxWait" value="${db.pool.maxWait}" />
+		<property name="logAbandoned" value="${db.connection.logabandoned}" />
+		<property name="removeAbandonedTimeout" value="${db.connection.remove.abandoned.timeout}" />
+		<property name="removeAbandoned" value="${db.connection.removeabandoned}" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="ioclDataSource" />
+		<property name="packagesToScan" value="com.rainiersoft.iocl.entity" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${iocl.reports.hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${iocl.reports.hibernate.show_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+			</props>
+		</property>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+</beans>
