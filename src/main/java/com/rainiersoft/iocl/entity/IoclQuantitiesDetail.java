@@ -15,10 +15,14 @@ public class IoclQuantitiesDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="QuantityId")
 	private int quantityId;
 
+	@Column(name="QuantityName")
 	private String quantityName;
 
+	@Column(name="QuantityUnits")
 	private String quantityUnits;
 
 	public IoclQuantitiesDetail() {

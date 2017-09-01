@@ -1,7 +1,16 @@
 package com.rainiersoft.iocl.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the iocl_userrole_mapping database table.
@@ -9,17 +18,18 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="iocl_userrole_mapping")
-/*@NamedQuery(name="findRolesByUserID", query="SELECT irole FROM IoclUserroleMapping irole INNER JOIN on IoclUserDetail iuser")*/
 public class IoclUserroleMapping implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1999119919191L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="RecId")
 	private int recId;
 
-	@Column(name="UserType")
-	private String userType;
+	//bi-directional many-to-one association to IoclSupportedUserrole
+	@ManyToOne
+	@JoinColumn(name="UserTypeId")
+	private IoclSupportedUserrole ioclSupportedUserrole;
 
 	//bi-directional many-to-one association to IoclUserDetail
 	@ManyToOne(cascade=CascadeType.ALL)
@@ -37,12 +47,12 @@ public class IoclUserroleMapping implements Serializable {
 		this.recId = recId;
 	}
 
-	public String getUserType() {
-		return this.userType;
+	public IoclSupportedUserrole getIoclSupportedUserrole() {
+		return this.ioclSupportedUserrole;
 	}
 
-	public void setUserType(String userType) {
-		this.userType = userType;
+	public void setIoclSupportedUserrole(IoclSupportedUserrole ioclSupportedUserrole) {
+		this.ioclSupportedUserrole = ioclSupportedUserrole;
 	}
 
 	public IoclUserDetail getIoclUserDetail() {
@@ -52,5 +62,4 @@ public class IoclUserroleMapping implements Serializable {
 	public void setIoclUserDetail(IoclUserDetail ioclUserDetail) {
 		this.ioclUserDetail = ioclUserDetail;
 	}
-
 }

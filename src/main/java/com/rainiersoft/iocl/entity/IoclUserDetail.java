@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -40,7 +42,7 @@ public class IoclUserDetail implements Serializable {
 				+ userAadharNum + ", userCreatedOn=" + userCreatedOn + ", userDeletedOn=" + userDeletedOn + ", userDOB="
 				+ userDOB + ", userFirstName=" + userFirstName + ", userLastName=" + userLastName + ", userMobileNum="
 				+ userMobileNum + ", userName=" + userName + ", userPassword=" + userPassword + ", userStatus="
-				+ userStatus + ", userUpdatedOn=" + userUpdatedOn + ", ioclUserroleMappings=" + ioclUserroleMappings
+				+ ", userUpdatedOn=" + userUpdatedOn + ", ioclUserroleMappings=" + ioclUserroleMappings
 				+ "]";
 	}
 
@@ -65,7 +67,8 @@ public class IoclUserDetail implements Serializable {
 	private Date userDeletedOn;
 
 	@Column(name="UserDOB")
-	private String userDOB;
+	@Temporal(TemporalType.DATE)
+	private Date userDOB;
 
 	@Column(name="UserFirstName")
 	private String userFirstName;
@@ -84,15 +87,14 @@ public class IoclUserDetail implements Serializable {
 	write = "sha1(?)")
 	private String userPassword;
 
-	@Column(name="UserStatus")
-	private String userStatus;
-
-	/*	@Column(name="UserType")
-	private String userType;*/
-
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="UserUpdatedOn")
 	private Date userUpdatedOn;
+
+	//bi-directional many-to-one association to IoclSupportedUserstatus
+	@ManyToOne
+	@JoinColumn(name="UserStatusId")
+	private IoclSupportedUserstatus ioclSupportedUserstatus;
 
 	//bi-directional many-to-one association to IoclUserroleMapping
 	@OneToMany(mappedBy="ioclUserDetail", cascade=CascadeType.ALL,fetch=FetchType.EAGER)
@@ -141,11 +143,11 @@ public class IoclUserDetail implements Serializable {
 		this.userDeletedOn = userDeletedOn;
 	}
 
-	public String getUserDOB() {
+	public Date getUserDOB() {
 		return this.userDOB;
 	}
 
-	public void setUserDOB(String userDOB) {
+	public void setUserDOB(Date userDOB) {
 		this.userDOB = userDOB;
 	}
 
@@ -189,22 +191,6 @@ public class IoclUserDetail implements Serializable {
 		this.userPassword = userPassword;
 	}
 
-	public String getUserStatus() {
-		return this.userStatus;
-	}
-
-	public void setUserStatus(String userStatus) {
-		this.userStatus = userStatus;
-	}
-
-	/*	public String getUserType() {
-		return this.userType;
-	}
-
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}*/
-
 	public Date getUserUpdatedOn() {
 		return this.userUpdatedOn;
 	}
@@ -220,5 +206,11 @@ public class IoclUserDetail implements Serializable {
 	public void setIoclUserroleMappings(List<IoclUserroleMapping> ioclUserroleMappings) {
 		this.ioclUserroleMappings = ioclUserroleMappings;
 	}
+	public IoclSupportedUserstatus getIoclSupportedUserstatus() {
+		return this.ioclSupportedUserstatus;
+	}
 
+	public void setIoclSupportedUserstatus(IoclSupportedUserstatus ioclSupportedUserstatus) {
+		this.ioclSupportedUserstatus = ioclSupportedUserstatus;
+	}
 }

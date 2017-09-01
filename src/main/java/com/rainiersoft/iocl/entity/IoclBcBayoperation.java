@@ -1,7 +1,18 @@
 package com.rainiersoft.iocl.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**
@@ -10,34 +21,88 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="iocl_bc_bayoperations")
-@NamedQuery(name="IoclBcBayoperation.findAll", query="SELECT i FROM IoclBcBayoperation i")
+@NamedQueries({
+@NamedQuery(name="IoclBcBayoperation.findAll", query="SELECT i FROM IoclBcBayoperation i"),
+@NamedQuery(name="findBayUpdatesByBC",query="select f from IoclBcBayoperation f where f.BCInputTime > :pastDate and f.BCInputTime < :currDate and f.bayNum=:bayNum"),
+@NamedQuery(name="findBayUpdatesByFanPin",query="select f from IoclBcBayoperation f where f.fanPin=:fanPin")
+})
 public class IoclBcBayoperation implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private int bayId;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="RecId")
+	private int recId;
 
-	private String bayName;
+	@Column(name="BayNum")
+	private int bayNum;
 
+	@Column(name="BcControllerId")
+	private String bcControllerId;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="BCInputTime")
+	private Date BCInputTime;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="BCUpdateTime")
+	private Date BCUpdateTime;
+
+	@Column(name="FanPin")
+	private String fanPin;
+
+	@Column(name="OperationalStatus")
 	private String operationalStatus;
 
 	public IoclBcBayoperation() {
 	}
 
-	public int getBayId() {
-		return this.bayId;
+	public int getRecId() {
+		return this.recId;
 	}
 
-	public void setBayId(int bayId) {
-		this.bayId = bayId;
+	public void setRecId(int recId) {
+		this.recId = recId;
 	}
 
-	public String getBayName() {
-		return this.bayName;
+	public int getBayNum() {
+		return this.bayNum;
 	}
 
-	public void setBayName(String bayName) {
-		this.bayName = bayName;
+	public void setBayNum(int bayNum) {
+		this.bayNum = bayNum;
+	}
+
+	public String getBcControllerId() {
+		return this.bcControllerId;
+	}
+
+	public void setBcControllerId(String bcControllerId) {
+		this.bcControllerId = bcControllerId;
+	}
+
+	public Date getBCInputTime() {
+		return this.BCInputTime;
+	}
+
+	public void setBCInputTime(Date BCInputTime) {
+		this.BCInputTime = BCInputTime;
+	}
+
+	public Date getBCUpdateTime() {
+		return this.BCUpdateTime;
+	}
+
+	public void setBCUpdateTime(Date BCUpdateTime) {
+		this.BCUpdateTime = BCUpdateTime;
+	}
+
+	public String getFanPin() {
+		return this.fanPin;
+	}
+
+	public void setFanPin(String fanPin) {
+		this.fanPin = fanPin;
 	}
 
 	public String getOperationalStatus() {
@@ -47,5 +112,4 @@ public class IoclBcBayoperation implements Serializable {
 	public void setOperationalStatus(String operationalStatus) {
 		this.operationalStatus = operationalStatus;
 	}
-
 }

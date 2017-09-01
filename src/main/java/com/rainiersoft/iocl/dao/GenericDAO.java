@@ -1,5 +1,7 @@
 package com.rainiersoft.iocl.dao;
 
+import java.io.Serializable;
+
 /**
  * This is a Base Interface for generic methods used across
  * all other DAO Implemention classes.
@@ -24,4 +26,5 @@ public interface GenericDAO<T,ID>
 	public List<T> findAll(Class<T> entity) ;
 	public List<T> search(T entity,Map<String, Object> parameterMap) ;
 	public void clearCacheForEntity(T entity);
+	public boolean deleteById(Class<?> type, Serializable id);
 }

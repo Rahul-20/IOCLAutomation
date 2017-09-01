@@ -18,25 +18,24 @@ public class IoclTruckregistrationDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="TruckId")
 	private int truckId;
 
-	private String cutomer;
+	@Column(name="Customer")
+	private String customer;
 
-	private String destination;
-
+	@Column(name="DriverLicNo")
 	private String driverLicNo;
 
+	@Column(name="DriverName")
 	private String driverName;
 
-	private String locationCode;
-
+	@Column(name="MobileNumber")
 	private String mobileNumber;
 
-	private String quantity;
-
+	@Column(name="TruckNo")
 	private String truckNo;
-
-	private String vehicleWgt;
 
 	public IoclTruckregistrationDetail() {
 	}
@@ -49,20 +48,12 @@ public class IoclTruckregistrationDetail implements Serializable {
 		this.truckId = truckId;
 	}
 
-	public String getCutomer() {
-		return this.cutomer;
+	public String getCustomer() {
+		return this.customer;
 	}
 
-	public void setCutomer(String cutomer) {
-		this.cutomer = cutomer;
-	}
-
-	public String getDestination() {
-		return this.destination;
-	}
-
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public void setCustomer(String customer) {
+		this.customer = customer;
 	}
 
 	public String getDriverLicNo() {
@@ -81,28 +72,12 @@ public class IoclTruckregistrationDetail implements Serializable {
 		this.driverName = driverName;
 	}
 
-	public String getLocationCode() {
-		return this.locationCode;
-	}
-
-	public void setLocationCode(String locationCode) {
-		this.locationCode = locationCode;
-	}
-
 	public String getMobileNumber() {
 		return this.mobileNumber;
 	}
 
 	public void setMobileNumber(String mobileNumber) {
 		this.mobileNumber = mobileNumber;
-	}
-
-	public String getQuantity() {
-		return this.quantity;
-	}
-
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
 	}
 
 	public String getTruckNo() {
@@ -112,13 +87,4 @@ public class IoclTruckregistrationDetail implements Serializable {
 	public void setTruckNo(String truckNo) {
 		this.truckNo = truckNo;
 	}
-
-	public String getVehicleWgt() {
-		return this.vehicleWgt;
-	}
-
-	public void setVehicleWgt(String vehicleWgt) {
-		this.vehicleWgt = vehicleWgt;
-	}
-
 }

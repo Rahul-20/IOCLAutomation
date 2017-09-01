@@ -1,4 +1,4 @@
-package com.rainiersoft.iocl.model;
+package com.rainiersoft.request.dto;
 
 import java.util.List;
 

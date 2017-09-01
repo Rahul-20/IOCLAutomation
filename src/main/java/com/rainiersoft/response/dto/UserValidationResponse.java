@@ -1,9 +1,14 @@
-package com.rainiersoft.iocl.model;
+package com.rainiersoft.response.dto;
 
 import java.util.List;
 
 public class UserValidationResponse 
 {
+	@Override
+	public String toString() {
+		return "UserValidationResponse [successfulMsg=" + successfulMsg + ", successfulFlag=" + successfulFlag
+				+ ", userPrivilages=" + userPrivilages + "]";
+	}
 	private String successfulMsg;
 	private boolean successfulFlag;
 	private List<String> userPrivilages;

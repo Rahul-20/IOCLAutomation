@@ -1,23 +1,22 @@
-package com.rainiersoft.iocl.model;
+package com.rainiersoft.request.dto;
 
 public class BaysMangRequestBean 
 {
 	private String bayName;
-	private String bayNum;
+	private int bayNum;
 	private String bayType;
 	private String functionalStatus;
-	private String operationalStatus;
-	
+
 	public String getBayName() {
 		return bayName;
 	}
 	public void setBayName(String bayName) {
 		this.bayName = bayName;
 	}
-	public String getBayNum() {
+	public int getBayNum() {
 		return bayNum;
 	}
-	public void setBayNum(String bayNum) {
+	public void setBayNum(int bayNum) {
 		this.bayNum = bayNum;
 	}
 	public String getBayType() {
@@ -31,11 +30,5 @@ public class BaysMangRequestBean
 	}
 	public void setFunctionalStatus(String functionalStatus) {
 		this.functionalStatus = functionalStatus;
-	}
-	public String getOperationalStatus() {
-		return operationalStatus;
-	}
-	public void setOperationalStatus(String operationalStatus) {
-		this.operationalStatus = operationalStatus;
 	}
 }

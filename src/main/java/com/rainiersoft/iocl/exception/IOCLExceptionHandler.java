@@ -8,14 +8,13 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rainiersoft.iocl.model.ErrorResponseBean;
+import com.rainiersoft.response.dto.ErrorResponseBean;
 
 @Provider
 @Singleton
 public class IOCLExceptionHandler implements ExceptionMapper<IOCLWSException>
 {
 	private static final Logger LOG = LoggerFactory.getLogger(IOCLExceptionHandler.class);
-	@Override
 	public Response toResponse(IOCLWSException exception) 
 	{
 		LOG.info("I am in handler:::::"+exception.getErrorCode()+"::::"+exception.getErrorMessage());

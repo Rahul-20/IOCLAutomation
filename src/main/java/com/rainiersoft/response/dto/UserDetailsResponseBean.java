@@ -1,19 +1,33 @@
-package com.rainiersoft.iocl.model;
+package com.rainiersoft.response.dto;
 
 import java.util.List;
 
 public class UserDetailsResponseBean 
 {
+	@Override
+	public String toString() {
+		return "UserDetailsResponseBean [UserID=" + UserID + ", UserName=" + UserName + ", UserFirstName="
+				+ UserFirstName + ", UserLastName=" + UserLastName + ", UserDOB=" + UserDOB + ", UserAadharNum="
+				+ UserAadharNum + ", UserMobileNum=" + UserMobileNum + ", UserType="
+				+ UserType + ", UserStatus=" + UserStatus + "]";
+	}
+	private int UserID;
 	private String UserName;
 	private String UserFirstName;
 	private String UserLastName;
 	private String UserDOB;
 	private String UserAadharNum;
 	private String UserMobileNum;
-	private String UserPassword;
+	//private String UserPassword;
 	private List<String> UserType;
 	private String UserStatus;
 
+	public int getUserID() {
+		return UserID;
+	}
+	public void setUserID(int userID) {
+		UserID = userID;
+	}
 	public String getUserName() {
 		return UserName;
 	}
@@ -50,12 +64,12 @@ public class UserDetailsResponseBean
 	public void setUserMobileNum(String userMobileNum) {
 		UserMobileNum = userMobileNum;
 	}
-	public String getUserPassword() {
+	/*public String getUserPassword() {
 		return UserPassword;
 	}
 	public void setUserPassword(String userPassword) {
 		UserPassword = userPassword;
-	}
+	}*/
 	public List<String> getUserType() {
 		return UserType;
 	}

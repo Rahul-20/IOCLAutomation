@@ -10,6 +10,13 @@ public class ErrorMessageConstants
 	public static final String User_Locked_Msg="User Locked or In Active. Please contact administrator";
 	
 	
+	public static final String Bay_Already_Exist="Bay Already Exist!";
+	
+	
+	public static final String Internal_Error="Internal Error Occured";
+	
+	
+	
 	
 	public static final int Unprocessable_Entity_Code=422;
 	public static final int UserType_MissMatch_Code=422;

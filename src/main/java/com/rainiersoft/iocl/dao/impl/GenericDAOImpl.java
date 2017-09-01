@@ -34,7 +34,7 @@ public abstract class GenericDAOImpl<T, ID extends Serializable> implements Gene
 
 	private static final Logger LOG = LoggerFactory.getLogger(GenericDAOImpl.class.getName());
 
-	@Autowired
+
 	protected SessionFactory sessionFactory;
 
 	public SessionFactory getSessionFactory() {
@@ -42,6 +42,7 @@ public abstract class GenericDAOImpl<T, ID extends Serializable> implements Gene
 		return sessionFactory;
 	}
 
+	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		LOG.info("setSessionFactory::::::::"+sessionFactory);
 		this.sessionFactory = sessionFactory;
@@ -53,8 +54,17 @@ public abstract class GenericDAOImpl<T, ID extends Serializable> implements Gene
 
 
 	protected Session getCurrentSession() {
-		System.out.println("ccccccccc"+getSessionFactory());
-		return getSessionFactory().getCurrentSession();
+
+		Session session=null;
+		try
+		{
+			session=getSessionFactory().getCurrentSession();
+		}
+		catch(Exception exp)
+		{
+			LOG.info("EXP::::::::::"+exp);
+		}
+		return session;
 	}
 
 	public void saveOrUpdate(T entity) {
@@ -112,8 +122,16 @@ public abstract class GenericDAOImpl<T, ID extends Serializable> implements Gene
 		return (List<T>)criteria.list();
 	}
 
-
 	public void clearCacheForEntity(T entity) {
 		getCurrentSession().evict(entity);
+	}
+
+	public boolean deleteById(Class<?> type, Serializable id) {
+		Object persistentInstance = getCurrentSession().load(type, id);
+		if (persistentInstance != null) {
+			getCurrentSession().delete(persistentInstance);
+			return true;
+		}
+		return false;
 	}
 }

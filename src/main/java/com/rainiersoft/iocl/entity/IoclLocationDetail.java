@@ -10,15 +10,22 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="iocl_location_details")
-@NamedQuery(name="IoclLocationDetail.findAll", query="SELECT i FROM IoclLocationDetail i")
+@NamedQueries({
+@NamedQuery(name="IoclLocationDetail.findAll", query="SELECT i FROM IoclLocationDetail i"),
+@NamedQuery(name="findLocationIdByLocationCode", query="SELECT i FROM IoclLocationDetail i where i.locationCode=:locationCode")
+})
 public class IoclLocationDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="LocationID")
 	private int locationID;
 
+	@Column(name="LocationCode")
 	private String locationCode;
 
+	@Column(name="LocationName")
 	private String locationName;
 
 	public IoclLocationDetail() {
@@ -47,5 +54,4 @@ public class IoclLocationDetail implements Serializable {
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
 	}
-
 }

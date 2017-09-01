@@ -9,10 +9,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+
+/**
+ * The persistent class for the iocl_userprivileges_mapping database table.
+ * 
+ */
 @Entity
 @Table(name="iocl_userprivileges_mapping")
 @NamedQueries({
-	@NamedQuery(name="findPrivilegeNamesByRole", query="SELECT ioclUserPrivilegesMapping FROM IoclUserPrivilegesMapping ioclUserPrivilegesMapping where userRole=:userRole"),
+	@NamedQuery(name="findPrivilegeNamesByRole", query="SELECT ioclUserPrivilegesMapping FROM IoclUserPrivilegesMapping ioclUserPrivilegesMapping where userRoleId=:userRoleId"),
 })
 public class IoclUserPrivilegesMapping 
 {
@@ -21,8 +26,8 @@ public class IoclUserPrivilegesMapping
 	@Column(name="PrivilegeId")
 	private int privilegeId;
 
-	@Column(name="UserRole")
-	private String userRole;
+	@Column(name="UserRoleId")
+	private int userRoleId;
 
 	@Column(name="PrivilegesName")
 	private String privilegeNames;
@@ -35,19 +40,19 @@ public class IoclUserPrivilegesMapping
 		this.privilegeId = privilegeId;
 	}
 
-	public String getUserRole() {
-		return userRole;
-	}
-
-	public void setUserRole(String userRole) {
-		this.userRole = userRole;
-	}
-
 	public String getPrivilegeNames() {
 		return privilegeNames;
 	}
 
 	public void setPrivilegeNames(String privilegeNames) {
 		this.privilegeNames = privilegeNames;
+	}
+
+	public int getUserRoleId() {
+		return this.userRoleId;
+	}
+
+	public void setUserRoleId(int userRoleId) {
+		this.userRoleId = userRoleId;
 	}
 }

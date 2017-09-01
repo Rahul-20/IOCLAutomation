@@ -2,6 +2,7 @@ package com.rainiersoft.iocl.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -10,20 +11,33 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="iocl_bay_details")
-@NamedQuery(name="IoclBayDetail.findAll", query="SELECT i FROM IoclBayDetail i")
+@NamedQueries({
+@NamedQuery(name="IoclBayDetail.findAll", query="SELECT i FROM IoclBayDetail i"),
+@NamedQuery(name="findBayByBayNum", query="select i from IoclBayDetail i where i.bayNum=:bayNum")
+})
 public class IoclBayDetail implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="BayId")
 	private int bayId;
 
+	@Column(name="BayName")
 	private String bayName;
 
-	private String bayNum;
+	@Column(name="BayNum")
+	private int bayNum;
 
-	private String bayType;
+	//bi-directional many-to-one association to IoclSupportedBaystatus
+	@ManyToOne
+	@JoinColumn(name="FunctionalStatusId")
+	private IoclSupportedBaystatus ioclSupportedBaystatus;
 
-	private String bcControllerId;
+	//bi-directional many-to-one association to IoclBayType
+	@OneToMany(mappedBy="ioclBayDetail",cascade=CascadeType.ALL)
+	private List<IoclBayType> ioclBayTypes;
 
 	public IoclBayDetail() {
 	}
@@ -44,28 +58,27 @@ public class IoclBayDetail implements Serializable {
 		this.bayName = bayName;
 	}
 
-	public String getBayNum() {
+	public int getBayNum() {
 		return this.bayNum;
 	}
 
-	public void setBayNum(String bayNum) {
+	public void setBayNum(int bayNum) {
 		this.bayNum = bayNum;
 	}
 
-	public String getBayType() {
-		return this.bayType;
+	public IoclSupportedBaystatus getIoclSupportedBaystatus() {
+		return this.ioclSupportedBaystatus;
 	}
 
-	public void setBayType(String bayType) {
-		this.bayType = bayType;
+	public void setIoclSupportedBaystatus(IoclSupportedBaystatus ioclSupportedBaystatus) {
+		this.ioclSupportedBaystatus = ioclSupportedBaystatus;
 	}
 
-	public String getBcControllerId() {
-		return this.bcControllerId;
+	public List<IoclBayType> getIoclBayTypes() {
+		return this.ioclBayTypes;
 	}
 
-	public void setBcControllerId(String bcControllerId) {
-		this.bcControllerId = bcControllerId;
+	public void setIoclBayTypes(List<IoclBayType> ioclBayTypes) {
+		this.ioclBayTypes = ioclBayTypes;
 	}
-
 }

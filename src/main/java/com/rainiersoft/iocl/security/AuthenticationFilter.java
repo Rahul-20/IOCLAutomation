@@ -2,6 +2,10 @@ package com.rainiersoft.iocl.security;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,12 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
-import com.rainiersoft.iocl.dao.impl.IOCLUserDetailsDAOImpl;
 import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.entity.IoclUserroleMapping;
-import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.CommonUtilites;
-import com.rainiersoft.iocl.util.ErrorMessageConstants;
  
 @Provider
 @Component
@@ -50,9 +51,22 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
     
-    @Override
     public void filter(ContainerRequestContext requestContext) throws UnsupportedEncodingException
     {
+    	
+    	
+    	/*String lic="80-86-F2-6D-F1-FA";
+    	
+    	String s[]=getIPAndMAC();
+    	
+    	if(!(s[0].equals(lic)))
+    	{
+    		Response ACCESS_DENIED = Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("Licence Expiredd").build();
+    		requestContext.abortWith(ACCESS_DENIED);
+    		return;
+    	}*/
+    	
     	 Response ACCESS_DENIED = Response.status(Response.Status.UNAUTHORIZED)
                  .entity("You cannot access this resource").build();
     	 Response ACCESS_FORBIDDEN = Response.status(Response.Status.FORBIDDEN)
@@ -147,8 +161,8 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 		List<String> lUserTypes=new ArrayList<String>();
 		for(IoclUserroleMapping ioclUserroleMapping:ioclUserDetail.getIoclUserroleMappings())
 		{
-			LOG.info("::::::::"+ioclUserroleMapping.getUserType());
-			lUserTypes.add(ioclUserroleMapping.getUserType());
+			LOG.info("::::::::"+ioclUserroleMapping.getIoclSupportedUserrole().getRoleName());
+			lUserTypes.add(ioclUserroleMapping.getIoclSupportedUserrole().getRoleName());
 		}
         
 		for(String userRole: lUserTypes)
@@ -168,5 +182,39 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
     public IoclUserDetail checkIfUserExist(String userName)
     {
     	return ioclUserDetailsDAO.findUserByUserName(userName);
+    }
+    
+    
+    public String[] getIPAndMAC()
+    {
+    	InetAddress ip;
+    	String[]  arr=new String[2];
+		try
+		{
+			ip = InetAddress.getLocalHost();
+			arr[1]=ip.getHostAddress();
+
+			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+
+			byte[] mac = network.getHardwareAddress();
+
+			System.out.print("Current MAC address : ");
+
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < mac.length; i++) {
+				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+			}
+			arr[0]=sb.toString();
+
+		} catch (UnknownHostException e) {
+
+			e.printStackTrace();
+
+		} catch (SocketException e){
+
+			e.printStackTrace();
+
+		}
+		return arr;
     }
 }

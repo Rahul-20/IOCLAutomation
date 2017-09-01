@@ -15,16 +15,23 @@ public class IoclContractorDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="RecID")
 	private int recID;
 
+	@Column(name="ContractorId")
 	private int contractorId;
 
+	@Column(name="ContractorLocation")
 	private String contractorLocation;
 
+	@Column(name="ContractorName")
 	private String contractorName;
 
+	@Column(name="ContractorType")
 	private String contractorType;
 
+	@Column(name="OperationalStatus")
 	private String operationalStatus;
 
 	public IoclContractorDetail() {
@@ -77,5 +84,4 @@ public class IoclContractorDetail implements Serializable {
 	public void setOperationalStatus(String operationalStatus) {
 		this.operationalStatus = operationalStatus;
 	}
-
 }

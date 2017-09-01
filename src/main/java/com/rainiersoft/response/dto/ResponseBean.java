@@ -1,4 +1,4 @@
-package com.rainiersoft.iocl.model;
+package com.rainiersoft.response.dto;
 
 public class ResponseBean 
 {

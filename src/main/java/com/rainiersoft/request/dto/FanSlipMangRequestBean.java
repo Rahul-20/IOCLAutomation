@@ -1,13 +1,7 @@
-package com.rainiersoft.iocl.model;
+package com.rainiersoft.request.dto;
 
 public class FanSlipMangRequestBean 
 {
-	public String getMobileNumber() {
-		return MobileNumber;
-	}
-	public void setMobileNumber(String mobileNumber) {
-		MobileNumber = mobileNumber;
-	}
 	private String TruckNo;
 	private String DriverName;
 	private String DriverLicNo;
@@ -17,7 +11,14 @@ public class FanSlipMangRequestBean
 	private String Destination;
 	private String LocationCode;
 	private String MobileNumber;
-	private String BayNum;
+	private int BayNum;
+	
+	public String getMobileNumber() {
+		return MobileNumber;
+	}
+	public void setMobileNumber(String mobileNumber) {
+		MobileNumber = mobileNumber;
+	}
 
 	public String getTruckNo() {
 		return TruckNo;
@@ -67,10 +68,10 @@ public class FanSlipMangRequestBean
 	public void setLocationCode(String locationCode) {
 		LocationCode = locationCode;
 	}
-	public String getBayNum() {
+	public int getBayNum() {
 		return BayNum;
 	}
-	public void setBayNum(String bayNum) {
+	public void setBayNum(int bayNum) {
 		BayNum = bayNum;
 	}
 }

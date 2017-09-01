@@ -1,11 +1,18 @@
 package com.rainiersoft.iocl.dao.impl;
 
+import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
+import com.rainiersoft.iocl.entity.IoclBayDetail;
+import com.rainiersoft.iocl.entity.IoclSupportedUserrole;
+import com.rainiersoft.iocl.entity.IoclSupportedUserstatus;
+import com.rainiersoft.iocl.entity.IoclUserDetail;
+import com.rainiersoft.iocl.entity.IoclUserroleMapping;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.inject.Singleton;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -13,76 +20,80 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
-import com.rainiersoft.iocl.entity.IoclUserDetail;
-import com.rainiersoft.iocl.entity.IoclUserroleMapping;
+
 
 @Repository
 @Singleton
-@SuppressWarnings("deprecation")
-public class IOCLUserDetailsDAOImpl extends GenericDAOImpl<IoclUserDetail, Long> implements IOCLUserDetailsDAO 
+public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long> implements IOCLUserDetailsDAO
 {
 	private static final Logger LOG = LoggerFactory.getLogger(IOCLUserDetailsDAOImpl.class);
 
-	@Override
-	public void insertUserDetails(String userName,String userPassword,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType,String userMobileNum,String userStatus,String createdTimeStamp,String expiryTimeStamp) 
+	public IOCLUserDetailsDAOImpl() {}
+
+	public Long insertUserDetails(String userName, String userPassword, String userFirstName, String userLastName, String userDOB, String userAadharNum, IoclSupportedUserrole userType, String userMobileNum, IoclSupportedUserstatus userStatus, Date createdTimeStamp, Date expiryTimeStamp) 
 	{
-		Session session=getCurrentSession();
-		IoclUserDetail ioclUserDetails =new IoclUserDetail();
+		Session session = getCurrentSession();
+		IoclUserDetail ioclUserDetails = new IoclUserDetail();
 		ioclUserDetails.setUserName(userName);
 		ioclUserDetails.setUserPassword(userPassword);
 		ioclUserDetails.setUserFirstName(userFirstName);
 		ioclUserDetails.setUserLastName(userLastName);
-		ioclUserDetails.setUserDOB(userDOB);
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		try 
+		{
+			ioclUserDetails.setUserDOB(formatter.parse(userDOB));
+		}
+		catch (ParseException e) 
+		{
+			e.printStackTrace();
+		}
 		ioclUserDetails.setUserAadharNum(userAadharNum);
 		ioclUserDetails.setUserMobileNum(userMobileNum);
-		ioclUserDetails.setUserStatus(userStatus);
-		ioclUserDetails.setUserCreatedOn(new Date(createdTimeStamp));
-		ioclUserDetails.setPwdExpiryDate(new Date(expiryTimeStamp));
+		ioclUserDetails.setIoclSupportedUserstatus(userStatus);
+		ioclUserDetails.setUserCreatedOn(createdTimeStamp);
+		ioclUserDetails.setPwdExpiryDate(expiryTimeStamp);
 
-		List<IoclUserroleMapping> listIoclUserroleMappings=new ArrayList<IoclUserroleMapping>();
-		for(String userRole: userType)
-		{
-			LOG.info("UserRole::::"+userRole);
-			IoclUserroleMapping ioclUserroleMapping=new IoclUserroleMapping();
-			ioclUserroleMapping.setUserType(userRole);
-			ioclUserroleMapping.setIoclUserDetail(ioclUserDetails);
-			listIoclUserroleMappings.add(ioclUserroleMapping);
-		}
-		LOG.info("UserRole::::"+listIoclUserroleMappings.size());
+		List<IoclUserroleMapping> listIoclUserroleMappings = new ArrayList<IoclUserroleMapping>();
+		IoclUserroleMapping ioclUserroleMapping = new IoclUserroleMapping();
+		ioclUserroleMapping.setIoclSupportedUserrole(userType);
+		ioclUserroleMapping.setIoclUserDetail(ioclUserDetails);
+		listIoclUserroleMappings.add(ioclUserroleMapping);
+
 		ioclUserDetails.setIoclUserroleMappings(listIoclUserroleMappings);
-		session.save(ioclUserDetails);
+		Integer userId=(Integer) session.save(ioclUserDetails);
+		return userId.longValue();
 	}
 
-	@Override
 	@Transactional
-	public IoclUserDetail findUserByUserName(String userName) 
+	public IoclUserDetail findUserByUserName(String userName)
 	{
-		LOG.info("UserName::::;;;"+userName);
-		Session session=getCurrentSession();
-		Query query=session.getNamedQuery("findUserByUserName");
-		LOG.info("query:"+query);
-		query.setParameter("userName",userName);
-		LOG.info("userName:"+userName);
-		IoclUserDetail ioclUserDetail= findObject(query);
+		LOG.info("UserName:::" + userName);
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findUserByUserName");
+		LOG.info("query:" + query);
+		query.setParameter("userName", userName);
+		LOG.info("userName:" + userName);
+		IoclUserDetail ioclUserDetail = (IoclUserDetail)findObject(query);
 		return ioclUserDetail;
 	}
 
-	@Override
-	public void updateUserDetails(String userName, String userPassword, String userMobileNum, String userStatus,String updatedTimeStamp,IoclUserDetail ioclUserDetail) 
+	public void updateUserDetails(String userName, String userPassword, String userMobileNum, IoclSupportedUserstatus userStatus, Date updatedTimeStamp, IoclUserDetail ioclUserDetail)
 	{
-		Session session=getCurrentSession();
+		Session session = getCurrentSession();
 		ioclUserDetail.setUserPassword(userPassword);
 		ioclUserDetail.setUserMobileNum(userMobileNum);
-		ioclUserDetail.setUserStatus(userStatus);
-		ioclUserDetail.setUserUpdatedOn(new Date(updatedTimeStamp));
+		ioclUserDetail.setIoclSupportedUserstatus(userStatus);
+		ioclUserDetail.setUserUpdatedOn(updatedTimeStamp);
 		session.update(ioclUserDetail);
 	}
 
-	@Override
 	public List<IoclUserDetail> findUsers() {
-		Session session=getCurrentSession();
-		List<IoclUserDetail> listOfUsers=findAll(IoclUserDetail.class);
+		List<IoclUserDetail> listOfUsers = findAll(IoclUserDetail.class);
 		return listOfUsers;
+	}
+
+	public boolean deleteUser(int userId) 
+	{
+		return deleteById(IoclUserDetail.class, Integer.valueOf(userId));
 	}
 }
