@@ -1,7 +1,6 @@
 package com.rainiersoft.iocl.dao.impl;
 
 import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
-import com.rainiersoft.iocl.entity.IoclBayDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedUserrole;
 import com.rainiersoft.iocl.entity.IoclSupportedUserstatus;
 import com.rainiersoft.iocl.entity.IoclUserDetail;
@@ -19,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-
 
 @Repository
 @Singleton

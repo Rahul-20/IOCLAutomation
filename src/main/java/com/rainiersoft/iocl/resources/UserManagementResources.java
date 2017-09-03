@@ -1,13 +1,11 @@
 package com.rainiersoft.iocl.resources;
 
-import com.rainiersoft.iocl.exception.IOCLWSException;
-import com.rainiersoft.iocl.services.UserManagementServices;
-import com.rainiersoft.request.dto.RequestBean;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.StringTokenizer;
+
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Singleton;
@@ -18,12 +16,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
+
+import org.glassfish.jersey.internal.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.rainiersoft.iocl.exception.IOCLWSException;
+import com.rainiersoft.iocl.services.UserManagementServices;
+import com.rainiersoft.request.dto.RequestBean;
 
 @Path("/usermanagement")
 @Singleton
@@ -42,15 +49,28 @@ public class UserManagementResources
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response userAuthentication(@QueryParam("q") String enodedString, @QueryParam("type") String role) throws IOCLWSException, NoSuchAlgorithmException, UnsupportedEncodingException
+	public Response userAuthentication(@Context HttpHeaders headers) throws IOCLWSException, NoSuchAlgorithmException, UnsupportedEncodingException
 	{
 		LOG.info("Inside Resources Class Login Method");
-		byte[] decodedBytes = DatatypeConverter.parseBase64Binary(enodedString);
-		String[] s = new String(decodedBytes).split(":", 2);
-		String userName = s[0];
-		String userPwd = s[1];
-		String userType = role;
-		System.out.println("userRole:::::" + userType);
+		//Get request headers
+		final MultivaluedMap<String, String> reqHeaders = headers.getRequestHeaders();
+
+		//Fetch authorization header
+		final List<String> authorization = reqHeaders.get("Authorization");
+
+		//Get encoded username and password
+		final String encodedUserPassword = authorization.get(0).replaceFirst("Basic" + " ", "");
+
+		//Decode username and password
+		String usernameAndPassword = new String(Base64.decode(encodedUserPassword.getBytes()));;
+
+		//Split username and password tokens
+		final StringTokenizer userNameAndPwdTokenizer = new StringTokenizer(usernameAndPassword, ":");
+		final String userName = userNameAndPwdTokenizer.nextToken();
+		final String userPwd = userNameAndPwdTokenizer.nextToken();
+		String userType = "";
+
+		LOG.info("userRole:::::" + userType);
 		return userManagementServices.validateUser(userName, userPwd, userType);
 	}
 
@@ -109,5 +129,25 @@ public class UserManagementResources
 	public Response deleteUser(@QueryParam("UserID") int userID) throws IOCLWSException,Exception
 	{
 		return userManagementServices.deleteUser(userID);
+	}
+
+	@Path("/supportedUserTypes")
+	@RolesAllowed({"Admin", "Super Admin"})
+	@DELETE
+	@Consumes({"application/json"})
+	@Produces({"application/json"})
+	public Response supportedUserTypes() throws IOCLWSException,Exception
+	{
+		return userManagementServices.supportedUserTypes();
+	}
+
+	@Path("/supportedUserStatus")
+	@RolesAllowed({"Admin", "Super Admin"})
+	@DELETE
+	@Consumes({"application/json"})
+	@Produces({"application/json"})
+	public Response supportedUserStatus() throws IOCLWSException,Exception
+	{
+		return userManagementServices.supportedUserStatus();
 	}
 }

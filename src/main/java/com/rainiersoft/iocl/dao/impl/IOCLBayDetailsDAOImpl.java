@@ -4,13 +4,11 @@ import com.rainiersoft.iocl.dao.IOCLBayDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclBayDetail;
 import com.rainiersoft.iocl.entity.IoclBayType;
 import com.rainiersoft.iocl.entity.IoclSupportedBaystatus;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -37,7 +35,7 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 		LOG.info("ioclSupportedBaystatus:::::::::" + ioclSupportedBaystatus);
 		ioclBayDetail.setIoclSupportedBaystatus(ioclSupportedBaystatus);
 
-		List<IoclBayType> listIoclBayType = new ArrayList();
+		List<IoclBayType> listIoclBayType = new ArrayList<IoclBayType>();
 		IoclBayType ioclBayType = new IoclBayType();
 		ioclBayType.setBayType(bayType);
 		ioclBayType.setIoclBayDetail(ioclBayDetail);

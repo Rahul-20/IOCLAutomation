@@ -22,10 +22,34 @@ public class IoclQuantitiesDetail implements Serializable {
 	@Column(name="QuantityName")
 	private String quantityName;
 
+	@Column(name="Quantity")
+	private String quantity;
+
+
 	@Column(name="QuantityUnits")
 	private String quantityUnits;
 
+	@Column(name="OperationalStatus")
+	private String operationalStatus;
+
 	public IoclQuantitiesDetail() {
+	}
+	
+
+	public String getOperationalStatus() {
+		return operationalStatus;
+	}
+
+	public void setOperationalStatus(String operationalStatus) {
+		this.operationalStatus = operationalStatus;
+	}
+
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
 	}
 
 	public int getQuantityId() {
@@ -51,5 +75,4 @@ public class IoclQuantitiesDetail implements Serializable {
 	public void setQuantityUnits(String quantityUnits) {
 		this.quantityUnits = quantityUnits;
 	}
-
 }

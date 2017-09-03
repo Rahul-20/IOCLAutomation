@@ -505,9 +505,9 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response deleteBay(int bayNum)
 	{
-		
+
 		boolean deleteFalg=iOCLBayDetailsDAO.deleteBay(bayNum);
-		
+
 		if(deleteFalg)
 		{
 			return  Response.status(Response.Status.OK).entity("Deleted Success Fully").build();	
@@ -515,6 +515,47 @@ public class BaysManagementServices
 		else
 		{
 			return  Response.status(Response.Status.OK).entity("Failed To Delete").build();
+		}
+	}
+
+
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
+	public Response supportedBayTypes() throws  IOCLWSException, Exception
+	{
+		try
+		{
+			List<IoclSupportedBaytype> lIoclSupportedBayTypes=iOCLSupportedBayTypesDAO.findAll(IoclSupportedBaytype.class);
+			List<String> bayTypes=new ArrayList<String>();
+			for(IoclSupportedBaytype ioclSupportedBaytype:lIoclSupportedBayTypes)
+			{
+				bayTypes.add(ioclSupportedBaytype.getBayType());
+			}
+			return  Response.status(Response.Status.OK).entity(bayTypes).build();
+		}
+		catch(Exception exception)
+		{
+			LOG.info("Supported BayTypes Service Method Exception Block:::::::"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
+		}
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
+	public Response supportedBayFunctionalStatus() throws  IOCLWSException, Exception
+	{
+		try
+		{
+			List<IoclSupportedBaystatus> lIoclSupportedBaystatus=iOCLSupportedBayStatusDAO.findAll(IoclSupportedBaystatus.class);
+			List<String> bayStatus=new ArrayList<String>();
+			for(IoclSupportedBaystatus ioclSupportedBaystatus:lIoclSupportedBaystatus)
+			{
+				bayStatus.add(ioclSupportedBaystatus.getBayFunctionalStatus());
+			}
+			return  Response.status(Response.Status.OK).entity(bayStatus).build();
+		}
+		catch(Exception exception)
+		{
+			LOG.info("Supported BayStatus Service Method Exception Block:::::::"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
 }

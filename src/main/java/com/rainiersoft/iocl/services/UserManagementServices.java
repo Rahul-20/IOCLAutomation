@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,6 +60,9 @@ public class UserManagementServices
 
 	@Autowired
 	IOCLSupportedUserStatusDAO iOCLSupportedUserStatusDAO;
+
+	@Autowired
+	IOCLSupportedUserRoleDAO ioclSupportedUserRoleDAO;
 
 	@Value("${UserPasswordExpiryConfigVal}")
 	int userPasswordExpiryConfig;
@@ -287,6 +289,46 @@ public class UserManagementServices
 		catch(Exception exception)
 		{
 			LOG.info("DeleteUser Service Method Exception Block:::::::"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
+		}
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
+	public Response supportedUserTypes() throws  IOCLWSException, Exception
+	{
+		try
+		{
+			List<IoclSupportedUserrole> lIoclSupportedUserroles=ioclSupportedUserRoleDAO.findAll(IoclSupportedUserrole.class);
+			List<String> userTypes=new ArrayList<String>();
+			for(IoclSupportedUserrole ioclSupportedUserrole:lIoclSupportedUserroles)
+			{
+				userTypes.add(ioclSupportedUserrole.getRoleName());
+			}
+			return  Response.status(Response.Status.OK).entity(userTypes).build();
+		}
+		catch(Exception exception)
+		{
+			LOG.info("Supported User Service Method Exception Block:::::::"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
+		}
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
+	public Response supportedUserStatus() throws  IOCLWSException, Exception
+	{
+		try
+		{
+			List<IoclSupportedUserstatus> lIoclSupportedUserstatus=iOCLSupportedUserStatusDAO.findAll(IoclSupportedUserstatus.class);
+			List<String> userTypes=new ArrayList<String>();
+			for(IoclSupportedUserstatus ioclSupportedUserstatus:lIoclSupportedUserstatus)
+			{
+				userTypes.add(ioclSupportedUserstatus.getUserStatus());
+			}
+			return  Response.status(Response.Status.OK).entity(userTypes).build();
+		}
+		catch(Exception exception)
+		{
+			LOG.info("Supported User Service Method Exception Block:::::::"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}

@@ -20,11 +20,20 @@ public class UserManagementTestCases
 		System.out.println("sc::" + ac);
 
 		UserManagementServices ums=(UserManagementServices)ac.getBean("userManagementServices");
+		
 		Response availableUsersResp=ums.getAvailableUsers();
-		System.out.println("AvailableUsersResp:::::"+availableUsersResp.getEntity());
+		//System.out.println("AvailableUsersResp:::::"+availableUsersResp.getEntity());
 
+		Response availableUsersStatus=ums.supportedUserStatus();
+		System.out.println("availableUsersStatus:::::"+availableUsersStatus.getEntity());
+		
+		Response availableUsersTypes=ums.supportedUserTypes();
+		System.out.println("availableUsersTypes:::::"+availableUsersTypes.getEntity());
+		
+		
+		
 
-		ArrayList<String> roles=new ArrayList<String>();
+		/*ArrayList<String> roles=new ArrayList<String>();
 		roles.add("Super Admin");
 		try
 		{
@@ -34,9 +43,9 @@ public class UserManagementTestCases
 		catch(IOCLWSException e)
 		{
 			System.out.println("Exception:::::"+e.getErrorMessage());
-		}
+		}*/
 
-		try 
+		/*try 
 		{
 			Response validateUser=ums.validateUser("Rahul", "Rahul", "");
 			System.out.println("Validate User Resonse"+validateUser.getEntity());
@@ -44,9 +53,9 @@ public class UserManagementTestCases
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}
+		}*/
 
-		try
+		/*try
 		{
 			Response updateUser=ums.updateUser("Rahul","Rahul","1111111","Not Active");			
 			System.out.println("UpdateUser::::::"+updateUser.getEntity());
@@ -54,7 +63,7 @@ public class UserManagementTestCases
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}
+		}*/
 		
 		/*Response deletUser=ums.deleteUser(5);
 		System.out.println("Deleted User:::::::"+deletUser.getEntity());*/

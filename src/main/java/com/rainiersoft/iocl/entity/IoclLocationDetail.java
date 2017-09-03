@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Entity
 @Table(name="iocl_location_details")
 @NamedQueries({
-@NamedQuery(name="IoclLocationDetail.findAll", query="SELECT i FROM IoclLocationDetail i"),
-@NamedQuery(name="findLocationIdByLocationCode", query="SELECT i FROM IoclLocationDetail i where i.locationCode=:locationCode")
+	@NamedQuery(name="IoclLocationDetail.findAll", query="SELECT i FROM IoclLocationDetail i"),
+	@NamedQuery(name="findLocationIdByLocationCode", query="SELECT i FROM IoclLocationDetail i where i.locationCode=:locationCode")
 })
 public class IoclLocationDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -28,7 +28,29 @@ public class IoclLocationDetail implements Serializable {
 	@Column(name="LocationName")
 	private String locationName;
 
+	@Column(name="Address")
+	private String locationAddress;
+
+	@Column(name="OperationalStatus")
+	private String operationalStatus;
+
 	public IoclLocationDetail() {
+	}
+
+	public String getLocationAddress() {
+		return locationAddress;
+	}
+
+	public void setLocationAddress(String locationAddress) {
+		this.locationAddress = locationAddress;
+	}
+
+	public String getOperationalStatus() {
+		return operationalStatus;
+	}
+
+	public void setOperationalStatus(String operationalStatus) {
+		this.operationalStatus = operationalStatus;
 	}
 
 	public int getLocationID() {

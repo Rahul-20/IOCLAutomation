@@ -23,9 +23,9 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="iocl_fanslip_details")
 @NamedQueries({
-@NamedQuery(name="IoclFanslipDetail.findAll", query="SELECT i FROM IoclFanslipDetail i"),
-@NamedQuery(name="findFanPinStatusByFanPin", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin"),
-@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn > :pastDate and f.fanCreationOn < :currDate and f.bayNo=:bayNo")
+	@NamedQuery(name="IoclFanslipDetail.findAll", query="SELECT i FROM IoclFanslipDetail i"),
+	@NamedQuery(name="findFanPinStatusByFanPin", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin"),
+	@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn > :pastDate and f.fanCreationOn < :currDate and f.bayNo=:bayNo")
 })
 public class IoclFanslipDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -57,10 +57,16 @@ public class IoclFanslipDetail implements Serializable {
 	@Column(name="VehicleWgt")
 	private String vehicleWgt;
 
+	//bi-directional many-to-one association to IoclContractorDetail
+	@ManyToOne
+	@JoinColumn(name="ContractorID")
+	private IoclContractorDetail ioclContractorDetail;
+
 	//bi-directional many-to-one association to IoclLocationDetail
 	@ManyToOne
 	@JoinColumn(name="LocationID")
 	private IoclLocationDetail ioclLocationDetail;
+
 
 	//bi-directional many-to-one association to IoclSupportedPinstatus
 	@ManyToOne
@@ -148,5 +154,13 @@ public class IoclFanslipDetail implements Serializable {
 
 	public void setIoclSupportedPinstatus(IoclSupportedPinstatus ioclSupportedPinstatus) {
 		this.ioclSupportedPinstatus = ioclSupportedPinstatus;
+	}
+	
+	public IoclContractorDetail getIoclContractorDetail() {
+		return this.ioclContractorDetail;
+	}
+
+	public void setIoclContractorDetail(IoclContractorDetail ioclContractorDetail) {
+		this.ioclContractorDetail = ioclContractorDetail;
 	}
 }
