@@ -10,7 +10,11 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="iocl_supported_baytypes")
-@NamedQuery(name="IoclSupportedBaytype.findAll", query="SELECT i FROM IoclSupportedBaytype i")
+@NamedQueries({
+@NamedQuery(name="IoclSupportedBaytype.findAll", query="SELECT i FROM IoclSupportedBaytype i"),
+@NamedQuery(name="findBayTypeIdByBayType", query="SELECT i FROM IoclSupportedBaytype i where bayType=:bayType"),
+@NamedQuery(name="findBayTypeByBayTypeId", query="SELECT i FROM IoclSupportedBaytype i where typeId=:typeId")
+})
 public class IoclSupportedBaytype implements Serializable {
 	private static final long serialVersionUID = 99910389120L;
 

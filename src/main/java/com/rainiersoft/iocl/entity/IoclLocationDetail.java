@@ -12,7 +12,9 @@ import javax.persistence.*;
 @Table(name="iocl_location_details")
 @NamedQueries({
 	@NamedQuery(name="IoclLocationDetail.findAll", query="SELECT i FROM IoclLocationDetail i"),
-	@NamedQuery(name="findLocationIdByLocationCode", query="SELECT i FROM IoclLocationDetail i where i.locationCode=:locationCode")
+	@NamedQuery(name="findLocationIdByLocationCode", query="SELECT i FROM IoclLocationDetail i where i.locationCode=:locationCode"),
+	@NamedQuery(name="findLocationByLocationName", query="SELECT i FROM IoclLocationDetail i where i.locationName=:locationName"),
+	@NamedQuery(name="findLocationByLocationId", query="SELECT i FROM IoclLocationDetail i where i.locationID=:locationId")
 })
 public class IoclLocationDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -31,8 +33,10 @@ public class IoclLocationDetail implements Serializable {
 	@Column(name="Address")
 	private String locationAddress;
 
-	@Column(name="OperationalStatus")
-	private String operationalStatus;
+	//bi-directional many-to-one association to IoclSupportedLocationstatus
+	@ManyToOne
+	@JoinColumn(name="LocationStatusId")
+	private IoclSupportedLocationstatus ioclSupportedLocationstatus;
 
 	public IoclLocationDetail() {
 	}
@@ -45,12 +49,12 @@ public class IoclLocationDetail implements Serializable {
 		this.locationAddress = locationAddress;
 	}
 
-	public String getOperationalStatus() {
-		return operationalStatus;
+	public IoclSupportedLocationstatus getIoclSupportedLocationstatus() {
+		return this.ioclSupportedLocationstatus;
 	}
 
-	public void setOperationalStatus(String operationalStatus) {
-		this.operationalStatus = operationalStatus;
+	public void setIoclSupportedLocationstatus(IoclSupportedLocationstatus ioclSupportedLocationstatus) {
+		this.ioclSupportedLocationstatus = ioclSupportedLocationstatus;
 	}
 
 	public int getLocationID() {

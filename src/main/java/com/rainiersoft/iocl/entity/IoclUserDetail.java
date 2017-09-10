@@ -32,19 +32,10 @@ import org.hibernate.annotations.ColumnTransformer;
 @NamedQueries({
 	@NamedQuery(name="IoclUserDetail.findAll", query="SELECT i FROM IoclUserDetail i"),
 	@NamedQuery(name="findUserByUserName", query="SELECT iUserDetails FROM IoclUserDetail iUserDetails where userName=:userName"),
+	@NamedQuery(name="findUserByUserId", query="SELECT iUserDetails FROM IoclUserDetail iUserDetails where userId=:userId")
 })
 public class IoclUserDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Override
-	public String toString() {
-		return "IoclUserDetail [userId=" + userId + ", pwdExpiryDate=" + pwdExpiryDate + ", userAadharNum="
-				+ userAadharNum + ", userCreatedOn=" + userCreatedOn + ", userDeletedOn=" + userDeletedOn + ", userDOB="
-				+ userDOB + ", userFirstName=" + userFirstName + ", userLastName=" + userLastName + ", userMobileNum="
-				+ userMobileNum + ", userName=" + userName + ", userPassword=" + userPassword + ", userStatus="
-				+ ", userUpdatedOn=" + userUpdatedOn + ", ioclUserroleMappings=" + ioclUserroleMappings
-				+ "]";
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -19,25 +19,26 @@ public class UserManagementTestCases
 		ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
 		System.out.println("sc::" + ac);
 
+
 		UserManagementServices ums=(UserManagementServices)ac.getBean("userManagementServices");
-		
-		Response availableUsersResp=ums.getAvailableUsers();
+
+		//Response availableUsersResp=ums.getAvailableUsers();
 		//System.out.println("AvailableUsersResp:::::"+availableUsersResp.getEntity());
 
-		Response availableUsersStatus=ums.supportedUserStatus();
-		System.out.println("availableUsersStatus:::::"+availableUsersStatus.getEntity());
-		
-		Response availableUsersTypes=ums.supportedUserTypes();
-		System.out.println("availableUsersTypes:::::"+availableUsersTypes.getEntity());
-		
-		
-		
+		//Response availableUsersStatus=ums.supportedUserStatus();
+		//System.out.println("availableUsersStatus:::::"+availableUsersStatus.getEntity());
 
-		/*ArrayList<String> roles=new ArrayList<String>();
-		roles.add("Super Admin");
-		try
+		//Response availableUsersTypes=ums.supportedUserTypes();
+		//System.out.println("availableUsersTypes:::::"+availableUsersTypes.getEntity());*/
+
+
+
+
+		ArrayList<String> roles=new ArrayList<String>();
+		roles.add("Admin");
+		/*try
 		{
-			Response creationResp=ums.createNewUser("Rahul5", "Rahul", "Rahul", "Rahul", "2017-08-31", "9901029102", roles, "9999999", "Active");
+			Response creationResp=ums.createNewUser();
 			System.out.println("Creation Response:::::::::"+creationResp.getEntity());
 		}
 		catch(IOCLWSException e)
@@ -55,17 +56,27 @@ public class UserManagementTestCases
 			e.printStackTrace();
 		}*/
 
-		/*try
+		try
 		{
-			Response updateUser=ums.updateUser("Rahul","Rahul","1111111","Not Active");			
+			Response updateUser=ums.updateUser(4,"rahul15","rahul","111111111","Not Active",false,"ddddd","llll", "2017-09-09", "111111", roles);
 			System.out.println("UpdateUser::::::"+updateUser.getEntity());
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}*/
+		}
+
+		//Response deletUser=ums.deleteUser(2);
+		//System.out.println("Deleted User:::::::"+deletUser.getEntity());
+
+		/*		BaysManagementServices bms=(BaysManagementServices)ac.getBean("baysManagementServices");
+		//bms.bayCreation("Bay1", 1, "LPG", "Active");
+
+		bms.getAllBayDetails();
+		Response res=bms.getData();
+		System.out.println("Respo::"+res.getEntity());
+		 */	
 		
-		/*Response deletUser=ums.deleteUser(5);
-		System.out.println("Deleted User:::::::"+deletUser.getEntity());*/
+		
 	}
 }

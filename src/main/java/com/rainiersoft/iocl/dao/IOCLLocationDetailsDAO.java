@@ -1,11 +1,23 @@
 package com.rainiersoft.iocl.dao;
 
-import com.rainiersoft.iocl.entity.IoclLocationDetail;
 import java.util.List;
+
+import com.rainiersoft.iocl.entity.IoclLocationDetail;
+import com.rainiersoft.iocl.entity.IoclSupportedLocationstatus;
 
 public interface IOCLLocationDetailsDAO extends GenericDAO<IoclLocationDetail, Long>
 {
 	public IoclLocationDetail findLocationIdByLocationCode(String locationCode);
-
+	
+	public IoclLocationDetail findLocationByLocationName(String locationName);
+	
+	public IoclLocationDetail findLocationByLocationId(int locationId);
+	
 	public List<IoclLocationDetail> findAllLocationCodes();
+	
+	public Long insertLocationDetails(String locationName,String locationCode,IoclSupportedLocationstatus locationStatus,String locationAddress);
+	
+	public void updateLocationDetails(String locationName,String locationCode,IoclSupportedLocationstatus locationStatus,String locationAddress,int locationId,IoclLocationDetail ioclLocationDetail);
+	
+	public boolean deleteLocation(int locationId);
 }

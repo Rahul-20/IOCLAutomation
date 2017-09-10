@@ -47,14 +47,16 @@
 		<property name="url" value="${db.url}" />
 		<property name="username" value="${db.username}" />
 		<property name="password" value="${db.password}" />
-		<property name="initialSize" value="${db.pool.initialSize}" />
-		<property name="minIdle" value="${db.pool.minIdle}" />
-		<property name="maxIdle" value="${db.pool.maxIdle}" />
-		<property name="maxActive" value="${db.pool.maxActive}" />
-		<property name="maxWait" value="${db.pool.maxWait}" />
-		<property name="logAbandoned" value="${db.connection.logabandoned}" />
-		<property name="removeAbandonedTimeout" value="${db.connection.remove.abandoned.timeout}" />
-		<property name="removeAbandoned" value="${db.connection.removeabandoned}" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="5" />
+		<property name="maxIdle" value="2" />
+		<!-- <property name="initialSize" value="${db.pool.initialSize}" /> <property 
+			name="minIdle" value="${db.pool.minIdle}" /> <property name="maxIdle" value="${db.pool.maxIdle}" 
+			/> <property name="maxActive" value="${db.pool.maxActive}" /> <property name="maxWait" 
+			value="${db.pool.maxWait}" /> <property name="logAbandoned" value="${db.connection.logabandoned}" 
+			/> <property name="removeAbandonedTimeout" value="${db.connection.remove.abandoned.timeout}" 
+			/> <property name="removeAbandoned" value="${db.connection.removeabandoned}" 
+			/> -->
 	</bean>
 
 

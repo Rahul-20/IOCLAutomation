@@ -13,9 +13,11 @@ public interface IOCLUserDetailsDAO extends GenericDAO<IoclUserDetail, Long>
 
 	public IoclUserDetail findUserByUserName(String userName);
 
-	public void updateUserDetails(String userName, String userPassword, String userMobileNum, IoclSupportedUserstatus userStatus, Date updatedTimeStamp, IoclUserDetail ioclUserDetail);
+	public void updateUserDetails(String userName, String userPassword, String userMobileNum, IoclSupportedUserstatus userStatus, Date updatedTimeStamp, IoclUserDetail ioclUserDetail,String userFirstName,String userLastName,String userDOB,String userAadharNum,IoclSupportedUserrole userType);
 
 	public List<IoclUserDetail> findUsers();
 	
 	public boolean deleteUser(int userId);
+	
+	public IoclUserDetail findUserByUserId(int userId);
 }

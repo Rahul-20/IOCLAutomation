@@ -13,6 +13,11 @@ import javax.persistence.*;
 @NamedQuery(name="IoclBayType.findAll", query="SELECT i FROM IoclBayType i")
 public class IoclBayType implements Serializable {
 
+	@Override
+	public String toString() {
+		return "IoclBayType [recId=" + recId + ", bayTypeId=" + bayTypeId + ", ioclBayDetail=]";
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -20,12 +25,12 @@ public class IoclBayType implements Serializable {
 	@Column(name="RecId")
 	private int recId;
 
-	@Column(name="BayType")
-	private String bayType;
+	@Column(name="BayTypeId")
+	private int bayTypeId;
 
 	//bi-directional many-to-one association to IoclBayDetail
-	@ManyToOne
-	@JoinColumn(name="bayNum")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="bayNum",referencedColumnName = "bayNum")
 	private IoclBayDetail ioclBayDetail;
 
 	public IoclBayType() {
@@ -39,12 +44,12 @@ public class IoclBayType implements Serializable {
 		this.recId = recId;
 	}
 
-	public String getBayType() {
-		return this.bayType;
+	public int getBayTypeId() {
+		return this.bayTypeId;
 	}
 
-	public void setBayType(String bayType) {
-		this.bayType = bayType;
+	public void setBayTypeId(int bayTypeId) {
+		this.bayTypeId = bayTypeId;
 	}
 
 	public IoclBayDetail getIoclBayDetail() {

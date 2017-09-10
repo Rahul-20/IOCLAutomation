@@ -2,11 +2,23 @@ package com.rainiersoft.response.dto;
 
 public class AllBayDetailsResponseBean 
 {
+	@Override
+	public String toString() {
+		return "AllBayDetailsResponseBean [bayName=" + bayName + ", bayNum=" + bayNum + ", bayType=" + bayType
+				+ ", functionalStatus=" + functionalStatus + ", bayId=" + bayId + "]";
+	}
 	private String bayName;
 	private int bayNum;
 	private String bayType;
 	private String functionalStatus;
+	private int bayId;
 
+	public int getBayId() {
+		return bayId;
+	}
+	public void setBayId(int bayId) {
+		this.bayId = bayId;
+	}
 	public String getBayName() {
 		return bayName;
 	}

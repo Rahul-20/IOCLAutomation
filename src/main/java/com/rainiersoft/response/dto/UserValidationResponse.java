@@ -12,7 +12,14 @@ public class UserValidationResponse
 	private String successfulMsg;
 	private boolean successfulFlag;
 	private List<String> userPrivilages;
+	private String userRole;
 	
+	public String getUserRole() {
+		return userRole;
+	}
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
 	public String getSuccessfulMsg() {
 		return successfulMsg;
 	}

@@ -13,7 +13,8 @@ public class IOCLWSException extends Exception
 
 	public IOCLWSException(int errorCode, String errorMessage) 
 	{
-		LOG.info("I am hereee");
+		LOG.info("ErrorCode....."+errorCode);
+		LOG.info("ErrorMsg......"+errorMessage);
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

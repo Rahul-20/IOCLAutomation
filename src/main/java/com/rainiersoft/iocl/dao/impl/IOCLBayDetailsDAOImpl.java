@@ -25,10 +25,9 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 		return findAll(IoclBayDetail.class);
 	}
 
-	public void insertBayDetails(String bayName, int bayNum, String bayType, IoclSupportedBaystatus ioclSupportedBaystatus)
+	public Long insertBayDetails(String bayName, int bayNum, int bayTypeId, IoclSupportedBaystatus ioclSupportedBaystatus)
 	{
 		Session session = getCurrentSession();
-		System.out.println("Transaction::::::" + session.getTransaction().isActive() + ":::::::" + session.getFlushMode());
 		IoclBayDetail ioclBayDetail = new IoclBayDetail();
 		ioclBayDetail.setBayName(bayName);
 		ioclBayDetail.setBayNum(bayNum);
@@ -37,15 +36,16 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 
 		List<IoclBayType> listIoclBayType = new ArrayList<IoclBayType>();
 		IoclBayType ioclBayType = new IoclBayType();
-		ioclBayType.setBayType(bayType);
+		ioclBayType.setBayTypeId(bayTypeId);
 		ioclBayType.setIoclBayDetail(ioclBayDetail);
 		listIoclBayType.add(ioclBayType);
 
 		ioclBayDetail.setIoclBayTypes(listIoclBayType);
 
-		System.out.println("IOCLLLLLLL:::::::" + ioclBayDetail);
+		LOG.info("IOCLLLLLLL:::::::" + ioclBayDetail);
 
-		session.save(ioclBayDetail);
+		Integer bayId=(Integer) session.save(ioclBayDetail);
+		return bayId.longValue();
 	}
 
 
@@ -60,8 +60,41 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 	}
 
 
-	public boolean deleteBay(int bayNum)
+	public boolean deleteBay(int bayId)
 	{
-		return deleteById(IoclBayDetail.class, Integer.valueOf(bayNum));
+		return deleteById(IoclBayDetail.class, Integer.valueOf(bayId));
+	}
+
+	@Override
+	public void updateBayDetails(String bayName, int bayNum, List<IoclBayType> listIoclBayType,IoclSupportedBaystatus ioclSupportedBaystatus,IoclBayDetail ioclBayDetail) 
+	{
+		Session session = getCurrentSession();
+		ioclBayDetail.setBayName(bayName);
+		ioclBayDetail.setBayNum(bayNum);
+		ioclBayDetail.setIoclSupportedBaystatus(ioclSupportedBaystatus);
+		ioclBayDetail.getIoclBayTypes().get(0).setIoclBayDetail(ioclBayDetail);
+		session.update(ioclBayDetail);
+	}
+
+	@Override
+	public IoclBayDetail findBayByBayId(int bayId) 
+	{
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findBayByBayId");
+		query.setParameter("bayId",bayId);
+		LOG.info("findBayByBayId " + query);
+		IoclBayDetail ioclBayDetail = (IoclBayDetail)findObject(query);
+		return ioclBayDetail;
+	}
+
+	@Override
+	public IoclBayDetail findBayByBayName(String bayName) 
+	{
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findBayByBayName");
+		query.setParameter("bayName",bayName);
+		LOG.info("findBayByBayName " + query);
+		IoclBayDetail ioclBayDetail = (IoclBayDetail)findObject(query);
+		return ioclBayDetail;
 	}
 }

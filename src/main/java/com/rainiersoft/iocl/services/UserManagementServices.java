@@ -1,16 +1,14 @@
 package com.rainiersoft.iocl.services;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
@@ -35,8 +33,11 @@ import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.entity.IoclUserPrivilegesMapping;
 import com.rainiersoft.iocl.entity.IoclUserroleMapping;
 import com.rainiersoft.iocl.exception.IOCLWSException;
+import com.rainiersoft.iocl.util.CommonUtilites;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.CreationAndUpdationResponseBean;
+import com.rainiersoft.response.dto.GetUserStaticDataResponseBean;
+import com.rainiersoft.response.dto.UserDeletionResponse;
 import com.rainiersoft.response.dto.UserDetailsResponseBean;
 import com.rainiersoft.response.dto.UserValidationResponse;
 
@@ -128,7 +129,7 @@ public class UserManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response validateUser(String userName,String userPassword,String userType) throws IOCLWSException, NoSuchAlgorithmException, UnsupportedEncodingException
+	public Response validateUser(String userName,String userPassword,String userType) throws IOCLWSException
 	{
 		try
 		{
@@ -158,10 +159,11 @@ public class UserManagementServices
 					throw new IOCLWSException(ErrorMessageConstants.UserType_MissMatch_Code,ErrorMessageConstants.UserType_MissMatch_Msg);
 				}
 
-				MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+				/*	MessageDigest crypt = MessageDigest.getInstance("SHA-1");
 				crypt.reset();
 				crypt.update(userPassword.getBytes("UTF-8"));
-				userPassword= new BigInteger(1, crypt.digest()).toString(16);
+				userPassword= new BigInteger(1, crypt.digest()).toString(16);*/
+				userPassword=CommonUtilites.encryption(userPassword);
 				if(!(ioclUserDetail.getUserPassword().equals(userPassword)))
 				{
 					throw new IOCLWSException(ErrorMessageConstants.UserPwd_MissMatch_Code,ErrorMessageConstants.UserPwd_MissMatch_Msg);
@@ -188,6 +190,7 @@ public class UserManagementServices
 				userValidationResponse.setSuccessfulFlag(true);
 				userValidationResponse.setSuccessfulMsg("SuccessFully Logged In");
 				userValidationResponse.setUserPrivilages(lUserPrivileges);
+				userValidationResponse.setUserRole(ioclUserDetail.getIoclUserroleMappings().get(0).getIoclSupportedUserrole().getRoleName());
 			}
 			return  Response.status(Response.Status.OK).entity(userValidationResponse).build();
 		}
@@ -203,25 +206,43 @@ public class UserManagementServices
 		}
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=Exception.class)
-	public Response updateUser(String userName,String userPassword,String userMobileNum,String userStatus) throws IOCLWSException,Exception
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
+	public Response updateUser(int userId,String userName,String userPassword,String userMobileNum,String userStatus,boolean editUserNameFlag,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType) throws IOCLWSException
 	{
 		try
 		{
-			IoclUserDetail ioclUserDetail=ioclUserDetailsDAO.findUserByUserName(userName);
-
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date updatedTimeStamp = new Date();
 			//String updatedTimeStamp=df.format(dateobj).toString();
 			CreationAndUpdationResponseBean updationResponseBean=new CreationAndUpdationResponseBean();
-
+			if(editUserNameFlag)
+			{
+				IoclUserDetail ioclUserDetail=ioclUserDetailsDAO.findUserByUserName(userName);
+				if(ioclUserDetail!=null)
+				{
+					throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.UserName_Exist_Msg);
+				}
+			}
+			IoclUserDetail ioclUserDetail=ioclUserDetailsDAO.findUserByUserId(userId);
 			IoclSupportedUserstatus ioclSupportedUserstatus=iOCLSupportedUserStatusDAO.findUserStatusIdByUserStatus(userStatus);
-			ioclUserDetailsDAO.updateUserDetails(userName, userPassword, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail);
+			IoclSupportedUserrole ioclSupportedUserrole=iOCLSupportedUserRoleDAO.findRoleIdByRoleName(userType.get(0));
+			ioclUserDetailsDAO.updateUserDetails(userName, userPassword, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole);
 			updationResponseBean.setUserName(userName);
 			updationResponseBean.setMobileNo(userMobileNum);
 			updationResponseBean.setMessage("User Updated SuccessFully : "+ userName);
+			updationResponseBean.setStatus(ioclSupportedUserstatus.getUserStatus());
+			updationResponseBean.setDOB(ioclUserDetail.getUserDOB().toString());
+			updationResponseBean.setAadhaar(ioclUserDetail.getUserAadharNum());
+			updationResponseBean.setUserType(ioclUserDetail.getIoclUserroleMappings().get(0).getIoclSupportedUserrole().getRoleName());
+			updationResponseBean.setFirstName(ioclUserDetail.getUserFirstName());
+			updationResponseBean.setLastName(ioclUserDetail.getUserLastName());
+			updationResponseBean.setUserID((long)ioclUserDetail.getUserId());
 			updationResponseBean.setSuccessFlag(true);
 			return  Response.status(Response.Status.OK).entity(updationResponseBean).build();
+		}
+		catch(IOCLWSException ioclwsException)
+		{
+			throw ioclwsException;
 		}
 		catch(Exception exception)
 		{
@@ -230,8 +251,8 @@ public class UserManagementServices
 		}
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=Exception.class) 
-	public Response getAvailableUsers() throws IOCLWSException,Exception
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class) 
+	public Response getAvailableUsers() throws IOCLWSException
 	{
 		try
 		{
@@ -271,19 +292,24 @@ public class UserManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response deleteUser(int userId) throws  IOCLWSException, Exception
+	public Response deleteUser(int userId) throws  IOCLWSException
 	{
 		try
 		{
+			UserDeletionResponse userDeletionResponse=new UserDeletionResponse();
 			boolean deleteFalg=ioclUserDetailsDAO.deleteUser(userId);
 
 			if(deleteFalg)
 			{
-				return  Response.status(Response.Status.OK).entity("Deleted Success Fully").build();	
+				userDeletionResponse.setSuccessFlag(true);
+				userDeletionResponse.setSuccessMsg("User Deleted Success Fully : "+ userId);
+				return  Response.status(Response.Status.OK).entity(userDeletionResponse).build();	
 			}
 			else
 			{
-				return  Response.status(Response.Status.OK).entity("Failed To Delete").build();
+				userDeletionResponse.setSuccessFlag(true);
+				userDeletionResponse.setSuccessMsg("Failed to deleted User : "+ userId);
+				return  Response.status(Response.Status.OK).entity(userDeletionResponse).build();
 			}
 		}
 		catch(Exception exception)
@@ -294,7 +320,7 @@ public class UserManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response supportedUserTypes() throws  IOCLWSException, Exception
+	public Response supportedUserTypes() throws  IOCLWSException
 	{
 		try
 		{
@@ -312,9 +338,9 @@ public class UserManagementServices
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
-	
+
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response supportedUserStatus() throws  IOCLWSException, Exception
+	public Response supportedUserStatus() throws  IOCLWSException
 	{
 		try
 		{
@@ -331,5 +357,38 @@ public class UserManagementServices
 			LOG.info("Supported User Service Method Exception Block:::::::"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
+	public Response getData() throws  IOCLWSException
+	{
+		GetUserStaticDataResponseBean getUserStaticDataResponseBean=new GetUserStaticDataResponseBean();
+		try
+		{
+			Map<String,List<String>> data=new HashMap<String,List<String>>();
+			List<IoclSupportedUserstatus> lIoclSupportedUserstatus=iOCLSupportedUserStatusDAO.findAll(IoclSupportedUserstatus.class);
+			List<String> userStatus=new ArrayList<String>();
+			List<String> userTypes=new ArrayList<String>();
+			for(IoclSupportedUserstatus ioclSupportedUserstatus:lIoclSupportedUserstatus)
+			{
+				userStatus.add(ioclSupportedUserstatus.getUserStatus());
+			}
+			List<IoclSupportedUserrole> lIoclSupportedUserroles=ioclSupportedUserRoleDAO.findAll(IoclSupportedUserrole.class);
+
+			for(IoclSupportedUserrole ioclSupportedUserrole:lIoclSupportedUserroles)
+			{
+				userTypes.add(ioclSupportedUserrole.getRoleName());
+			}
+			data.put("UserStatus",userStatus);
+			data.put("UserTypes",userTypes);
+			getUserStaticDataResponseBean.setData(data);
+			return  Response.status(Response.Status.OK).entity(getUserStaticDataResponseBean).build();
+		}
+		catch(Exception exception)
+		{
+			LOG.info("Supported User Service Method Exception Block:::::::"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
+		}
+
 	}
 }

@@ -15,6 +15,12 @@ import java.util.List;
 @NamedQuery(name="IoclSupportedBaystatus.findAll", query="SELECT i FROM IoclSupportedBaystatus i"),
 @NamedQuery(name="findStatusIdByStatus", query="SELECT i FROM IoclSupportedBaystatus i where i.bayFunctionalStatus=:bayStatus")})
 public class IoclSupportedBaystatus implements Serializable {
+	@Override
+	public String toString() {
+		return "IoclSupportedBaystatus [statusId=" + statusId + ", bayFunctionalStatus=" + bayFunctionalStatus
+				+ "]";
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Id

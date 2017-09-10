@@ -6,4 +6,6 @@ import java.util.List;
 public interface IOCLSupportedBayTypesDAO extends GenericDAO<IoclSupportedBaytype, Long>
 {
 	public List<IoclSupportedBaytype> findAllSupportedBayTypes();
+	public IoclSupportedBaytype findBayTypeIdByBayType(String bayType);
+	public IoclSupportedBaytype findBayTypeByBayTypeId(int bayTypeId);
 }

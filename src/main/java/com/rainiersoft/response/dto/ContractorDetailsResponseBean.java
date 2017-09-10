@@ -2,6 +2,13 @@ package com.rainiersoft.response.dto;
 
 public class ContractorDetailsResponseBean 
 {
+	@Override
+	public String toString() {
+		return "ContractorDetailsResponseBean [contractorName=" + contractorName + ", contractorType=" + contractorType
+				+ ", contractorAddress=" + contractorAddress + ", contractorCity=" + contractorCity
+				+ ", contractorState=" + contractorState + ", contractorPinCode=" + contractorPinCode
+				+ ", contractorOperationalStatus=" + contractorOperationalStatus + "]";
+	}
 	private String contractorName;
 	private String contractorType;
 	private String contractorAddress;
@@ -9,7 +16,14 @@ public class ContractorDetailsResponseBean
 	private String contractorState;
 	private String contractorPinCode;
 	private String contractorOperationalStatus;
+	private int contractorId;
 	
+	public int getContractorId() {
+		return contractorId;
+	}
+	public void setContractorId(int contractorId) {
+		this.contractorId = contractorId;
+	}
 	public String getContractorName() {
 		return contractorName;
 	}

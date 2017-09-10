@@ -17,6 +17,8 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
@@ -61,7 +63,7 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 		return userId.longValue();
 	}
 
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=true,isolation=Isolation.READ_COMMITTED,rollbackFor=Exception.class)
 	public IoclUserDetail findUserByUserName(String userName)
 	{
 		LOG.info("UserName:::" + userName);
@@ -74,13 +76,27 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 		return ioclUserDetail;
 	}
 
-	public void updateUserDetails(String userName, String userPassword, String userMobileNum, IoclSupportedUserstatus userStatus, Date updatedTimeStamp, IoclUserDetail ioclUserDetail)
+	public void updateUserDetails(String userName, String userPassword, String userMobileNum, IoclSupportedUserstatus userStatus, Date updatedTimeStamp, IoclUserDetail ioclUserDetail,String userFirstName,String userLastName,String userDOB,String userAadharNum,IoclSupportedUserrole userType)
 	{
 		Session session = getCurrentSession();
+		ioclUserDetail.setUserName(userName);
+		ioclUserDetail.setUserFirstName(userFirstName);
+		ioclUserDetail.setUserLastName(userLastName);
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		try 
+		{
+			ioclUserDetail.setUserDOB(formatter.parse(userDOB));
+		}
+		catch (ParseException e) 
+		{
+			e.printStackTrace();
+		}
+		ioclUserDetail.setUserAadharNum(userAadharNum);
 		ioclUserDetail.setUserPassword(userPassword);
 		ioclUserDetail.setUserMobileNum(userMobileNum);
 		ioclUserDetail.setIoclSupportedUserstatus(userStatus);
 		ioclUserDetail.setUserUpdatedOn(updatedTimeStamp);
+		ioclUserDetail.getIoclUserroleMappings().get(0).setIoclSupportedUserrole(userType);
 		session.update(ioclUserDetail);
 	}
 
@@ -92,5 +108,17 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 	public boolean deleteUser(int userId) 
 	{
 		return deleteById(IoclUserDetail.class, Integer.valueOf(userId));
+	}
+
+	@Override
+	public IoclUserDetail findUserByUserId(int userId) {
+		LOG.info("userId:::" + userId);
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findUserByUserId");
+		LOG.info("query:" + query);
+		query.setParameter("userId", userId);
+		LOG.info("userId:" + userId);
+		IoclUserDetail ioclUserDetail = (IoclUserDetail)findObject(query);
+		return ioclUserDetail;
 	}
 }

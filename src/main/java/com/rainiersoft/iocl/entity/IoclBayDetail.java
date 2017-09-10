@@ -13,10 +13,18 @@ import java.util.List;
 @Table(name="iocl_bay_details")
 @NamedQueries({
 @NamedQuery(name="IoclBayDetail.findAll", query="SELECT i FROM IoclBayDetail i"),
-@NamedQuery(name="findBayByBayNum", query="select i from IoclBayDetail i where i.bayNum=:bayNum")
+@NamedQuery(name="findBayByBayNum", query="select i from IoclBayDetail i where i.bayNum=:bayNum"),
+@NamedQuery(name="findBayByBayId", query="select i from IoclBayDetail i where i.bayId=:bayId"),
+@NamedQuery(name="findBayByBayName", query="select i from IoclBayDetail i where i.bayName=:bayName")
 })
 public class IoclBayDetail implements Serializable {
 	
+	@Override
+	public String toString() {
+		return "IoclBayDetail [bayId=" + bayId + ", bayName=" + bayName + ", bayNum=" + bayNum
+				+ ", ioclSupportedBaystatus=" + ioclSupportedBaystatus + ", ioclBayTypes=" + ioclBayTypes + "]";
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Id

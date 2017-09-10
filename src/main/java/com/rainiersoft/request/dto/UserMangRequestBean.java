@@ -2,7 +2,7 @@ package com.rainiersoft.request.dto;
 
 import java.util.List;
 
-public class RequestBean 
+public class UserMangRequestBean 
 {
 	private String UserName;
 	private String UserFirstName;
@@ -14,7 +14,21 @@ public class RequestBean
 	private List<String> UserType;
 	private String UserRole;
 	private String UserStatus;
+	private int userId;
+	private boolean editUserNameFlag;
 
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	public boolean getEditUserNameFlag() {
+		return editUserNameFlag;
+	}
+	public void setEditUserNameFlag(boolean editUserNameFlag) {
+		this.editUserNameFlag = editUserNameFlag;
+	}
 	public String getUserName() {
 		return UserName;
 	}

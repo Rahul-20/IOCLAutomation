@@ -2,11 +2,39 @@ package com.rainiersoft.request.dto;
 
 public class BaysMangRequestBean 
 {
+	@Override
+	public String toString() 
+	{
+		return "BaysMangRequestBean [bayId=" + bayId + ", bayName=" + bayName + ", bayNum=" + bayNum + ", bayType="
+				+ bayType + ", functionalStatus=" + functionalStatus + ", editbayNumFlag=" + editbayNumFlag
+				+ ", editbayNameFlag=" + editbayNameFlag + "]";
+	}
+	private int bayId;
 	private String bayName;
 	private int bayNum;
 	private String bayType;
 	private String functionalStatus;
+	private boolean editbayNumFlag;
+	private boolean editbayNameFlag;
 
+	public int getBayId() {
+		return bayId;
+	}
+	public void setBayId(int bayId) {
+		this.bayId = bayId;
+	}
+	public boolean getEditbayNumFlag() {
+		return editbayNumFlag;
+	}
+	public void setEditbayNumFlag(boolean editbayNumFlag) {
+		this.editbayNumFlag = editbayNumFlag;
+	}
+	public boolean getEditbayNameFlag() {
+		return editbayNameFlag;
+	}
+	public void setEditbayNameFlag(boolean editbayNameFlag) {
+		this.editbayNameFlag = editbayNameFlag;
+	}
 	public String getBayName() {
 		return bayName;
 	}

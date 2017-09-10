@@ -10,7 +10,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="iocl_quantities_details")
-@NamedQuery(name="IoclQuantitiesDetail.findAll", query="SELECT i FROM IoclQuantitiesDetail i")
+@NamedQueries({
+@NamedQuery(name="IoclQuantitiesDetail.findAll", query="SELECT i FROM IoclQuantitiesDetail i"),
+@NamedQuery(name="findQuantityByQuantityName", query="SELECT i FROM IoclQuantitiesDetail i where i.quantityName=:quantityName"),
+@NamedQuery(name="findQunatityByQunatity", query="SELECT i FROM IoclQuantitiesDetail i where i.quantity=:quantity"),
+@NamedQuery(name="findQuantityByQuantityId", query="SELECT i FROM IoclQuantitiesDetail i where i.quantityId=:quantityId"),
+})
 public class IoclQuantitiesDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,19 +34,21 @@ public class IoclQuantitiesDetail implements Serializable {
 	@Column(name="QuantityUnits")
 	private String quantityUnits;
 
-	@Column(name="OperationalStatus")
-	private String operationalStatus;
+	//bi-directional many-to-one association to IoclSupportedQuantitystatus
+	@ManyToOne
+	@JoinColumn(name="QuantityStatusId")
+	private IoclSupportedQuantitystatus ioclSupportedQuantitystatus;
 
 	public IoclQuantitiesDetail() {
 	}
-	
 
-	public String getOperationalStatus() {
-		return operationalStatus;
+
+	public IoclSupportedQuantitystatus getIoclSupportedQuantitystatus() {
+		return this.ioclSupportedQuantitystatus;
 	}
 
-	public void setOperationalStatus(String operationalStatus) {
-		this.operationalStatus = operationalStatus;
+	public void setIoclSupportedQuantitystatus(IoclSupportedQuantitystatus ioclSupportedQuantitystatus) {
+		this.ioclSupportedQuantitystatus = ioclSupportedQuantitystatus;
 	}
 
 	public String getQuantity() {

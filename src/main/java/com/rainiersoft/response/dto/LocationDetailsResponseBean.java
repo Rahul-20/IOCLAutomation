@@ -2,6 +2,7 @@ package com.rainiersoft.response.dto;
 
 public class LocationDetailsResponseBean 
 {
+	private int locationId;
 	private String locationName;
 	private String locationCode;
 	private String locationAddress;
@@ -30,5 +31,11 @@ public class LocationDetailsResponseBean
 	}
 	public void setOperationalStatus(String operationalStatus) {
 		this.operationalStatus = operationalStatus;
+	}
+	public int getLocationId() {
+		return locationId;
+	}
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
 	}
 }
