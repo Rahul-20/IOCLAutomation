@@ -13,7 +13,7 @@
 		<jersey.scope>compile</jersey.scope>
 		<compileSource>1.7</compileSource>
 		<java.version>1.7</java.version>
-		<hibernate.core.version>5.2.10.Final</hibernate.core.version>
+		<hibernate.core.version>4.3.11.Final</hibernate.core.version>
 		<servlet.api.version>3.1.0</servlet.api.version>
 		<apache.dbcp.version>1.4</apache.dbcp.version>
 		<mysql.driver.version>5.1.43</mysql.driver.version>

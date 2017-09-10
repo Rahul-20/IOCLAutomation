@@ -70,10 +70,10 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getAllBayDetails() throws IOCLWSException
 	{
+		LOG.info("Entered into getAllBayDetails service class method........");
 		try
 		{
 			List<AllBayDetailsResponseBean> listAllBayDetailsResponseBean=new ArrayList<AllBayDetailsResponseBean>();
-
 			List<IoclBayDetail> listOfIocBayDetails=iOCLBayDetailsDAO.findAllAvailableBaysInApplication();
 
 			for(IoclBayDetail ioclBayDetail:listOfIocBayDetails)
@@ -83,7 +83,6 @@ public class BaysManagementServices
 				allBayDetailsResponseBean.setBayName(ioclBayDetail.getBayName());
 				allBayDetailsResponseBean.setBayNum(ioclBayDetail.getBayNum());
 				int bayTypeId=ioclBayDetail.getIoclBayTypes().get(0).getBayTypeId();
-				System.out.println("BayTypeId::::"+bayTypeId);
 				IoclSupportedBaytype ioclSupportedBaytype=iOCLSupportedBayTypesDAO.findBayTypeByBayTypeId(bayTypeId);
 				allBayDetailsResponseBean.setBayType(ioclSupportedBaytype.getBayType());
 				allBayDetailsResponseBean.setFunctionalStatus(ioclBayDetail.getIoclSupportedBaystatus().getBayFunctionalStatus());
@@ -93,7 +92,7 @@ public class BaysManagementServices
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Exception Occured in Bay Creation:::::::::"+exception);
+			LOG.info("Logging the occured exception in the service class getAllBayDetails method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -101,9 +100,9 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getBayStatus() throws IOCLWSException
 	{
+		LOG.info("Entered into getBayStatus service class method........");
 		try
 		{
-			LOG.info("Entered into GetBayStatus Service method......");
 			List<IoclSupportedBaystatus> listOfStatus=iOCLSupportedBayStatusDAO.findAllSupportedBayStatus();
 			List<String> statusResp=new ArrayList<String>();
 			for(IoclSupportedBaystatus ioclSupportedBaystatus:listOfStatus)
@@ -111,9 +110,10 @@ public class BaysManagementServices
 				statusResp.add(ioclSupportedBaystatus.getBayFunctionalStatus());
 			}
 			return  Response.status(Response.Status.OK).entity(statusResp).build();
-		}catch(Exception exception)
+		}
+		catch(Exception exception)
 		{
-			LOG.info("Exception Occured in Bay Creation:::::::::"+exception);
+			LOG.info("Logging the occured exception in the service class getBayStatus method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -121,6 +121,7 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getBayTypes() throws IOCLWSException
 	{
+		LOG.info("Entered into getBayTypes service class method........");
 		try
 		{
 			List<IoclSupportedBaytype> listOfTypes=iOCLSupportedBayTypesDAO.findAllSupportedBayTypes();	
@@ -133,7 +134,7 @@ public class BaysManagementServices
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Exception Occured in Bay Creation:::::::::"+exception);
+			LOG.info("Logging the occured exception in the service class getBayTypes method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -283,37 +284,28 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response bayCreation(String bayName,int bayNum,String bayType,String functionalStatus)  throws IOCLWSException
 	{
-		LOG.info("Entered Into Bay Creation Service Method......");
+		LOG.info("Entered into bayCreation service class method........");
 		BayCreationResponseBean bayCreationResponseBean=new BayCreationResponseBean();
 		try
 		{
-
 			IoclBayDetail ioclBayDetailBayName=iOCLBayDetailsDAO.findBayByBayName(bayName);
-
 			if(ioclBayDetailBayName!=null)
 			{
-				LOG.info("Bayame Already Exist!!!!!!!");
-				throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.BayName_Already_Exist_Msg);
+				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.BayName_Already_Exist_Msg);
 			}
-
-			//Check if the bay already exist in database.
 			IoclBayDetail ioclBayDetail=iOCLBayDetailsDAO.findBayByBayNum(bayNum);
 			LOG.info("ioclBayDetail:::::::"+ioclBayDetail);
 			if(ioclBayDetail!=null)
 			{
-				LOG.info("Bay Already Exist!!!!!!!");
-				throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.BayNum_Already_Exist_Msg);
+				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.BayNum_Already_Exist_Msg);
 			}
 			else
 			{
 				IoclSupportedBaystatus ioclSupportedBaystatus=iOCLSupportedBayStatusDAO.findStatusIdByStatus(functionalStatus);
-				LOG.info("ioclSupportedBaystatus:::::::"+ioclSupportedBaystatus);
-				LOG.info("Before runnning insert statement");
 				if(null!=ioclSupportedBaystatus)
 				{
 					IoclSupportedBaytype ioclSupportedBaytype=iOCLSupportedBayTypesDAO.findBayTypeIdByBayType(bayType);
 					int bayTypeId=ioclSupportedBaytype.getTypeId();
-					LOG.info(":::::::"+bayName+bayNum+bayTypeId+ioclSupportedBaystatus);
 					Long bayId=iOCLBayDetailsDAO.insertBayDetails(bayName, bayNum, bayTypeId, ioclSupportedBaystatus);
 					bayCreationResponseBean.setBayId(bayId);
 					bayCreationResponseBean.setBayName(bayName);
@@ -327,11 +319,12 @@ public class BaysManagementServices
 		}
 		catch(IOCLWSException ioclexception)
 		{
+			LOG.info("Logging the occured exception in the service class bayCreation method custom catch block........"+ioclexception);
 			throw ioclexception;
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Exception Occured in Bay Creation:::::::::"+exception);
+			LOG.info("Logging the occured exception in the service class bayCreation method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 		return Response.status(Response.Status.OK).entity(bayCreationResponseBean).build();
@@ -341,10 +334,10 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response bayUpdation(int bayId,String bayName,int bayNum,String bayType,String functionalStatus,boolean bayNumEditFlag,boolean bayNameEditFlag) throws IOCLWSException
 	{
+		LOG.info("Entered into bayUpdation service class method........");
 		try
 		{
 			BayCreationResponseBean bayUpdationResponseBean=new BayCreationResponseBean();
-			System.out.println(":::::::"+bayId+bayName+bayNum+bayType+functionalStatus+bayNumEditFlag+bayNameEditFlag);
 			List<IoclBayDetail> lIoclBayDetail=iOCLBayDetailsDAO.findAllAvailableBaysInApplication();
 			List<String> listBayNames=new ArrayList<String>();
 			List<Integer> listBayNums=new ArrayList<Integer>();
@@ -354,7 +347,6 @@ public class BaysManagementServices
 				listBayNums.add(ioclBayDetail.getBayNum());
 			}
 
-			System.out.println("listBayNames.contains(bayName)"+listBayNames+"::::::"+bayNameEditFlag);
 			boolean bayNameExistFlag=false;
 			boolean bayNumExistFlag=false;
 
@@ -378,11 +370,11 @@ public class BaysManagementServices
 
 			if(bayNameEditFlag && bayNameExistFlag)
 			{
-				throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.BayName_Already_Exist_Msg);
+				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.BayName_Already_Exist_Msg);
 
 			}else if(bayNumEditFlag && bayNumExistFlag)
 			{
-				throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.BayNum_Already_Exist_Msg);
+				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.BayNum_Already_Exist_Msg);
 			}
 			else
 			{
@@ -395,7 +387,6 @@ public class BaysManagementServices
 				ioclBayType.setBayTypeId(bayTypeId);
 				ioclBayType.setIoclBayDetail(ioclBayDetail);
 				listIoclBayType.add(ioclBayType);
-				LOG.info("Baynum::::::::"+bayName+bayNum+listIoclBayType+ioclSupportedBaystatus+ioclBayDetail);
 				iOCLBayDetailsDAO.updateBayDetails(bayName, bayNum,listIoclBayType, ioclSupportedBaystatus,ioclBayDetail);
 				bayUpdationResponseBean.setBayId(Long.valueOf(bayId));
 				bayUpdationResponseBean.setBayName(bayName);
@@ -405,13 +396,16 @@ public class BaysManagementServices
 				bayUpdationResponseBean.setSuccessFlag(true);
 				bayUpdationResponseBean.setMessage("Bay Updated Successfully");
 			}
-
 			return Response.status(Response.Status.OK).entity(bayUpdationResponseBean).build();
-
-		}catch(IOCLWSException ioclwsException){
+		}
+		catch(IOCLWSException ioclwsException)
+		{
+			LOG.info("Logging the occured exception in the service class bayUpdation method custom catch block........"+ioclwsException);
 			throw ioclwsException;
-		}catch (Exception exception) {
-			LOG.info("Exception Occured in Bay Updation:::::::::"+exception);
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class bayUpdation method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -419,6 +413,7 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response getAvailableBays() throws IOCLWSException
 	{
+		LOG.info("Entered into getAvailableBays service class method........");
 		try
 		{
 			List<AvailableBaysResponseBean> emptyBays=new ArrayList<AvailableBaysResponseBean>();
@@ -436,7 +431,6 @@ public class BaysManagementServices
 				//check latest record by desc is completed or not. If completed place the bay number in empty list.
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date currentDate = new Date();
-				//			String currDate=dateFormat.format(currentDate);
 				LOG.info("Current Date:::::"+dateFormat.format(currentDate));
 
 				Calendar cal = Calendar.getInstance();
@@ -444,7 +438,6 @@ public class BaysManagementServices
 				cal.add(Calendar.HOUR, -24);
 				Date hoursBack = cal.getTime();
 				LOG.info("PastDate::::::"+dateFormat.format(hoursBack));
-				//String pasteDate=dateFormat.format(hoursBack);
 
 				int bayNumber=ioclBayDetail.getBayNum();
 				String bayName=ioclBayDetail.getBayName();
@@ -513,8 +506,6 @@ public class BaysManagementServices
 									availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
 									availableBaysResponseBean.setBayAvailableStatus("InQueue");
 									availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-
-									//queueBays.add(availableBaysResponseBean);
 								}
 								else if(pinSet.size()==supportedQueueSize)
 								{
@@ -527,7 +518,6 @@ public class BaysManagementServices
 									availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
 									availableBaysResponseBean.setBayAvailableStatus("Not Available");
 									availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-									//queueBays.add(availableBaysResponseBean);
 								}
 							}
 							queueBays.add(availableBaysResponseBean);
@@ -597,7 +587,6 @@ public class BaysManagementServices
 								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
 								availableBaysResponseBean.setBayAvailableStatus("InQueue");
 								availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-								LOG.info("Before Adding once:::::"+availableBaysResponseBean);
 							}
 							else if(pinSet.size()==supportedQueueSize)
 							{
@@ -611,7 +600,6 @@ public class BaysManagementServices
 								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
 								availableBaysResponseBean.setBayAvailableStatus("Not Available");
 								availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-								LOG.info("Equal::::: Adding once:::::"+availableBaysResponseBean);
 							}
 						}
 						LOG.info("Before Adding once:::::"+availableBaysResponseBean);
@@ -627,8 +615,10 @@ public class BaysManagementServices
 			listAvailableBaysResponseBean.addAll(queueBays);
 			LOG.info("After Merge:::::::::::::queueBays:::::"+listAvailableBaysResponseBean);
 			return  Response.status(Response.Status.OK).entity(listAvailableBaysResponseBean).build();
-		}catch (Exception exception) {
-			LOG.info("Exception Occured in Bay Updation:::::::::"+exception);
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class getAvailableBays method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -636,6 +626,7 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response deleteBay(int bayID) throws IOCLWSException
 	{
+		LOG.info("Entered into deleteBay service class method........");
 		try
 		{
 			BayDeletionResponseBean  bayDeletionResponseBean=new BayDeletionResponseBean();
@@ -652,8 +643,10 @@ public class BaysManagementServices
 				bayDeletionResponseBean.setMsg("Failed to delete bay");
 				return  Response.status(Response.Status.OK).entity(bayDeletionResponseBean).build();
 			}
-		}catch (Exception exception) {
-			LOG.info("Exception Occured in Bay Updation:::::::::"+exception);
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class deleteBay method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -662,6 +655,7 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response supportedBayTypes() throws  IOCLWSException, Exception
 	{
+		LOG.info("Entered into supportedBayTypes service class method........");
 		try
 		{
 			List<IoclSupportedBaytype> lIoclSupportedBayTypes=iOCLSupportedBayTypesDAO.findAll(IoclSupportedBaytype.class);
@@ -674,7 +668,7 @@ public class BaysManagementServices
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Supported BayTypes Service Method Exception Block:::::::"+exception);
+			LOG.info("Logging the occured exception in the service class supportedBayTypes method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -682,6 +676,7 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response supportedBayFunctionalStatus() throws  IOCLWSException, Exception
 	{
+		LOG.info("Entered into supportedBayFunctionalStatus service class method........");
 		try
 		{
 			List<IoclSupportedBaystatus> lIoclSupportedBaystatus=iOCLSupportedBayStatusDAO.findAll(IoclSupportedBaystatus.class);
@@ -694,7 +689,7 @@ public class BaysManagementServices
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Supported BayStatus Service Method Exception Block:::::::"+exception);
+			LOG.info("Logging the occured exception in the service class supportedBayFunctionalStatus method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -702,13 +697,12 @@ public class BaysManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getData() throws IOCLWSException
 	{
+		LOG.info("Entered into getData service class method........");
 		try
 		{
 			GetBayStaticDataResponseBean getBayStaticDataResponseBean=new GetBayStaticDataResponseBean();
-
 			Map<String,List<String>> data=new HashMap<String,List<String>>();
 
-			//Get Bay Types
 			List<IoclSupportedBaytype> lIoclSupportedBayTypes=iOCLSupportedBayTypesDAO.findAll(IoclSupportedBaytype.class);
 			List<String> bayTypes=new ArrayList<String>();
 			for(IoclSupportedBaytype ioclSupportedBaytype:lIoclSupportedBayTypes)
@@ -716,7 +710,6 @@ public class BaysManagementServices
 				bayTypes.add(ioclSupportedBaytype.getBayType());
 			}
 
-			//Get bay status
 			List<IoclSupportedBaystatus> lIoclSupportedBaystatus=iOCLSupportedBayStatusDAO.findAll(IoclSupportedBaystatus.class);
 			List<String> bayStatus=new ArrayList<String>();
 			for(IoclSupportedBaystatus ioclSupportedBaystatus:lIoclSupportedBaystatus)
@@ -728,8 +721,10 @@ public class BaysManagementServices
 			data.put("BayStatus",bayStatus);
 			getBayStaticDataResponseBean.setData(data);
 			return  Response.status(Response.Status.OK).entity(getBayStaticDataResponseBean).build();
-		}catch (Exception exception) {
-			LOG.info("Exception Occured in Bay Updation:::::::::"+exception);
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class getData method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}

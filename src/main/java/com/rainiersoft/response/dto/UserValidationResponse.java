@@ -7,13 +7,13 @@ public class UserValidationResponse
 	@Override
 	public String toString() {
 		return "UserValidationResponse [successfulMsg=" + successfulMsg + ", successfulFlag=" + successfulFlag
-				+ ", userPrivilages=" + userPrivilages + "]";
+				+ ", userPrivilages=" + userPrivilages + ", userRole=" + userRole + "]";
 	}
 	private String successfulMsg;
 	private boolean successfulFlag;
 	private List<String> userPrivilages;
 	private String userRole;
-	
+
 	public String getUserRole() {
 		return userRole;
 	}

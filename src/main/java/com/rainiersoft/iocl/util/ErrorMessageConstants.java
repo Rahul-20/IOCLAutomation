@@ -25,14 +25,10 @@ public class ErrorMessageConstants
 	
 	public static final String Internal_Error="Internal Error Occured";
 	
-	
-	
-	
 	public static final int Unprocessable_Entity_Code=422;
 	public static final int UserType_MissMatch_Code=422;
 	public static final int UserPwd_MissMatch_Code=422;
 	public static final int UserPwd_Expiry_Code=422;
 	public static final int User_Locked_Code=422;
 	public static final int UNAuthorized_Code=401;
-
 }

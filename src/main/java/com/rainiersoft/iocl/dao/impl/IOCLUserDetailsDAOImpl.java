@@ -66,12 +66,9 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 	@Transactional(propagation=Propagation.REQUIRED,readOnly=true,isolation=Isolation.READ_COMMITTED,rollbackFor=Exception.class)
 	public IoclUserDetail findUserByUserName(String userName)
 	{
-		LOG.info("UserName:::" + userName);
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findUserByUserName");
-		LOG.info("query:" + query);
 		query.setParameter("userName", userName);
-		LOG.info("userName:" + userName);
 		IoclUserDetail ioclUserDetail = (IoclUserDetail)findObject(query);
 		return ioclUserDetail;
 	}
@@ -112,12 +109,9 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 
 	@Override
 	public IoclUserDetail findUserByUserId(int userId) {
-		LOG.info("userId:::" + userId);
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findUserByUserId");
-		LOG.info("query:" + query);
 		query.setParameter("userId", userId);
-		LOG.info("userId:" + userId);
 		IoclUserDetail ioclUserDetail = (IoclUserDetail)findObject(query);
 		return ioclUserDetail;
 	}

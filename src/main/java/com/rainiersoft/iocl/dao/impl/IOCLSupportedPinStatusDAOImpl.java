@@ -22,12 +22,10 @@ public class IOCLSupportedPinStatusDAOImpl extends GenericDAOImpl<IoclSupportedP
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findStatusIdByPinStatus");
 		query.setParameter("fanPinStatus", pinStatus);
-		LOG.info("findStatusIdByPinStatus " + query);
 		IoclSupportedPinstatus ioclSupportedPinstatus = (IoclSupportedPinstatus)findObject(query);
 		return ioclSupportedPinstatus;
 	}
-
-
+	
 	public List<IoclSupportedPinstatus> findAllPinStatus()
 	{
 		return findAll(IoclSupportedPinstatus.class);

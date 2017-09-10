@@ -31,19 +31,13 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 		IoclBayDetail ioclBayDetail = new IoclBayDetail();
 		ioclBayDetail.setBayName(bayName);
 		ioclBayDetail.setBayNum(bayNum);
-		LOG.info("ioclSupportedBaystatus:::::::::" + ioclSupportedBaystatus);
 		ioclBayDetail.setIoclSupportedBaystatus(ioclSupportedBaystatus);
-
 		List<IoclBayType> listIoclBayType = new ArrayList<IoclBayType>();
 		IoclBayType ioclBayType = new IoclBayType();
 		ioclBayType.setBayTypeId(bayTypeId);
 		ioclBayType.setIoclBayDetail(ioclBayDetail);
 		listIoclBayType.add(ioclBayType);
-
 		ioclBayDetail.setIoclBayTypes(listIoclBayType);
-
-		LOG.info("IOCLLLLLLL:::::::" + ioclBayDetail);
-
 		Integer bayId=(Integer) session.save(ioclBayDetail);
 		return bayId.longValue();
 	}
@@ -54,7 +48,6 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findBayByBayNum");
 		query.setParameter("bayNum", Integer.valueOf(bayNum));
-		LOG.info("Query:findBayByBayNum " + query);
 		IoclBayDetail ioclBayDetail = (IoclBayDetail)findObject(query);
 		return ioclBayDetail;
 	}
@@ -82,7 +75,6 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findBayByBayId");
 		query.setParameter("bayId",bayId);
-		LOG.info("findBayByBayId " + query);
 		IoclBayDetail ioclBayDetail = (IoclBayDetail)findObject(query);
 		return ioclBayDetail;
 	}
@@ -93,7 +85,6 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findBayByBayName");
 		query.setParameter("bayName",bayName);
-		LOG.info("findBayByBayName " + query);
 		IoclBayDetail ioclBayDetail = (IoclBayDetail)findObject(query);
 		return ioclBayDetail;
 	}

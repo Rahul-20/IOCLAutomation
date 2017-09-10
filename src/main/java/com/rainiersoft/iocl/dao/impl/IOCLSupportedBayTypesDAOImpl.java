@@ -34,7 +34,6 @@ public class IOCLSupportedBayTypesDAOImpl extends GenericDAOImpl<IoclSupportedBa
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findBayTypeByBayTypeId");
 		query.setParameter("typeId", typeId);
-		System.out.println("QUUUUUUU"+query);
 		IoclSupportedBaytype ioclSupportedBaytype = (IoclSupportedBaytype)findObject(query);
 		return ioclSupportedBaytype;
 	}

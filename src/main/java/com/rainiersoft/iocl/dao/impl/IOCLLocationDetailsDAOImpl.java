@@ -27,7 +27,6 @@ public class IOCLLocationDetailsDAOImpl extends GenericDAOImpl<IoclLocationDetai
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findLocationIdByLocationCode");
 		query.setParameter("locationCode", locationCode);
-		LOG.info("findLocationIdByLocationCode " + query);
 		IoclLocationDetail ioclLocationDetail = (IoclLocationDetail)findObject(query);
 		return ioclLocationDetail;
 	}

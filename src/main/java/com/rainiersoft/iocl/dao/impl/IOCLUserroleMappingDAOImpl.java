@@ -23,9 +23,7 @@ public class IOCLUserroleMappingDAOImpl extends GenericDAOImpl<IoclUserroleMappi
 	public List<IoclUserroleMapping> findRolesByUserID(String userId) {
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findRolesByUserID");
-		LOG.debug("query:" + query);
 		query.setParameter("UserId", userId);
-		LOG.debug("userID:" + userId);
 		List<IoclUserroleMapping> ioclUserroleMapping = findObjectCollection(query);
 		return ioclUserroleMapping;
 	}

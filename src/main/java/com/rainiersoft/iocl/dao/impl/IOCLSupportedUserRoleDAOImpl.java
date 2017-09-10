@@ -22,12 +22,9 @@ public class IOCLSupportedUserRoleDAOImpl extends GenericDAOImpl<IoclSupportedUs
 	public IoclSupportedUserrole findRoleIdByRoleName(String roleName) { Session session = getCurrentSession();
 	Query query = session.getNamedQuery("findUserRoleIdByUserRole");
 	query.setParameter("roleName", roleName);
-	LOG.info("findRoleIdByRoleName " + query);
 	IoclSupportedUserrole ioclSupportedUserrole = (IoclSupportedUserrole)findObject(query);
 	return ioclSupportedUserrole;
 	}
-
-
 
 	public List<IoclSupportedUserrole> findAllRoleNames()
 	{

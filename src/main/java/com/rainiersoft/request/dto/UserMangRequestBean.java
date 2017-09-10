@@ -4,6 +4,13 @@ import java.util.List;
 
 public class UserMangRequestBean 
 {
+	@Override
+	public String toString() {
+		return "UserMangRequestBean [UserName=" + UserName + ", UserFirstName=" + UserFirstName + ", UserLastName="
+				+ UserLastName + ", UserDOB=" + UserDOB + ", UserAadharNum=" + UserAadharNum + ", UserMobileNum="
+				+ UserMobileNum + ", UserPassword=" + UserPassword + ", UserType=" + UserType + ", UserRole=" + UserRole
+				+ ", UserStatus=" + UserStatus + ", userId=" + userId + ", editUserNameFlag=" + editUserNameFlag + "]";
+	}
 	private String UserName;
 	private String UserFirstName;
 	private String UserLastName;

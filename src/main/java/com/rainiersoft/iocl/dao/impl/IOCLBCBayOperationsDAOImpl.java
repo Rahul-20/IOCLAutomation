@@ -21,11 +21,10 @@ public class IOCLBCBayOperationsDAOImpl extends GenericDAOImpl<IoclBcBayoperatio
 
 	public IOCLBCBayOperationsDAOImpl() {}
 
-	public List<IoclBcBayoperation> findBayUpdatesByBC(int bayNo, Date currDate, Date pastDate) {
-		LOG.info("Bay Nums::::" + bayNo);
+	public List<IoclBcBayoperation> findBayUpdatesByBC(int bayNo, Date currDate, Date pastDate) 
+	{
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findBayUpdatesByBC");
-		LOG.info("query:" + query);
 		query.setParameter("bayNum", Integer.valueOf(bayNo));
 		query.setParameter("currDate", currDate);
 		query.setParameter("pastDate", pastDate);
@@ -36,10 +35,8 @@ public class IOCLBCBayOperationsDAOImpl extends GenericDAOImpl<IoclBcBayoperatio
 
 	public List<IoclBcBayoperation> findBayUpdatesByFanPin(String fanPin)
 	{
-		LOG.info("fanPin::::" + fanPin);
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findBayUpdatesByFanPin");
-		LOG.info("query:" + query);
 		query.setParameter("fanPin", fanPin);
 		List<IoclBcBayoperation> ioclBcBayoperation = findObjectCollection(query);
 		return ioclBcBayoperation;

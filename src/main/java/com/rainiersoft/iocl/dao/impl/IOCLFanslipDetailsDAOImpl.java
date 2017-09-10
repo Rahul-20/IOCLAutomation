@@ -27,8 +27,6 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		ioclFanslipDetail.setBayNo(bayNo);
 		ioclFanslipDetail.setFanPin(fanPin);
 		ioclFanslipDetail.setTruckId(truckID);
-
-		LOG.info("CreatecOn::::::::" + createdOn);
 		ioclFanslipDetail.setFanCreationOn(createdOn);
 		ioclFanslipDetail.setQuantity(quantity);
 		ioclFanslipDetail.setVehicleWgt(vehicleWgt);
@@ -41,10 +39,8 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 
 	public List<IoclFanslipDetail> findAnyBayIsAssignedInPast(int bayNo, Date currDate, Date pastDate)
 	{
-		LOG.info("Bay Nums::::" + bayNo);
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findAnyBayIsAssignedInPast");
-		LOG.info("query:" + query);
 		query.setParameter("bayNo", Integer.valueOf(bayNo));
 		query.setParameter("currDate", currDate);
 		query.setParameter("pastDate", pastDate);
@@ -55,10 +51,8 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 
 	public IoclFanslipDetail findFanPinStatusByFanPin(String fanPin)
 	{
-		LOG.info("fanPin::::" + fanPin);
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findFanPinStatusByFanPin");
-		LOG.info("query:" + query);
 		query.setParameter("fanPin", fanPin);
 		IoclFanslipDetail ioclFanslipDetail = (IoclFanslipDetail)findObject(query);
 		return ioclFanslipDetail;

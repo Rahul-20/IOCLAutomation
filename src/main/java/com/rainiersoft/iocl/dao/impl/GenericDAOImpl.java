@@ -34,13 +34,11 @@ public abstract class GenericDAOImpl<T, ID extends Serializable> implements Gene
 	protected SessionFactory sessionFactory;
 
 	public SessionFactory getSessionFactory() {
-		LOG.info("getSessionFactory::::::::"+sessionFactory);
 		return sessionFactory;
 	}
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
-		LOG.info("setSessionFactory::::::::"+sessionFactory);
 		this.sessionFactory = sessionFactory;
 	}
 
@@ -58,7 +56,7 @@ public abstract class GenericDAOImpl<T, ID extends Serializable> implements Gene
 		}
 		catch(Exception exp)
 		{
-			LOG.info("EXP::::::::::"+exp);
+			LOG.info("Generic Dao getCurrentSession method....."+exp);
 		}
 		return session;
 	}

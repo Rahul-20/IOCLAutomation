@@ -66,23 +66,13 @@ public class UserManagementResources
 
 			LOG.info("Authorization Header Value......."+authorization);
 
-			/*if(authorization==null)
-			{
-				authorization=headers.getRequestHeader("Authorization");
-			}*/
-
 			if(authorization == null || authorization.isEmpty())
 			{
 				throw new IOCLWSException(ErrorMessageConstants.UNAuthorized_Code,ErrorMessageConstants.UNAuthorized_Msg);
 			}
-
-			//Get encoded username and password
+			
 			final String encodedUserPassword = authorization.get(0).replaceFirst("Basic" + " ", "");
-
-			//Decode username and password
-			String usernameAndPassword = new String(Base64.decode(encodedUserPassword.getBytes()));;
-
-			//Split username and password tokens
+			String usernameAndPassword = new String(Base64.decode(encodedUserPassword.getBytes()));
 			final StringTokenizer userNameAndPwdTokenizer = new StringTokenizer(usernameAndPassword, ":");
 			final String userName = userNameAndPwdTokenizer.nextToken();
 			final String userPwd = userNameAndPwdTokenizer.nextToken();
@@ -91,7 +81,7 @@ public class UserManagementResources
 		}
 		catch(IOCLWSException ioclwsException)
 		{
-			LOG.info("Logging the occured exception in the resouce class userAuthentication method........"+ioclwsException);
+			LOG.info("Logging the occured exception in the resource class userAuthentication method........"+ioclwsException);
 			throw ioclwsException;
 		}
 	}

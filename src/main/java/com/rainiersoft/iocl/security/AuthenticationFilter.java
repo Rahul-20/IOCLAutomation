@@ -75,11 +75,8 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 		}
 
 		Method method = resourceInfo.getResourceMethod();
-		/*if(!(method.getName().equalsIgnoreCase("apply")))
-		{*/
-		LOG.info("Method:::::::"+method.toString());
 		LOG.info("Method::::"+method.getName());
-
+		
 		if(method.isAnnotationPresent(DenyAll.class))
 		{
 			requestContext.abortWith(ACCESS_FORBIDDEN);
@@ -115,14 +112,9 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 			final String username = tokenizer.nextToken();
 			final String password = tokenizer.nextToken();
 
-			//Verifying Username and password
-			LOG.info(username);
-			LOG.info(password);
-
 			//Verify user access
 			if(method.isAnnotationPresent(RolesAllowed.class))
 			{
-				LOG.info("I am inside the Roles allowed");
 				RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
 				//LOG.debug(":::::::"+rolesAnnotation+"::::::::::"+Arrays.asList(rolesAnnotation.value()));
 				//                ArrayList<String> roleslist = (ArrayList<String>) Arrays.asList(rolesAnnotation.value());
@@ -143,7 +135,6 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 	private boolean isUserAllowed(String username, String password, Set<String> rolesSet) throws UnsupportedEncodingException
 	{
 		boolean isAllowed = false;
-		LOG.info("username::::"+username+"::::password:::::"+password+":::roleset:"+rolesSet);
 		//Step 1. Fetch password from database and match with password in argument
 
 		// IoclUserDetail ioclUserDetail=ioclUserDetailsDAO.findUserByUserName(username);

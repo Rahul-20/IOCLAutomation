@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.rainiersoft.iocl.dao.IOCLQuantityDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedQunatityStatusDAO;
 import com.rainiersoft.iocl.entity.IoclQuantitiesDetail;
@@ -43,6 +40,7 @@ public class QuantitiesManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getQuantityDetails() throws IOCLWSException
 	{
+		LOG.info("Entered into getQuantityDetails service class method........");
 		try
 		{
 			List<QuantityDetailsResponseBean> listQuantityDetailsResponseBean=new ArrayList<QuantityDetailsResponseBean>();
@@ -61,7 +59,7 @@ public class QuantitiesManagementServices
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Exception Occured:::::::::"+exception);
+			LOG.info("Logging the occured exception in the service class getQuantityDetails method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -69,6 +67,7 @@ public class QuantitiesManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response addQunatity(String quantityName,String quantity,String quantityStatus) throws IOCLWSException
 	{
+		LOG.info("Entered into addQunatity service class method........");
 		QuantityCreationResponseBean quantityCreationResponseBean=new QuantityCreationResponseBean();
 		try
 		{
@@ -76,19 +75,17 @@ public class QuantitiesManagementServices
 			LOG.info("ioclQuantitiesDetail:::::::"+ioclQuantitiesDetail);
 			if(ioclQuantitiesDetail!=null)
 			{
-				LOG.info("ioclQuantitiesDetail Already Exist!!!!!!!");
-				throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.QunatityName_Already_Exist_Msg);
+				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.QunatityName_Already_Exist_Msg);
 			}
 			IoclQuantitiesDetail ioclQuantitiesDetailNum=ioclQuantityDetailsDAO.findQuantityByQunatity(quantity);
 			if(ioclQuantitiesDetailNum!=null)
 			{
 				LOG.info("ioclQuantitiesDetail Already Exist!!!!!!!");
-				throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.QunatityNum_Already_Exist_Msg);
+				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.QunatityNum_Already_Exist_Msg);
 			}
 			else
 			{
 				IoclSupportedQuantitystatus ioclSupportedQuantitystatus=iOCLSupportedQunatityStatusDAO.findStatusIdByQuantityStatus(quantityStatus);
-				LOG.info("Before runnning insert statement");
 				if(null!=ioclSupportedQuantitystatus)
 				{
 					Long quantityId=ioclQuantityDetailsDAO.insertQuantitiesDetails(quantityName,quantity,ioclSupportedQuantitystatus);
@@ -103,11 +100,12 @@ public class QuantitiesManagementServices
 		}
 		catch(IOCLWSException ioclexception)
 		{
+			LOG.info("Logging the occured exception in the service class addQunatity method custom catch block........"+ioclexception);
 			throw ioclexception;
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Exception Occured in Bay Creation:::::::::"+exception);
+			LOG.info("Logging the occured exception in the service class addQunatity method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 		return Response.status(Response.Status.OK).entity(quantityCreationResponseBean).build();	
@@ -116,6 +114,7 @@ public class QuantitiesManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response updateQuantity(int qunatityId,String quantityName,String quantity,String quantityStatus,boolean editQunatityNameFlag,boolean editQunatityFlag) throws IOCLWSException
 	{
+		LOG.info("Entered into updateQuantity service class method........");
 		QuantityCreationResponseBean quantityUpdationResponseBean=new QuantityCreationResponseBean();
 		try
 		{
@@ -126,7 +125,7 @@ public class QuantitiesManagementServices
 				if(ioclQuantitiesDetail!=null)
 				{
 					LOG.info("ioclQuantitiesDetail Already Exist!!!!!!!");
-					throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.QunatityName_Already_Exist_Msg);
+					throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.QunatityName_Already_Exist_Msg);
 				}
 			}
 			if(editQunatityFlag)
@@ -134,13 +133,11 @@ public class QuantitiesManagementServices
 				IoclQuantitiesDetail ioclQuantitiesDetailNum=ioclQuantityDetailsDAO.findQuantityByQunatity(quantity);
 				if(ioclQuantitiesDetailNum!=null)
 				{
-					LOG.info("ioclQuantitiesDetail Already Exist!!!!!!!");
-					throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.QunatityNum_Already_Exist_Msg);
+					throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.QunatityNum_Already_Exist_Msg);
 				}
 			}
 			IoclQuantitiesDetail ioclQuantitiesDetail=ioclQuantityDetailsDAO.findQuantityByQuantityId(qunatityId);
 			IoclSupportedQuantitystatus ioclSupportedQuantitystatus=iOCLSupportedQunatityStatusDAO.findStatusIdByQuantityStatus(quantityStatus);
-			LOG.info("Before runnning insert statement");
 			if(null!=ioclSupportedQuantitystatus)
 			{
 				ioclQuantityDetailsDAO.updateQuantitiesDetails(quantityName,quantity,ioclSupportedQuantitystatus,ioclQuantitiesDetail);
@@ -151,13 +148,15 @@ public class QuantitiesManagementServices
 				quantityUpdationResponseBean.setMessage("Quantity SuccessFully Updated : "+quantityName);
 				quantityUpdationResponseBean.setSuccessFlag(true);
 			}
-		}catch(IOCLWSException ioclexception)
+		}
+		catch(IOCLWSException ioclexception)
 		{
+			LOG.info("Logging the occured exception in the service class updateQuantity method custom catch block........"+ioclexception);
 			throw ioclexception;
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Exception Occured:::::::::"+exception);
+			LOG.info("Logging the occured exception in the service class updateQuantity method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 		return Response.status(Response.Status.OK).entity(quantityUpdationResponseBean).build();
@@ -166,6 +165,7 @@ public class QuantitiesManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response deleteQuantity(int quantityID) throws IOCLWSException
 	{
+		LOG.info("Entered into deleteQuantity service class method........");
 		try
 		{
 			QuantityDeletionResponseBean  quantityDeletionResponseBean=new QuantityDeletionResponseBean();
@@ -182,8 +182,10 @@ public class QuantitiesManagementServices
 				quantityDeletionResponseBean.setMessage("Failed To Delete Qunatity");
 				return  Response.status(Response.Status.OK).entity(quantityDeletionResponseBean).build();
 			}
-		}catch (Exception exception) {
-			LOG.info("Exception Occured in Bay Updation:::::::::"+exception);
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class deleteQuantity method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
@@ -191,6 +193,7 @@ public class QuantitiesManagementServices
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
 	public Response getQuantityStaticData() throws IOCLWSException
 	{
+		LOG.info("Entered into getQuantityStaticData service class method........");
 		try
 		{
 			GetQuantityStaticDataResponseBean getQuantityStaticDataResponseBean=new GetQuantityStaticDataResponseBean();
@@ -204,8 +207,10 @@ public class QuantitiesManagementServices
 			data.put("Status",supportedStatus);
 			getQuantityStaticDataResponseBean.setData(data);
 			return  Response.status(Response.Status.OK).entity(getQuantityStaticDataResponseBean).build();
-		}catch (Exception exception) {
-			LOG.info("Exception Occured in Bay Updation:::::::::"+exception);
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class getQuantityStaticData method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}

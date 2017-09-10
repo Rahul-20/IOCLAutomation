@@ -20,9 +20,7 @@ public class IOCLUserPrivilegesMappingDAOImpl extends GenericDAOImpl<IoclUserPri
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findPrivilegeNamesByRole");
 		query.setParameter("userRoleId", Integer.valueOf(userRoleId));
-		System.out.println("quer:::::" + query);
 		List<IoclUserPrivilegesMapping> ioclUserPrivilegesMapping = findObjectCollection(query);
-		System.out.println(":::::::::" + ioclUserPrivilegesMapping.size());
 		return ioclUserPrivilegesMapping;
 	}
 }

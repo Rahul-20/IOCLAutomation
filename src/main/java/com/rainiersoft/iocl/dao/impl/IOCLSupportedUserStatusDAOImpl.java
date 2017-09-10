@@ -24,11 +24,9 @@ public class IOCLSupportedUserStatusDAOImpl extends GenericDAOImpl<IoclSupported
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findUserStatusIdByUserStatus");
 		query.setParameter("userStatus", userStatus);
-		LOG.info("findUserStatusIdByUserStatus " + query);
 		IoclSupportedUserstatus ioclSupportedUserstatus = (IoclSupportedUserstatus)findObject(query);
 		return ioclSupportedUserstatus;
 	}
-
 
 	public List<IoclSupportedUserstatus> findAllUserStatus()
 	{
