@@ -40,6 +40,15 @@
 		</property>
 	</bean>
 
+	<bean id="appProps"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:iocl.properties</value>
+			</list>
+		</property>
+	</bean>
+
 	<!-- DB-pool rule-engine/ -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
@@ -69,6 +78,10 @@
 				<prop key="hibernate.dialect">${iocl.reports.hibernate.dialect}</prop>
 				<prop key="hibernate.show_sql">${iocl.reports.hibernate.show_sql}</prop>
 				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+				<!-- <prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory
+				</prop>
+				<prop key="net.sf.ehcache.configurationResourceName">/ehcache.xml</prop> -->
 			</props>
 		</property>
 	</bean>

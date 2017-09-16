@@ -1,9 +1,5 @@
 package com.rainiersoft.iocl.dao.impl;
 
-import com.rainiersoft.iocl.dao.IOCLBayDetailsDAO;
-import com.rainiersoft.iocl.entity.IoclBayDetail;
-import com.rainiersoft.iocl.entity.IoclBayType;
-import com.rainiersoft.iocl.entity.IoclSupportedBaystatus;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
@@ -12,6 +8,11 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import com.rainiersoft.iocl.dao.IOCLBayDetailsDAO;
+import com.rainiersoft.iocl.entity.IoclBayDetail;
+import com.rainiersoft.iocl.entity.IoclBayType;
+import com.rainiersoft.iocl.entity.IoclSupportedBaystatus;
+import com.rainiersoft.iocl.entity.IoclSupportedBaytype;
 
 @Repository
 @Singleton
@@ -59,12 +60,13 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 	}
 
 	@Override
-	public void updateBayDetails(String bayName, int bayNum, List<IoclBayType> listIoclBayType,IoclSupportedBaystatus ioclSupportedBaystatus,IoclBayDetail ioclBayDetail) 
+	public void updateBayDetails(String bayName, int bayNum, int bayTypeId,IoclSupportedBaystatus ioclSupportedBaystatus,IoclBayDetail ioclBayDetail,IoclSupportedBaytype ioclSupportedBaytype) 
 	{
 		Session session = getCurrentSession();
 		ioclBayDetail.setBayName(bayName);
 		ioclBayDetail.setBayNum(bayNum);
 		ioclBayDetail.setIoclSupportedBaystatus(ioclSupportedBaystatus);
+		ioclBayDetail.getIoclBayTypes().get(0).setBayTypeId(bayTypeId);
 		ioclBayDetail.getIoclBayTypes().get(0).setIoclBayDetail(ioclBayDetail);
 		session.update(ioclBayDetail);
 	}
@@ -74,8 +76,10 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 	{
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findBayByBayId");
+		System.out.println("INNNNNNNN::::"+bayId);
 		query.setParameter("bayId",bayId);
 		IoclBayDetail ioclBayDetail = (IoclBayDetail)findObject(query);
+		System.out.println("ioclBayDetails::::::"+ioclBayDetail);
 		return ioclBayDetail;
 	}
 

@@ -4,6 +4,7 @@ public class FanSlipMangRequestBean
 {
 	private String TruckNo;
 	private String DriverName;
+	private String ContractorName;
 	private String DriverLicNo;
 	private String Customer;
 	private String Quantity;
@@ -12,6 +13,13 @@ public class FanSlipMangRequestBean
 	private String LocationCode;
 	private String MobileNumber;
 	private int BayNum;
+	
+	public String getContractorName() {
+		return ContractorName;
+	}
+	public void setContractorName(String contractorName) {
+		ContractorName = contractorName;
+	}
 	
 	public String getMobileNumber() {
 		return MobileNumber;

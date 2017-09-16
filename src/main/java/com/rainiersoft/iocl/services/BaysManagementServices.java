@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
 
@@ -25,15 +27,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rainiersoft.iocl.dao.IOCLBCBayOperationsDAO;
 import com.rainiersoft.iocl.dao.IOCLBayDetailsDAO;
+import com.rainiersoft.iocl.dao.IOCLBayTypeDAO;
 import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedBayStatusDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedBayTypesDAO;
+import com.rainiersoft.iocl.dao.IOCLTruckRegistrationDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclBayDetail;
-import com.rainiersoft.iocl.entity.IoclBayType;
 import com.rainiersoft.iocl.entity.IoclBcBayoperation;
 import com.rainiersoft.iocl.entity.IoclFanslipDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedBaystatus;
 import com.rainiersoft.iocl.entity.IoclSupportedBaytype;
+import com.rainiersoft.iocl.entity.IoclTruckregistrationDetail;
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.AllBayDetailsResponseBean;
@@ -63,6 +67,15 @@ public class BaysManagementServices
 
 	@Autowired
 	IOCLBCBayOperationsDAO iOCLBCBayOperationsDAO;
+
+	@Autowired
+	IOCLBayTypeDAO iOCLBayTypeDAO;
+
+	@Autowired
+	IOCLTruckRegistrationDetailsDAO  iOCLTruckRegistrationDetailsDAO;
+
+	@Resource
+	Properties appProps;
 
 	@Value("${BayQueueMaxSize}")
 	String bayQueueMaxSize;
@@ -380,14 +393,17 @@ public class BaysManagementServices
 			{
 				IoclSupportedBaystatus ioclSupportedBaystatus=iOCLSupportedBayStatusDAO.findStatusIdByStatus(functionalStatus);
 				IoclSupportedBaytype ioclSupportedBaytype=iOCLSupportedBayTypesDAO.findBayTypeIdByBayType(bayType);
+				System.out.println("ioclSupportedBaytype:::::::"+ioclSupportedBaytype);
+
 				int bayTypeId=ioclSupportedBaytype.getTypeId();
+				LOG.info("bayId:::::::"+bayId);
+
 				IoclBayDetail ioclBayDetail=iOCLBayDetailsDAO.findBayByBayId(bayId);
-				List<IoclBayType> listIoclBayType=new ArrayList<IoclBayType>();
-				IoclBayType ioclBayType=new IoclBayType();
-				ioclBayType.setBayTypeId(bayTypeId);
-				ioclBayType.setIoclBayDetail(ioclBayDetail);
-				listIoclBayType.add(ioclBayType);
-				iOCLBayDetailsDAO.updateBayDetails(bayName, bayNum,listIoclBayType, ioclSupportedBaystatus,ioclBayDetail);
+				System.out.println(":::::"+ioclBayDetail.getIoclBayTypes().get(0));
+
+
+				iOCLBayDetailsDAO.updateBayDetails(bayName, bayNum,bayTypeId, ioclSupportedBaystatus,ioclBayDetail,ioclSupportedBaytype);
+
 				bayUpdationResponseBean.setBayId(Long.valueOf(bayId));
 				bayUpdationResponseBean.setBayName(bayName);
 				bayUpdationResponseBean.setBayNum(bayNum);
@@ -429,7 +445,7 @@ public class BaysManagementServices
 				//Check in past 24h any fan slip is generated for the bay in fan slip table.
 				//If not just cross check BC operation table past 24h for that particular day and 
 				//check latest record by desc is completed or not. If completed place the bay number in empty list.
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 				Date currentDate = new Date();
 				LOG.info("Current Date:::::"+dateFormat.format(currentDate));
 
@@ -475,7 +491,7 @@ public class BaysManagementServices
 						{
 							//else different status, then assign one more and keep in queue list
 							//check top 10 records, count of different status, if greater then 2 put in queue
-							if(!(ioclBcBayoperation.getOperationalStatus().equalsIgnoreCase("completed")) || !(ioclBcBayoperation.getOperationalStatus().equalsIgnoreCase("Errored Out")))
+							if(!(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("completed")) || !(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("Errored Out")))
 							{
 								pinSet.add(ioclBcBayoperation.getFanPin());
 								allCompletedFlag=false;
@@ -543,7 +559,7 @@ public class BaysManagementServices
 						{
 							for(IoclBcBayoperation ioclBcBayoperation:listOfBCUpdates)
 							{
-								fanDetailsMap.put(ioclFanslipDetail.getFanPin(), ioclBcBayoperation.getOperationalStatus());
+								fanDetailsMap.put(ioclFanslipDetail.getFanPin(), ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus());
 							}
 						}
 					}
@@ -580,12 +596,26 @@ public class BaysManagementServices
 								fanslipsAssignedBean.setFanPin(fanpin);
 								IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(fanpin);
 								fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+								fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+								fanslipsAssignedBean.setContractorName(ioclFanslipDetail.getIoclContractorDetail().getContractorName());
+								fanslipsAssignedBean.setDestination(ioclFanslipDetail.getDestination());
+								fanslipsAssignedBean.setFanId(ioclFanslipDetail.getFanId());
+								fanslipsAssignedBean.setFanPin(ioclFanslipDetail.getFanPin());
+								fanslipsAssignedBean.setFanPinCreation(dateFormat.format(ioclFanslipDetail.getFanCreationOn()));
+								fanslipsAssignedBean.setFanPinExpiration(dateFormat.format(ioclFanslipDetail.getFanExpirationOn()));
+								fanslipsAssignedBean.setLocationCode(ioclFanslipDetail.getIoclLocationDetail().getLocationCode());
+								fanslipsAssignedBean.setQuantity(ioclFanslipDetail.getQuantity());
+								fanslipsAssignedBean.setBayOperationalStatus(fanDetailsMap.get(fanpin));
+								IoclTruckregistrationDetail ioclTruckDetails=iOCLTruckRegistrationDetailsDAO.findTruckByTruckId(ioclFanslipDetail.getTruckId());
+								fanslipsAssignedBean.setTruckNumber(ioclTruckDetails.getTruckNo());
+								fanslipsAssignedBean.setDriverName(ioclTruckDetails.getDriverName());
+								fanslipsAssignedBean.setCustomer(ioclTruckDetails.getCustomer());
+								fanslipsAssignedBean.setVehicleWeight(ioclFanslipDetail.getVehicleWgt());
 								listFanslipsAssignedBean.add(fanslipsAssignedBean);
 								availableBaysResponseBean.setBayAvailableStatus("InQueue");
 								availableBaysResponseBean.setBayNumber(bayNumber);
 								availableBaysResponseBean.setBayName(bayName);
 								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
-								availableBaysResponseBean.setBayAvailableStatus("InQueue");
 								availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
 							}
 							else if(pinSet.size()==supportedQueueSize)
@@ -593,12 +623,24 @@ public class BaysManagementServices
 								fanslipsAssignedBean.setFanPin(fanpin);
 								IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(fanpin);
 								fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+								fanslipsAssignedBean.setContractorName(ioclFanslipDetail.getIoclContractorDetail().getContractorName());
+								fanslipsAssignedBean.setDestination(ioclFanslipDetail.getDestination());
+								fanslipsAssignedBean.setFanId(ioclFanslipDetail.getFanId());
+								fanslipsAssignedBean.setFanPin(ioclFanslipDetail.getFanPin());
+								fanslipsAssignedBean.setFanPinCreation(dateFormat.format(ioclFanslipDetail.getFanCreationOn()));
+								fanslipsAssignedBean.setFanPinExpiration(dateFormat.format(ioclFanslipDetail.getFanExpirationOn()));
+								fanslipsAssignedBean.setLocationCode(ioclFanslipDetail.getIoclLocationDetail().getLocationCode());
+								fanslipsAssignedBean.setQuantity(ioclFanslipDetail.getQuantity());
+								IoclTruckregistrationDetail ioclTruckDetails=iOCLTruckRegistrationDetailsDAO.findTruckByTruckId(ioclFanslipDetail.getTruckId());
+								fanslipsAssignedBean.setTruckNumber(ioclTruckDetails.getTruckNo());
+								fanslipsAssignedBean.setDriverName(ioclTruckDetails.getDriverName());
+								fanslipsAssignedBean.setCustomer(ioclTruckDetails.getCustomer());
+								fanslipsAssignedBean.setVehicleWeight(ioclFanslipDetail.getVehicleWgt());
 								listFanslipsAssignedBean.add(fanslipsAssignedBean);
 								availableBaysResponseBean.setBayAvailableStatus("Not Available");
 								availableBaysResponseBean.setBayNumber(bayNumber);
 								availableBaysResponseBean.setBayName(bayName);
 								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
-								availableBaysResponseBean.setBayAvailableStatus("Not Available");
 								availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
 							}
 						}

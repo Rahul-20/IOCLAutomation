@@ -25,7 +25,8 @@ import javax.persistence.TemporalType;
 @NamedQueries({
 	@NamedQuery(name="IoclFanslipDetail.findAll", query="SELECT i FROM IoclFanslipDetail i"),
 	@NamedQuery(name="findFanPinStatusByFanPin", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin"),
-	@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn > :pastDate and f.fanCreationOn < :currDate and f.bayNo=:bayNo")
+	@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn > :pastDate and f.fanCreationOn < :currDate and f.bayNo=:bayNo"),
+	@NamedQuery(name="findAllLatestFanSlips",query="select f from IoclFanslipDetail f where f.fanCreationOn > :pastDate and f.fanCreationOn < :currDate")	
 })
 public class IoclFanslipDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -44,6 +45,10 @@ public class IoclFanslipDetail implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="FanCreationOn")
 	private Date fanCreationOn;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="FanExpirationOn")
+	private Date fanExpirationOn;
 
 	@Column(name="FanPin")
 	private String fanPin;
@@ -162,5 +167,13 @@ public class IoclFanslipDetail implements Serializable {
 
 	public void setIoclContractorDetail(IoclContractorDetail ioclContractorDetail) {
 		this.ioclContractorDetail = ioclContractorDetail;
+	}
+	
+	public Date getFanExpirationOn() {
+		return this.fanExpirationOn;
+	}
+
+	public void setFanExpirationOn(Date fanExpirationOn) {
+		this.fanExpirationOn = fanExpirationOn;
 	}
 }

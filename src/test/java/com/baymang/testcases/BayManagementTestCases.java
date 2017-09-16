@@ -17,17 +17,20 @@ public class BayManagementTestCases
 		System.out.println("sc::" + ac);
 
 		BaysManagementServices baysManagementServices=(BaysManagementServices)ac.getBean("baysManagementServices");
-		//Response allBayDetailsResp=baysManagementServices.getAllBayDetails();
-		//System.out.println("All BayDetails::::::"+allBayDetailsResp.getEntity());
+		Response allBayDetailsResp=baysManagementServices.getAllBayDetails();
+		System.out.println("All BayDetails::::::"+allBayDetailsResp.getEntity());
 
-		//Response bayCreation=baysManagementServices.bayCreation("bay1", 1, "LPG", "Active");
-//		/System.out.println("All BayDetails::::::"+bayCreation.getEntity());
+		Response getAvailableBays=baysManagementServices.getAvailableBays();
+		System.out.println("getAvailableBays::::::"+getAvailableBays.getEntity());
+		
+		//Response bayCreation=baysManagementServices.bayCreation("bay2",2, "LPG", "Active");
+		//System.out.println("All BayDetails::::::"+bayCreation.getEntity());
 
-		/*Response bayCreation=baysManagementServices.bayUpdation(1, "Bay1", 1, "LPG", "Active", false, false);
-		System.out.println("All BayDetails::::::"+bayCreation.getEntity());
-		*/
-		Response bayCreation=baysManagementServices.deleteBay(2);
-		System.out.println("All BayDetails::::::"+bayCreation.getEntity());
+		//Response bayCreation1=baysManagementServices.bayUpdation(2, "Bay31",31, "LPG", "Active",true,true);
+		//System.out.println("All BayDetails::::::"+bayCreation1.getEntity());
+		
+		//Response bayCreation=baysManagementServices.deleteBay(2);
+		//System.out.println("All BayDetails::::::"+bayCreation.getEntity());
 
 	}
 }

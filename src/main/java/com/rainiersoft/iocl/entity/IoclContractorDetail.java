@@ -14,7 +14,7 @@ import javax.persistence.*;
 	@NamedQuery(name="findContractorByContractorName", query="SELECT i FROM IoclContractorDetail i where i.contractorName=:contractorName"),
 	@NamedQuery(name="findContractorByContractorId", query="SELECT i FROM IoclContractorDetail i where i.contractorId=:contractorId"),
 	@NamedQuery(name="findAllContractorTypes", query="SELECT i FROM IoclContractorDetail i"),
-	@NamedQuery(name="findAllContractorStates", query="SELECT i FROM IoclContractorDetail i")
+	@NamedQuery(name="findAllContractorNames", query="SELECT i FROM IoclContractorDetail i")
 })
 public class IoclContractorDetail implements Serializable {
 	private static final long serialVersionUID = 1L;

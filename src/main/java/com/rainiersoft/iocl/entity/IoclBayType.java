@@ -18,7 +18,7 @@ public class IoclBayType implements Serializable {
 		return "IoclBayType [recId=" + recId + ", bayTypeId=" + bayTypeId + ", ioclBayDetail=]";
 	}
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100000000001L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -29,8 +29,8 @@ public class IoclBayType implements Serializable {
 	private int bayTypeId;
 
 	//bi-directional many-to-one association to IoclBayDetail
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="bayNum",referencedColumnName = "bayNum")
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="bayId",referencedColumnName = "bayId")
 	private IoclBayDetail ioclBayDetail;
 
 	public IoclBayType() {

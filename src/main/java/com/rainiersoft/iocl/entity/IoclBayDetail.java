@@ -44,7 +44,7 @@ public class IoclBayDetail implements Serializable {
 	private IoclSupportedBaystatus ioclSupportedBaystatus;
 
 	//bi-directional many-to-one association to IoclBayType
-	@OneToMany(mappedBy="ioclBayDetail",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="ioclBayDetail",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	private List<IoclBayType> ioclBayTypes;
 
 	public IoclBayDetail() {

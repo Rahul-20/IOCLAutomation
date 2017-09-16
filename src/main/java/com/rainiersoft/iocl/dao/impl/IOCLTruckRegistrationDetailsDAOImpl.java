@@ -32,4 +32,14 @@ public class IOCLTruckRegistrationDetailsDAOImpl extends GenericDAOImpl<IoclTruc
 		ioclTruckregistrationDetail.setTruckNo(truckNo);
 		saveOrUpdate(ioclTruckregistrationDetail);
 	}
+
+	@Override
+	public IoclTruckregistrationDetail findTruckByTruckId(int truckId) 
+	{
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findTruckByTruckId");
+		query.setParameter("truckId", truckId);
+		IoclTruckregistrationDetail ioclTruckregistrationDetail = (IoclTruckregistrationDetail)findObject(query);
+		return ioclTruckregistrationDetail;
+	}
 }

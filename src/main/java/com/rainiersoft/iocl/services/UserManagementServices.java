@@ -9,6 +9,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.annotation.Resource;
 import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
@@ -67,6 +70,9 @@ public class UserManagementServices
 
 	@Autowired
 	IOCLSupportedUserRoleDAO ioclSupportedUserRoleDAO;
+	
+	@Resource
+	Properties appProps;
 
 	@Value("${UserPasswordExpiryConfigVal}")
 	int userPasswordExpiryConfig;
@@ -86,12 +92,12 @@ public class UserManagementServices
 				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.User_Exist_Msg);
 			}
 
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DateFormat df = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			Date currentDateobj = new Date();
 			LOG.info("UserPasswordExpiryConfigVal::::::"+userPasswordExpiryConfig);
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(currentDateobj);
-			cal.add(Calendar.YEAR, userPasswordExpiryConfig);
+			cal.add(Calendar.DATE,userPasswordExpiryConfig);
 			LOG.info("Password expiry date for user:"+cal.getTime());
 			Date expiryTimeStamp=cal.getTime();
 
@@ -166,7 +172,7 @@ public class UserManagementServices
 					throw new IOCLWSException(ErrorMessageConstants.UserPwd_MissMatch_Code,ErrorMessageConstants.UserPwd_MissMatch_Msg);
 				}
 
-				DateFormat daf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				DateFormat daf = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 				Date dateobj = new Date();
 
 				Calendar currentDate = Calendar.getInstance();
@@ -179,7 +185,7 @@ public class UserManagementServices
 					throw new IOCLWSException(ErrorMessageConstants.UserPwd_Expiry_Code,ErrorMessageConstants.UserPwd_Expiry_Msg);
 				}
 
-				if(ioclUserDetail.getIoclSupportedUserstatus().getUserStatus().equalsIgnoreCase("Locked") || ioclUserDetail.getIoclSupportedUserstatus().getUserStatus().equalsIgnoreCase("In Active"))
+				if(ioclUserDetail.getIoclSupportedUserstatus().getUserStatus().equalsIgnoreCase(appProps.getProperty("UserLockedStatus")) || ioclUserDetail.getIoclSupportedUserstatus().getUserStatus().equalsIgnoreCase(appProps.getProperty("UserInActiveStatus")))
 				{
 					throw new IOCLWSException(ErrorMessageConstants.User_Locked_Code,ErrorMessageConstants.User_Locked_Msg);
 				}
@@ -406,6 +412,5 @@ public class UserManagementServices
 			LOG.info("Logging the occured exception in the service class getData method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
-
 	}
 }

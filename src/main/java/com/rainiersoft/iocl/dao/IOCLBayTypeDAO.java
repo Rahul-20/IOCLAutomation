@@ -1,8 +1,8 @@
 package com.rainiersoft.iocl.dao;
 
-import com.rainiersoft.iocl.entity.IoclBayDetail;
+import com.rainiersoft.iocl.entity.IoclBayType;
 
-public interface IOCLBayTypeDAO extends GenericDAO<IoclBayDetail, Long> 
+public interface IOCLBayTypeDAO extends GenericDAO<IoclBayType, Long> 
 {
 
 }

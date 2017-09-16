@@ -23,5 +23,5 @@ public interface IOCLContractorDetailsDAO extends GenericDAO<IoclContractorDetai
 	
 	public List<IoclContractorDetail> findAllContractorTypes();
 	
-	public List<IoclContractorDetail> findAllContractorStates();
+	public List<IoclContractorDetail> findAllContractorNames();
 }

@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Table(name="iocl_truckregistration_details")
 @NamedQueries({
 @NamedQuery(name="IoclTruckregistrationDetail.findAll", query="SELECT i FROM IoclTruckregistrationDetail i"),
-@NamedQuery(name="findTruckByTruckNo", query="SELECT ioclTruckregistrationDetail FROM IoclTruckregistrationDetail ioclTruckregistrationDetail where truckNo=:truckNo")
+@NamedQuery(name="findTruckByTruckNo", query="SELECT ioclTruckregistrationDetail FROM IoclTruckregistrationDetail ioclTruckregistrationDetail where truckNo=:truckNo"),
+@NamedQuery(name="findTruckByTruckId", query="SELECT ioclTruckregistrationDetail FROM IoclTruckregistrationDetail ioclTruckregistrationDetail where truckId=:truckId")
 })
 public class IoclTruckregistrationDetail implements Serializable {
 	private static final long serialVersionUID = 1L;

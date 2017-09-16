@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -22,9 +24,9 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="iocl_bc_bayoperations")
 @NamedQueries({
-@NamedQuery(name="IoclBcBayoperation.findAll", query="SELECT i FROM IoclBcBayoperation i"),
-@NamedQuery(name="findBayUpdatesByBC",query="select f from IoclBcBayoperation f where f.BCInputTime > :pastDate and f.BCInputTime < :currDate and f.bayNum=:bayNum"),
-@NamedQuery(name="findBayUpdatesByFanPin",query="select f from IoclBcBayoperation f where f.fanPin=:fanPin")
+	@NamedQuery(name="IoclBcBayoperation.findAll", query="SELECT i FROM IoclBcBayoperation i"),
+	@NamedQuery(name="findBayUpdatesByBC",query="select f from IoclBcBayoperation f where f.BCInputTime > :pastDate and f.BCInputTime < :currDate and f.bayNum=:bayNum"),
+	@NamedQuery(name="findBayUpdatesByFanPin",query="select f from IoclBcBayoperation f where f.fanPin=:fanPin")
 })
 public class IoclBcBayoperation implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -51,8 +53,9 @@ public class IoclBcBayoperation implements Serializable {
 	@Column(name="FanPin")
 	private String fanPin;
 
-	@Column(name="OperationalStatus")
-	private String operationalStatus;
+	@ManyToOne
+	@JoinColumn(name="OperationalStatusId")
+	private IoclSupportedBayoperationalstatus ioclSupportedBayoperationalstatus;
 
 	public IoclBcBayoperation() {
 	}
@@ -104,12 +107,12 @@ public class IoclBcBayoperation implements Serializable {
 	public void setFanPin(String fanPin) {
 		this.fanPin = fanPin;
 	}
-
-	public String getOperationalStatus() {
-		return this.operationalStatus;
+	
+	public IoclSupportedBayoperationalstatus getIoclSupportedBayoperationalstatus() {
+		return ioclSupportedBayoperationalstatus;
 	}
 
-	public void setOperationalStatus(String operationalStatus) {
-		this.operationalStatus = operationalStatus;
+	public void setIoclSupportedBayoperationalstatus(IoclSupportedBayoperationalstatus ioclSupportedBayoperationalstatus) {
+		this.ioclSupportedBayoperationalstatus = ioclSupportedBayoperationalstatus;
 	}
 }

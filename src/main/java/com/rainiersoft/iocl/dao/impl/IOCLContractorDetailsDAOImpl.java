@@ -93,10 +93,10 @@ public class IOCLContractorDetailsDAOImpl extends GenericDAOImpl<IoclContractorD
 	}
 
 	@Override
-	public List<IoclContractorDetail> findAllContractorStates() 
+	public List<IoclContractorDetail> findAllContractorNames() 
 	{
 		Session session = getCurrentSession();
-		Query query = session.getNamedQuery("findAllContractorStates");
+		Query query = session.getNamedQuery("findAllContractorNames");
 		List<IoclContractorDetail> lIoclContractorDetail =  (List<IoclContractorDetail>)findObjectCollection(query);
 		return lIoclContractorDetail;
 	}

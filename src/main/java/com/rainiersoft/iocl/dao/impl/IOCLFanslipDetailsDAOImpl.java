@@ -1,6 +1,7 @@
 package com.rainiersoft.iocl.dao.impl;
 
 import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
+import com.rainiersoft.iocl.entity.IoclContractorDetail;
 import com.rainiersoft.iocl.entity.IoclFanslipDetail;
 import com.rainiersoft.iocl.entity.IoclLocationDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedPinstatus;
@@ -21,7 +22,7 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 
 	public IOCLFanslipDetailsDAOImpl() {}
 
-	public void insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId) 
+	public void insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanPinExpirationOn,IoclContractorDetail ioclContractorDetail) 
 	{
 		IoclFanslipDetail ioclFanslipDetail = new IoclFanslipDetail();
 		ioclFanslipDetail.setBayNo(bayNo);
@@ -32,7 +33,9 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		ioclFanslipDetail.setVehicleWgt(vehicleWgt);
 		ioclFanslipDetail.setDestination(destination);
 		ioclFanslipDetail.setIoclLocationDetail(locationId);
+		ioclFanslipDetail.setIoclContractorDetail(ioclContractorDetail);
 		ioclFanslipDetail.setIoclSupportedPinstatus(fanPinStatusId);
+		ioclFanslipDetail.setFanExpirationOn(fanPinExpirationOn);
 		saveOrUpdate(ioclFanslipDetail);
 	}
 
@@ -55,6 +58,17 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		Query query = session.getNamedQuery("findFanPinStatusByFanPin");
 		query.setParameter("fanPin", fanPin);
 		IoclFanslipDetail ioclFanslipDetail = (IoclFanslipDetail)findObject(query);
+		return ioclFanslipDetail;
+	}
+
+	@Override
+	public List<IoclFanslipDetail> findAllLatestFanSlips(Date currDate, Date pastDate) 
+	{
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findAllLatestFanSlips");
+		query.setParameter("currDate", currDate);
+		query.setParameter("pastDate", pastDate);
+		List<IoclFanslipDetail> ioclFanslipDetail = findObjectCollection(query);
 		return ioclFanslipDetail;
 	}
 }
