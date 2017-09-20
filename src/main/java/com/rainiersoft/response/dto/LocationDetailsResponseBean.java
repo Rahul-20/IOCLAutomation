@@ -6,6 +6,28 @@ public class LocationDetailsResponseBean
 	private String locationName;
 	private String locationCode;
 	private String locationAddress;
+	private String state;
+	private String pinCode;
+	private String city;
+	
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getPinCode() {
+		return pinCode;
+	}
+	public void setPinCode(String pinCode) {
+		this.pinCode = pinCode;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
 	private String operationalStatus;
 
 	public String getLocationName() {

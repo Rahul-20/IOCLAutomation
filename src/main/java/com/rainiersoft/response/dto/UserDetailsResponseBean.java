@@ -8,8 +8,8 @@ public class UserDetailsResponseBean
 	public String toString() {
 		return "UserDetailsResponseBean [UserID=" + UserID + ", UserName=" + UserName + ", UserFirstName="
 				+ UserFirstName + ", UserLastName=" + UserLastName + ", UserDOB=" + UserDOB + ", UserAadharNum="
-				+ UserAadharNum + ", UserMobileNum=" + UserMobileNum + ", UserType="
-				+ UserType + ", UserStatus=" + UserStatus + "]";
+				+ UserAadharNum + ", UserMobileNum=" + UserMobileNum + ", UserType=" + UserType + ", UserStatus="
+				+ UserStatus + ", UserEditFlag=" + UserEditFlag + "]";
 	}
 	private int UserID;
 	private String UserName;
@@ -21,7 +21,14 @@ public class UserDetailsResponseBean
 	//private String UserPassword;
 	private List<String> UserType;
 	private String UserStatus;
+	private boolean UserEditFlag;
 
+	public boolean getUserEditFlag() {
+		return UserEditFlag;
+	}
+	public void setUserEditFlag(boolean userEditFlag) {
+		UserEditFlag = userEditFlag;
+	}
 	public int getUserID() {
 		return UserID;
 	}

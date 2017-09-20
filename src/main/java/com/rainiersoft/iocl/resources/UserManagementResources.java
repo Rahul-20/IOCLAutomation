@@ -87,7 +87,7 @@ public class UserManagementResources
 	}
 
 	@Path("/usercreation")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"Admin", "Super Admin","Supervisor"})
 	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -116,7 +116,7 @@ public class UserManagementResources
 	}
 
 	@Path("/updateuser")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"Admin", "Super Admin","Supervisor"})
 	@PUT
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -148,16 +148,16 @@ public class UserManagementResources
 	}
 
 	@Path("/getUsers")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"Admin", "Super Admin","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response getUsers() throws IOCLWSException
+	public Response getUsers(@QueryParam("UserRole") String userRole) throws IOCLWSException
 	{
 		try
 		{
 			LOG.info("Entered into getUsers resource class method........");
-			return userManagementServices.getAvailableUsers();
+			return userManagementServices.getAvailableUsers(userRole);
 		}
 		catch(IOCLWSException ioclwsException)
 		{
@@ -167,7 +167,7 @@ public class UserManagementResources
 	}
 
 	@Path("/deleteUser")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"Admin", "Super Admin","Supervisor"})
 	@DELETE
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -187,7 +187,7 @@ public class UserManagementResources
 	}
 
 	@Path("/supportedUserTypes")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"Admin", "Super Admin","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -206,7 +206,7 @@ public class UserManagementResources
 	}
 
 	@Path("/supportedUserStatus")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"Admin", "Super Admin","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -225,16 +225,16 @@ public class UserManagementResources
 	}
 
 	@Path("/getStaticUserData")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"Admin", "Super Admin","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response getData() throws IOCLWSException
+	public Response getData(@QueryParam("UserRole") String userRole) throws IOCLWSException
 	{
 		try
 		{
 			LOG.info("Entered into getData resource class method........");
-			return userManagementServices.getData();
+			return userManagementServices.getData(userRole);
 		}
 		catch(IOCLWSException ioclwsException)
 		{

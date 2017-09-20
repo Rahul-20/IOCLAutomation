@@ -22,8 +22,9 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 
 	public IOCLFanslipDetailsDAOImpl() {}
 
-	public void insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanPinExpirationOn,IoclContractorDetail ioclContractorDetail) 
+	public Long insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanPinExpirationOn,IoclContractorDetail ioclContractorDetail) 
 	{
+		Session session=getCurrentSession();
 		IoclFanslipDetail ioclFanslipDetail = new IoclFanslipDetail();
 		ioclFanslipDetail.setBayNo(bayNo);
 		ioclFanslipDetail.setFanPin(fanPin);
@@ -36,7 +37,8 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		ioclFanslipDetail.setIoclContractorDetail(ioclContractorDetail);
 		ioclFanslipDetail.setIoclSupportedPinstatus(fanPinStatusId);
 		ioclFanslipDetail.setFanExpirationOn(fanPinExpirationOn);
-		saveOrUpdate(ioclFanslipDetail);
+		Integer fanId=(Integer) session.save(ioclFanslipDetail);
+		return fanId.longValue();
 	}
 
 
@@ -70,5 +72,22 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		query.setParameter("pastDate", pastDate);
 		List<IoclFanslipDetail> ioclFanslipDetail = findObjectCollection(query);
 		return ioclFanslipDetail;
+	}
+
+	@Override
+	public IoclFanslipDetail findFanPinByFanId(int fanId) 
+	{
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findFanPinByFanId");
+		query.setParameter("fanId", fanId);
+		IoclFanslipDetail ioclFanslipDetail = (IoclFanslipDetail)findObject(query);
+		return ioclFanslipDetail;
+	}
+
+	@Override
+	public void updateFanPinDetails(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus) 
+	{
+		ioclFanslipDetail.setIoclSupportedPinstatus(ioclSupportedPinstatus);
+		saveOrUpdate(ioclFanslipDetail);
 	}
 }

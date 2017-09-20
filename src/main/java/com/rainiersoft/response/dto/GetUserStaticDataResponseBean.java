@@ -5,6 +5,11 @@ import java.util.Map;
 
 public class GetUserStaticDataResponseBean 
 {
+	@Override
+	public String toString() {
+		return "GetUserStaticDataResponseBean [data=" + data + "]";
+	}
+
 	public Map<String,List<String>> data;
 
 	public Map<String, List<String>> getData() {

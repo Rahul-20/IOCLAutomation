@@ -51,6 +51,9 @@ public class LocationManagementServices
 				locationDetailsResponseBean.setLocationAddress(ioclLocationDetail.getLocationAddress());
 				locationDetailsResponseBean.setLocationCode(ioclLocationDetail.getLocationCode());
 				locationDetailsResponseBean.setLocationName(ioclLocationDetail.getLocationName());
+				//locationDetailsResponseBean.setPinCode(pinCode);
+				//locationDetailsResponseBean.setState(state);
+				//locationDetailsResponseBean.setCity(city);
 				locationDetailsResponseBean.setOperationalStatus(ioclLocationDetail.getIoclSupportedLocationstatus().getLocationStatus());
 				listLocationDetailsResponseBean.add(locationDetailsResponseBean);
 			}
@@ -65,7 +68,7 @@ public class LocationManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response addLocation(String locationName,String locationCode,String locationStatus,String locationAddress) throws IOCLWSException
+	public Response addLocation(String locationName,String locationCode,String locationStatus,String locationAddress,String city,String pinCode,String state) throws IOCLWSException
 	{
 		LOG.info("Entered into addLocation service class method........");
 		LocationCreationResponseBean locationCreationResponseBean=new LocationCreationResponseBean();

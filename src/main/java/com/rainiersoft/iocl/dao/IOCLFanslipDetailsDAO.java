@@ -9,11 +9,15 @@ import java.util.List;
 
 public interface IOCLFanslipDetailsDAO extends GenericDAO<IoclFanslipDetail, Long>
 {
-	public void insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanExpirationTime,IoclContractorDetail ioclContractorDetail);
+	public Long insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanExpirationTime,IoclContractorDetail ioclContractorDetail);
 
 	public List<IoclFanslipDetail> findAnyBayIsAssignedInPast(int bayNo, Date currDate, Date pastDate);
 	
 	public List<IoclFanslipDetail> findAllLatestFanSlips(Date currDate, Date pastDate);
 
 	public IoclFanslipDetail findFanPinStatusByFanPin(String fanPin);
+	
+	public IoclFanslipDetail findFanPinByFanId(int FanId);
+	
+	public void updateFanPinDetails(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus);
 }

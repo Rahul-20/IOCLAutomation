@@ -7,15 +7,14 @@ public class AvailableBaysResponseBean
 	@Override
 	public String toString() {
 		return "AvailableBaysResponseBean [bayNumber=" + bayNumber + ", bayName=" + bayName + ", bayFunctionalStatus="
-				+ bayFunctionalStatus + ", bayAvailableStatus=" + bayAvailableStatus + ", fanslipsAssignedBean="
-				+ fanslipsAssignedBean + "]";
+				+ bayFunctionalStatus + ", bayAvailableStatus=" + bayAvailableStatus+ "]";
 	}
 
 	private int bayNumber;
 	private String bayName;
 	private String bayFunctionalStatus;
 	private String bayAvailableStatus;
-	private List<FanslipsAssignedBean> fanslipsAssignedBean;
+	//private List<FanslipsAssignedBean> fanslipsAssignedBean;
 
 	public AvailableBaysResponseBean()
 	{
@@ -54,11 +53,11 @@ public class AvailableBaysResponseBean
 		this.bayFunctionalStatus = bayFunctionalStatus;
 	}
 
-	public List<FanslipsAssignedBean> getFanslipsAssignedBean() {
+	/*public List<FanslipsAssignedBean> getFanslipsAssignedBean() {
 		return fanslipsAssignedBean;
 	}
 
 	public void setFanslipsAssignedBean(List<FanslipsAssignedBean> fanslipsAssignedBean) {
 		this.fanslipsAssignedBean = fanslipsAssignedBean;
-	}
+	}*/
 }

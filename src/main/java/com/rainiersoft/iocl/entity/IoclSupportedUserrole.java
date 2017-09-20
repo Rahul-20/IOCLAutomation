@@ -12,8 +12,8 @@ import java.util.List;
 @Entity
 @Table(name="iocl_supported_userroles")
 @NamedQueries({
-@NamedQuery(name="IoclSupportedUserrole.findAll", query="SELECT i FROM IoclSupportedUserrole i"),
-@NamedQuery(name="findUserRoleIdByUserRole", query="SELECT i FROM IoclSupportedUserrole i where i.roleName=:roleName")
+	@NamedQuery(name="IoclSupportedUserrole.findAll", query="SELECT i FROM IoclSupportedUserrole i"),
+	@NamedQuery(name="findUserRoleIdByUserRole", query="SELECT i FROM IoclSupportedUserrole i where i.roleName=:roleName")
 })
 public class IoclSupportedUserrole implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,6 +25,9 @@ public class IoclSupportedUserrole implements Serializable {
 
 	@Column(name="RoleName")
 	private String roleName;
+
+	@Column(name="ChildRoles")
+	private String childRoles;
 
 	//bi-directional many-to-one association to IoclUserroleMapping
 	@OneToMany(mappedBy="ioclSupportedUserrole")
@@ -67,5 +70,13 @@ public class IoclSupportedUserrole implements Serializable {
 		getIoclUserroleMappings().remove(ioclUserroleMapping);
 		ioclUserroleMapping.setIoclSupportedUserrole(null);
 		return ioclUserroleMapping;
+	}
+
+	public String getChildRoles() {
+		return childRoles;
+	}
+
+	public void setChildRoles(String childRoles) {
+		this.childRoles = childRoles;
 	}
 }

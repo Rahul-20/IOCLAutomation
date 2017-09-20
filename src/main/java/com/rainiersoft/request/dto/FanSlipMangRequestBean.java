@@ -13,6 +13,14 @@ public class FanSlipMangRequestBean
 	private String LocationCode;
 	private String MobileNumber;
 	private int BayNum;
+	private int FanId;
+	
+	public int getFanId() {
+		return FanId;
+	}
+	public void setFanId(int fanId) {
+		FanId = fanId;
+	}
 	
 	public String getContractorName() {
 		return ContractorName;

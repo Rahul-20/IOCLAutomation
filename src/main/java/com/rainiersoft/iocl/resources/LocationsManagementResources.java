@@ -67,7 +67,10 @@ public class LocationsManagementResources
 			String locationCode=locationMangRequestBean.getLocationCode();
 			String quantityStatus=locationMangRequestBean.getOperationalStatus();
 			String locationAddress=locationMangRequestBean.getLocationAddress();
-			return locationManagementServices.addLocation(locationName,locationCode,quantityStatus,locationAddress);
+			String city=locationMangRequestBean.getCity();
+			String pinCode=locationMangRequestBean.getPinCode();
+			String state=locationMangRequestBean.getState();
+			return locationManagementServices.addLocation(locationName,locationCode,quantityStatus,locationAddress,city,pinCode,state);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{

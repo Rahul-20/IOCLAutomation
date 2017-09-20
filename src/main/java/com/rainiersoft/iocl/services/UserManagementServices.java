@@ -1,9 +1,13 @@
 package com.rainiersoft.iocl.services;
 
+import java.sql.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -70,7 +74,7 @@ public class UserManagementServices
 
 	@Autowired
 	IOCLSupportedUserRoleDAO ioclSupportedUserRoleDAO;
-	
+
 	@Resource
 	Properties appProps;
 
@@ -263,7 +267,7 @@ public class UserManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class) 
-	public Response getAvailableUsers() throws IOCLWSException
+	public Response getAvailableUsers(String userRole) throws IOCLWSException
 	{
 		try
 		{
@@ -272,6 +276,16 @@ public class UserManagementServices
 			LOG.info("Got the ioclUserDetail object......"+ioclUserDetail);
 			UserDetailsResponseBean userDetailsResponseBean;
 			List<UserDetailsResponseBean> listUserDetailsResponseBean=new ArrayList<UserDetailsResponseBean>();
+
+			IoclSupportedUserrole ioclSupportedUserrole=iOCLSupportedUserRoleDAO.findRoleIdByRoleName(userRole);
+			String childRoles=ioclSupportedUserrole.getChildRoles();
+			LOG.info("ChildRoles....."+childRoles);
+			ArrayList<String> listOfRoleIDs=null;
+			if(null!=childRoles && childRoles.length()>0)
+			{
+				listOfRoleIDs=new ArrayList<String>(Arrays.asList(childRoles.split(",")));
+			}
+
 			if(ioclUserDetail.size()>0)
 			{
 				for(IoclUserDetail user:ioclUserDetail)
@@ -291,6 +305,21 @@ public class UserManagementServices
 					for(IoclUserroleMapping ioclUserroleMappings:lIoclUserroleMappings)
 					{
 						userTypes.add(ioclUserroleMappings.getIoclSupportedUserrole().getRoleName());
+
+						if(null!=listOfRoleIDs && listOfRoleIDs.size()>0)
+						{
+							LOG.info("listOfRoleIDs......"+listOfRoleIDs+".....RoleId...."+ioclUserroleMappings.getIoclSupportedUserrole().getRoleId()+"listOfRoleIDs.contains(ioclUserroleMappings.getIoclSupportedUserrole().getRoleId()"+listOfRoleIDs.contains(ioclUserroleMappings.getIoclSupportedUserrole().getRoleId()));
+							if(listOfRoleIDs.contains((String.valueOf(ioclUserroleMappings.getIoclSupportedUserrole().getRoleId()))))
+							{
+								LOG.info("Entered into edit true");
+								userDetailsResponseBean.setUserEditFlag(true);
+							}
+							else
+							{
+								LOG.info("Entered into edit false");
+								userDetailsResponseBean.setUserEditFlag(false);
+							}
+						}
 					}
 					userDetailsResponseBean.setUserType(userTypes);
 					listUserDetailsResponseBean.add(userDetailsResponseBean);
@@ -381,7 +410,7 @@ public class UserManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response getData() throws  IOCLWSException
+	public Response getData(String userRole) throws  IOCLWSException
 	{
 		LOG.info("Entered into getData service class method........");
 		GetUserStaticDataResponseBean getUserStaticDataResponseBean=new GetUserStaticDataResponseBean();
@@ -389,6 +418,13 @@ public class UserManagementServices
 		{
 			Map<String,List<String>> data=new HashMap<String,List<String>>();
 			List<IoclSupportedUserstatus> lIoclSupportedUserstatus=iOCLSupportedUserStatusDAO.findAll(IoclSupportedUserstatus.class);
+			IoclSupportedUserrole ioclSupportedUseRoleHierarchy=iOCLSupportedUserRoleDAO.findRoleIdByRoleName(userRole);
+			ArrayList<String> listOfRoleIDs=null;
+			String childRoles=ioclSupportedUseRoleHierarchy.getChildRoles();
+			if(null!=childRoles && childRoles.length()>0)
+			{
+				listOfRoleIDs=new ArrayList<String>(Arrays.asList(childRoles.split(",")));
+			}
 			List<String> userStatus=new ArrayList<String>();
 			List<String> userTypes=new ArrayList<String>();
 			for(IoclSupportedUserstatus ioclSupportedUserstatus:lIoclSupportedUserstatus)
@@ -399,7 +435,10 @@ public class UserManagementServices
 
 			for(IoclSupportedUserrole ioclSupportedUserrole:lIoclSupportedUserroles)
 			{
-				userTypes.add(ioclSupportedUserrole.getRoleName());
+				if(listOfRoleIDs.contains((String.valueOf(ioclSupportedUserrole.getRoleId()))))
+				{
+					userTypes.add(ioclSupportedUserrole.getRoleName());
+				}
 			}
 			data.put("UserStatus",userStatus);
 			data.put("UserTypes",userTypes);

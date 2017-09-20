@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -48,6 +49,9 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 	@Autowired
 	IOCLUserDetailsDAO ioclUserDetailsDAO;
 
+	@Autowired
+	Properties appProps;
+
 	private static final String AUTHORIZATION_PROPERTY = "Authorization";
 	private static final String AUTHENTICATION_SCHEME = "Basic";
 
@@ -76,7 +80,7 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 
 		Method method = resourceInfo.getResourceMethod();
 		LOG.info("Method::::"+method.getName());
-		
+
 		if(method.isAnnotationPresent(DenyAll.class))
 		{
 			requestContext.abortWith(ACCESS_FORBIDDEN);
@@ -116,10 +120,28 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 			if(method.isAnnotationPresent(RolesAllowed.class))
 			{
 				RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
-				//LOG.debug(":::::::"+rolesAnnotation+"::::::::::"+Arrays.asList(rolesAnnotation.value()));
-				//                ArrayList<String> roleslist = (ArrayList<String>) Arrays.asList(rolesAnnotation.value());
-
 				Set<String> rolesSet = new HashSet<String>(Arrays.asList(rolesAnnotation.value()));
+
+				/*LOG.info("appProps.get(method.getName()):::::"+appProps.get(method.getName()));
+				if(appProps.get(method.getName())!=null)
+				{
+					String roleDetails[]=appProps.get(method.getName()).toString().split(",");
+					LOG.info("roleDetails[]:::::"+roleDetails[0]+"::::::"+roleDetails[1]);
+					for(String roleDetailAndFlag:roleDetails)
+					{
+						String overridingRoles[]=roleDetailAndFlag.split("-");
+						if(overridingRoles[1].equals("1"))
+						{
+							rolesSet.add(overridingRoles[0]);
+						}
+						else if(overridingRoles[1].equals("0"))
+						{
+							rolesSet.remove(overridingRoles[0]);
+						}
+					}
+				}*/
+
+				LOG.info("Final Roles Set:::::::"+rolesSet);
 
 				if(!(isUserAllowed(username, password, rolesSet)))
 				{
@@ -129,15 +151,12 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 				}
 			}
 		}
-		//}
 	}
 
 	private boolean isUserAllowed(String username, String password, Set<String> rolesSet) throws UnsupportedEncodingException
 	{
 		boolean isAllowed = false;
 		//Step 1. Fetch password from database and match with password in argument
-
-		// IoclUserDetail ioclUserDetail=ioclUserDetailsDAO.findUserByUserName(username);
 		IoclUserDetail ioclUserDetail=checkIfUserExist(username);
 		LOG.info("IoclUserDetail:::::::"+ioclUserDetail);
 		if(ioclUserDetail==null)

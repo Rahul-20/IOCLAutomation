@@ -22,9 +22,12 @@ public class UserManagementTestCases
 
 		UserManagementServices ums=(UserManagementServices)ac.getBean("userManagementServices");
 
-		//Response availableUsersResp=ums.getAvailableUsers();
-		//System.out.println("AvailableUsersResp:::::"+availableUsersResp.getEntity());
-
+		Response availableUsersResp=ums.getAvailableUsers("Admin");
+		System.out.println("AvailableUsersResp:::::"+availableUsersResp.getEntity());
+		
+		Response getDate=ums.getData("Admin");
+		System.out.println("getDate:::::"+getDate.getEntity());
+		
 		//Response availableUsersStatus=ums.supportedUserStatus();
 		//System.out.println("availableUsersStatus:::::"+availableUsersStatus.getEntity());
 
@@ -56,7 +59,7 @@ public class UserManagementTestCases
 			e.printStackTrace();
 		}*/
 
-		try
+		/*try
 		{
 			Response updateUser=ums.updateUser(4,"rahul15","rahul","111111111","Not Active",false,"ddddd","llll", "2017-09-09", "111111", roles);
 			System.out.println("UpdateUser::::::"+updateUser.getEntity());
@@ -64,7 +67,7 @@ public class UserManagementTestCases
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}
+		}*/
 
 		//Response deletUser=ums.deleteUser(2);
 		//System.out.println("Deleted User:::::::"+deletUser.getEntity());
