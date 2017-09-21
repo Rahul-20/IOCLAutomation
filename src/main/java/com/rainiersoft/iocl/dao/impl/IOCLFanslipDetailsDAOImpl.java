@@ -22,7 +22,7 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 
 	public IOCLFanslipDetailsDAOImpl() {}
 
-	public Long insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanPinExpirationOn,IoclContractorDetail ioclContractorDetail) 
+	public Long insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanPinExpirationOn,IoclContractorDetail ioclContractorDetail,int fanCreatedBy) 
 	{
 		Session session=getCurrentSession();
 		IoclFanslipDetail ioclFanslipDetail = new IoclFanslipDetail();
@@ -37,6 +37,7 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		ioclFanslipDetail.setIoclContractorDetail(ioclContractorDetail);
 		ioclFanslipDetail.setIoclSupportedPinstatus(fanPinStatusId);
 		ioclFanslipDetail.setFanExpirationOn(fanPinExpirationOn);
+		ioclFanslipDetail.setFanCreatedBy(fanCreatedBy);
 		Integer fanId=(Integer) session.save(ioclFanslipDetail);
 		return fanId.longValue();
 	}
@@ -85,9 +86,11 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 	}
 
 	@Override
-	public void updateFanPinDetails(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus) 
+	public void updateFanPinDetails(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus,int userID,Date fanUpdatedOn) 
 	{
 		ioclFanslipDetail.setIoclSupportedPinstatus(ioclSupportedPinstatus);
+		ioclFanslipDetail.setFanUpdatedBy(userID);
+		ioclFanslipDetail.setFanUpdatedOn(fanUpdatedOn);
 		saveOrUpdate(ioclFanslipDetail);
 	}
 }

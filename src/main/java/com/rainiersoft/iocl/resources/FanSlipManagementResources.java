@@ -56,7 +56,8 @@ public class FanSlipManagementResources
 			int bayNum = request.getBayNum();
 			String mobileNumber = request.getMobileNumber();
 			String contractorName=request.getContractorName();
-			return fanSlipManagementServices.fanSlipGeneration(truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName);
+			String createdBy=request.getFanCreatedBy();
+			return fanSlipManagementServices.fanSlipGeneration(truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName,createdBy);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -131,7 +132,8 @@ public class FanSlipManagementResources
 			String mobileNumber = request.getMobileNumber();
 			String contractorName=request.getContractorName();
 			int fanId=request.getFanId();
-			return fanSlipManagementServices.fanslipReGeneration(fanId,truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName);
+			String userName=request.getFanCreatedBy();
+			return fanSlipManagementServices.fanslipReGeneration(fanId,truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName,userName);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -146,14 +148,14 @@ public class FanSlipManagementResources
 	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response fanslipCancellation(@QueryParam("FanId") int fanId) throws IOCLWSException
+	public Response fanslipCancellation(@QueryParam("FanId") int fanId, @QueryParam("UserName") String userName) throws IOCLWSException
 	{
 		try
 		{
 			LOG.info("Entered into fanSlipGeneration resource class method........");
 			LOG.info("Entered into fanSlipGeneration resource class method........");
 			
-			return fanSlipManagementServices.fanslipCancellation(fanId);
+			return fanSlipManagementServices.fanslipCancellation(fanId,userName);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{

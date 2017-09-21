@@ -46,7 +46,7 @@ public class IoclFanslipDetail implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="FanCreationOn")
 	private Date fanCreationOn;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="FanExpirationOn")
 	private Date fanExpirationOn;
@@ -62,6 +62,15 @@ public class IoclFanslipDetail implements Serializable {
 
 	@Column(name="VehicleWgt")
 	private String vehicleWgt;
+
+	@Column(name="FanUpdatedBy")
+	private int fanUpdatedBy;
+
+	@Column(name="FanCreatedBy")
+	private int fanCreatedBy;
+
+	@Column(name="FanUpdatedOn")
+	private Date fanUpdatedOn;
 
 	//bi-directional many-to-one association to IoclContractorDetail
 	@ManyToOne
@@ -161,7 +170,7 @@ public class IoclFanslipDetail implements Serializable {
 	public void setIoclSupportedPinstatus(IoclSupportedPinstatus ioclSupportedPinstatus) {
 		this.ioclSupportedPinstatus = ioclSupportedPinstatus;
 	}
-	
+
 	public IoclContractorDetail getIoclContractorDetail() {
 		return this.ioclContractorDetail;
 	}
@@ -169,12 +178,36 @@ public class IoclFanslipDetail implements Serializable {
 	public void setIoclContractorDetail(IoclContractorDetail ioclContractorDetail) {
 		this.ioclContractorDetail = ioclContractorDetail;
 	}
-	
+
 	public Date getFanExpirationOn() {
 		return this.fanExpirationOn;
 	}
 
 	public void setFanExpirationOn(Date fanExpirationOn) {
 		this.fanExpirationOn = fanExpirationOn;
+	}
+
+	public int getFanUpdatedBy() {
+		return fanUpdatedBy;
+	}
+
+	public void setFanUpdatedBy(int fanUpdatedBy) {
+		this.fanUpdatedBy = fanUpdatedBy;
+	}
+
+	public int getFanCreatedBy() {
+		return fanCreatedBy;
+	}
+
+	public void setFanCreatedBy(int fanCreatedBy) {
+		this.fanCreatedBy = fanCreatedBy;
+	}
+
+	public Date getFanUpdatedOn() {
+		return fanUpdatedOn;
+	}
+
+	public void setFanUpdatedOn(Date fanUpdatedOn) {
+		this.fanUpdatedOn = fanUpdatedOn;
 	}
 }

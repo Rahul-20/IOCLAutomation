@@ -3,6 +3,7 @@ package com.rainiersoft.request.dto;
 public class FanSlipMangRequestBean 
 {
 	private String TruckNo;
+	private String FanCreatedBy;
 	private String DriverName;
 	private String ContractorName;
 	private String DriverLicNo;
@@ -14,21 +15,28 @@ public class FanSlipMangRequestBean
 	private String MobileNumber;
 	private int BayNum;
 	private int FanId;
-	
+
 	public int getFanId() {
 		return FanId;
 	}
 	public void setFanId(int fanId) {
 		FanId = fanId;
 	}
-	
+
+	public String getFanCreatedBy() {
+		return FanCreatedBy;
+	}
+	public void setFanCreatedBy(String fanCreatedBy) {
+		FanCreatedBy = fanCreatedBy;
+	}
+
 	public String getContractorName() {
 		return ContractorName;
 	}
 	public void setContractorName(String contractorName) {
 		ContractorName = contractorName;
 	}
-	
+
 	public String getMobileNumber() {
 		return MobileNumber;
 	}

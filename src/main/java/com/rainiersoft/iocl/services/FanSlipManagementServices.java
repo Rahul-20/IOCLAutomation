@@ -29,12 +29,14 @@ import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLLocationDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedPinStatusDAO;
 import com.rainiersoft.iocl.dao.IOCLTruckRegistrationDetailsDAO;
+import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclBcBayoperation;
 import com.rainiersoft.iocl.entity.IoclContractorDetail;
 import com.rainiersoft.iocl.entity.IoclFanslipDetail;
 import com.rainiersoft.iocl.entity.IoclLocationDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedPinstatus;
 import com.rainiersoft.iocl.entity.IoclTruckregistrationDetail;
+import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.CommonUtilites;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
@@ -51,6 +53,9 @@ public class FanSlipManagementServices
 
 	@Autowired
 	IOCLTruckRegistrationDetailsDAO iOCLTruckRegistrationDetailsDAO;
+
+	@Autowired
+	IOCLUserDetailsDAO iOCLUserDetailsDAO;
 
 	@Autowired
 	IOCLFanslipDetailsDAO ioclFanslipDetailsDAO;
@@ -72,7 +77,7 @@ public class FanSlipManagementServices
 
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response fanSlipGeneration(String truckNo,String driverName,String driverLicNo,String customer,String quantity,String vehicleWgt,String destination,String locationCode,String mobileNumber,int bayNum,String contarctorName) throws IOCLWSException
+	public Response fanSlipGeneration(String truckNo,String driverName,String driverLicNo,String customer,String quantity,String vehicleWgt,String destination,String locationCode,String mobileNumber,int bayNum,String contarctorName,String createdBy) throws IOCLWSException
 	{
 		try
 		{
@@ -110,9 +115,9 @@ public class FanSlipManagementServices
 						break;
 					}
 				}
+
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date createddateobj = new Date();
-				//String fanCreatedTimeStamp=df.format(dateobj).toString();
 
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(createddateobj);
@@ -128,9 +133,13 @@ public class FanSlipManagementServices
 
 				IoclSupportedPinstatus ioclSupportedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Created");
 
-				if(null!=ioclLocationDetail && null!=ioclSupportedPinstatus)
+				IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(createdBy);
+				int userID=ioclUserDetail.getUserId();
+
+				System.out.println("usrId:::"+userID);
+				if(null!=ioclLocationDetail && null!=ioclSupportedPinstatus && null!=ioclUserDetail)
 				{
-					Long fanId=ioclFanslipDetailsDAO.insertFanSlipDetails(bayNum, String.valueOf(fanPin),ioclSupportedPinstatus, truckID,createddateobj,quantity, vehicleWgt, destination, ioclLocationDetail,fanExpirationTime,ioclContractorDetail);
+					Long fanId=ioclFanslipDetailsDAO.insertFanSlipDetails(bayNum, String.valueOf(fanPin),ioclSupportedPinstatus, truckID,createddateobj,quantity, vehicleWgt, destination, ioclLocationDetail,fanExpirationTime,ioclContractorDetail,userID);
 					fanPinCreatedResponse.setFanPin(String.valueOf(fanPin));
 					fanPinCreatedResponse.setBayNum(bayNum);
 					fanPinCreatedResponse.setQuantity(quantity);
@@ -260,7 +269,7 @@ public class FanSlipManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response fanslipReGeneration(int fanId,String truckNo,String driverName,String driverLicNo,String customer,String quantity,String vehicleWgt,String destination,String locationCode,String mobileNumber,int bayNum,String contarctorName) throws IOCLWSException
+	public Response fanslipReGeneration(int fanId,String truckNo,String driverName,String driverLicNo,String customer,String quantity,String vehicleWgt,String destination,String locationCode,String mobileNumber,int bayNum,String contarctorName,String userName) throws IOCLWSException
 	{
 		try
 		{
@@ -270,8 +279,14 @@ public class FanSlipManagementServices
 
 			IoclFanslipDetail ioclFanslipDetail=ioclFanslipDetailsDAO.findFanPinByFanId(fanId);
 
+			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+			int userID=ioclUserDetail.getUserId();
+
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date updateTime = new Date();
+
 			//Set the fan pin status to cancel
-			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedCancelPinstatus);
+			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedCancelPinstatus,userID,updateTime);
 
 			//Check if the truck is there in truck table,If not insert truck details.  else get the truck id and insert new row in fan table
 			IoclTruckregistrationDetail ioclTruckDetails=iOCLTruckRegistrationDetailsDAO.findTruckByTruckNo(truckNo);
@@ -305,7 +320,7 @@ public class FanSlipManagementServices
 
 			if(null!=ioclLocationDetail && null!=ioclSupportedPinstatus)
 			{
-				Long latestFanId=ioclFanslipDetailsDAO.insertFanSlipDetails(bayNum, String.valueOf(fanPin),ioclSupportedPinstatus, truckID,createddateobj,quantity, vehicleWgt, destination, ioclLocationDetail,fanExpirationTime,ioclContractorDetail);
+				Long latestFanId=ioclFanslipDetailsDAO.insertFanSlipDetails(bayNum, String.valueOf(fanPin),ioclSupportedPinstatus, truckID,createddateobj,quantity, vehicleWgt, destination, ioclLocationDetail,fanExpirationTime,ioclContractorDetail,userID);
 				fanPinCreatedResponse.setFanPin(String.valueOf(fanPin));
 				fanPinCreatedResponse.setBayNum(bayNum);
 				fanPinCreatedResponse.setQuantity(quantity);
@@ -321,6 +336,7 @@ public class FanSlipManagementServices
 				fanPinCreatedResponse.setDriverName(driverName);
 				fanPinCreatedResponse.setCustomer(customer);
 				fanPinCreatedResponse.setVehicleWeight(vehicleWgt);
+	
 			}
 			return Response.status(Response.Status.OK).entity(fanPinCreatedResponse).build();
 		}
@@ -332,7 +348,7 @@ public class FanSlipManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response fanslipCancellation(int fanId) throws IOCLWSException
+	public Response fanslipCancellation(int fanId,String userName) throws IOCLWSException
 	{
 		LOG.info("Entered into fanslipCancellation service class method........");
 		try
@@ -342,9 +358,15 @@ public class FanSlipManagementServices
 			IoclSupportedPinstatus ioclSupportedCancelPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Cancelled");
 
 			IoclFanslipDetail ioclFanslipDetail=ioclFanslipDetailsDAO.findFanPinByFanId(fanId);
+			
+			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+			int userID=ioclUserDetail.getUserId();
 
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date updateTime = new Date();
+			
 			//Set the fan pin status to cancel
-			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedCancelPinstatus);
+			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedCancelPinstatus,userID,updateTime);
 
 			fanPinCancellationResponseBean.setMessage("SuccessFully Cancelled");
 			fanPinCancellationResponseBean.setSuccessFlag(true);
