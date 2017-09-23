@@ -94,7 +94,10 @@ public class LocationsManagementResources
 			String quantityStatus=locationMangRequestBean.getOperationalStatus();
 			String locationAddress=locationMangRequestBean.getLocationAddress();
 			int locationId=locationMangRequestBean.getLocationId();
-			return locationManagementServices.updateLocation(locationName,locationCode,quantityStatus,locationAddress,locationId,locationMangRequestBean.getEditLocationNameFlag(),locationMangRequestBean.getEditLocationCodeFlag());
+			String city=locationMangRequestBean.getCity();
+			String pinCode=locationMangRequestBean.getPinCode();
+			String state=locationMangRequestBean.getState();
+			return locationManagementServices.updateLocation(locationName,locationCode,quantityStatus,locationAddress,locationId,locationMangRequestBean.getEditLocationNameFlag(),locationMangRequestBean.getEditLocationCodeFlag(),city,pinCode,state);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{

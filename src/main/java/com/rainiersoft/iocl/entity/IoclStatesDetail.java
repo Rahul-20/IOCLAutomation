@@ -28,6 +28,10 @@ public class IoclStatesDetail implements Serializable {
 	@OneToMany(mappedBy="ioclStatesDetail")
 	private List<IoclContractorDetail> ioclContractorDetails;
 
+	//bi-directional many-to-one association to IoclLocationDetails
+	@OneToMany(mappedBy="ioclStatesDetail")
+	private List<IoclLocationDetail> ioclLocationDetail;
+
 	public IoclStatesDetail() {
 	}
 
@@ -53,5 +57,13 @@ public class IoclStatesDetail implements Serializable {
 
 	public void setIoclContractorDetails(List<IoclContractorDetail> ioclContractorDetails) {
 		this.ioclContractorDetails = ioclContractorDetails;
+	}
+	
+	public List<IoclLocationDetail> getIoclLocationDetail() {
+		return this.ioclLocationDetail;
+	}
+
+	public void setIoclLocationDetail(List<IoclLocationDetail> ioclLocationDetail) {
+		this.ioclLocationDetail = ioclLocationDetail;
 	}
 }

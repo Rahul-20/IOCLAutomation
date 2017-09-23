@@ -118,7 +118,7 @@ public class BaysManagementResources
 	}
 
 	@Path("/getAvailableBays")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@RolesAllowed({"TTES Operator","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -194,4 +194,5 @@ public class BaysManagementResources
 			throw iOCLWSException;
 		}
 	}
+
 }

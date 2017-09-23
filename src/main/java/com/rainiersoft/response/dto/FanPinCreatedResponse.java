@@ -10,15 +10,15 @@ public class FanPinCreatedResponse
 	private String fanPin;
 	private String customer;
 	private int bayNum;
-	private String bayStatus;
+	//private String bayStatus;
 	private String quantity;
 	private String vehicleWeight;
 	private String destination;
 	private String locationCode;
 	private String contractorName;
 	private String fanPinStatus;
-	private Date fanPinCreation;
-	private Date fanPinExpiration;
+	private String fanPinCreation;
+	private String fanPinExpiration;
 
 	public FanPinCreatedResponse()
 	{
@@ -73,13 +73,13 @@ public class FanPinCreatedResponse
 		this.bayNum = bayNum;
 	}
 
-	public String getBayStatus() {
+	/*public String getBayStatus() {
 		return bayStatus;
 	}
 
 	public void setBayStatus(String bayStatus) {
 		this.bayStatus = bayStatus;
-	}
+	}*/
 
 	public String getQuantity() {
 		return quantity;
@@ -129,19 +129,19 @@ public class FanPinCreatedResponse
 		this.fanPinStatus = fanPinStatus;
 	}
 
-	public Date getFanPinCreation() {
+	public String getFanPinCreation() {
 		return fanPinCreation;
 	}
 
-	public void setFanPinCreation(Date fanPinCreation) {
+	public void setFanPinCreation(String fanPinCreation) {
 		this.fanPinCreation = fanPinCreation;
 	}
 
-	public Date getFanPinExpiration() {
+	public String getFanPinExpiration() {
 		return fanPinExpiration;
 	}
 
-	public void setFanPinExpiration(Date fanPinExpiration) {
+	public void setFanPinExpiration(String fanPinExpiration) {
 		this.fanPinExpiration = fanPinExpiration;
 	}
 	

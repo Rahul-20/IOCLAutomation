@@ -17,8 +17,8 @@ public class GetAllLatestFanSlipsDataResponseBean
 	private String locationCode;
 	private String contractorName;
 	private String fanPinStatus;
-	private Date fanPinCreation;
-	private Date fanPinExpiration;
+	private String fanPinCreation;
+	private String fanPinExpiration;
 	
 	public int getFanId() {
 		return fanId;
@@ -98,16 +98,16 @@ public class GetAllLatestFanSlipsDataResponseBean
 	public void setFanPinStatus(String fanPinStatus) {
 		this.fanPinStatus = fanPinStatus;
 	}
-	public Date getFanPinCreation() {
+	public String getFanPinCreation() {
 		return fanPinCreation;
 	}
-	public void setFanPinCreation(Date fanPinCreation) {
+	public void setFanPinCreation(String fanPinCreation) {
 		this.fanPinCreation = fanPinCreation;
 	}
-	public Date getFanPinExpiration() {
+	public String getFanPinExpiration() {
 		return fanPinExpiration;
 	}
-	public void setFanPinExpiration(Date fanPinExpiration) {
+	public void setFanPinExpiration(String fanPinExpiration) {
 		this.fanPinExpiration = fanPinExpiration;
 	}
 }

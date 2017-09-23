@@ -220,9 +220,8 @@ public class UserManagementServices
 		try
 		{
 			LOG.info("Entered into updateUser service class method........");
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DateFormat df = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			Date updatedTimeStamp = new Date();
-			//String updatedTimeStamp=df.format(dateobj).toString();
 			CreationAndUpdationResponseBean updationResponseBean=new CreationAndUpdationResponseBean();
 			if(editUserNameFlag)
 			{

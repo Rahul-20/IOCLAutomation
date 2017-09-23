@@ -116,12 +116,12 @@ public class FanSlipManagementServices
 					}
 				}
 
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 				Date createddateobj = new Date();
 
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(createddateobj);
-				cal.add(Calendar.HOUR, 3);
+				cal.add(Calendar.HOUR, Integer.parseInt(appProps.getProperty("FanExpirationNumberOfHours")));
 				Date fanExpirationTime = cal.getTime();
 				LOG.info("fanExpirationTime::::::"+dateFormat.format(fanExpirationTime));
 
@@ -131,9 +131,11 @@ public class FanSlipManagementServices
 
 				IoclContractorDetail ioclContractorDetail=iOCLContractorDetailsDAO.findContractorByContractorName(contarctorName);
 
-				IoclSupportedPinstatus ioclSupportedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Created");
+				IoclSupportedPinstatus ioclSupportedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus(appProps.getProperty("FanCreatedStatus"));
 
+				System.out.println("createdBy::::::"+createdBy);
 				IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(createdBy);
+				System.out.println("ioclUserDetail:::::::"+ioclUserDetail);
 				int userID=ioclUserDetail.getUserId();
 
 				System.out.println("usrId:::"+userID);
@@ -146,9 +148,9 @@ public class FanSlipManagementServices
 					fanPinCreatedResponse.setContractorName(contarctorName);
 					fanPinCreatedResponse.setDestination(destination);
 					fanPinCreatedResponse.setFanId(fanId);
-					fanPinCreatedResponse.setFanPinCreation(createddateobj);
-					fanPinCreatedResponse.setFanPinExpiration(fanExpirationTime);
-					fanPinCreatedResponse.setFanPinStatus("Created");
+					fanPinCreatedResponse.setFanPinCreation(dateFormat.format(createddateobj));
+					fanPinCreatedResponse.setFanPinExpiration(dateFormat.format(fanExpirationTime));
+					fanPinCreatedResponse.setFanPinStatus(appProps.getProperty("FanCreatedStatus"));
 					fanPinCreatedResponse.setLocationCode(locationCode);
 					fanPinCreatedResponse.setQuantity(quantity);
 					fanPinCreatedResponse.setTruckNumber(truckNo);
@@ -158,7 +160,8 @@ public class FanSlipManagementServices
 				}
 			}
 			return Response.status(Response.Status.OK).entity(fanPinCreatedResponse).build();
-		}catch(Exception exception)
+		}
+		catch(Exception exception)
 		{
 			LOG.info("Logging the occured exception in the service class getFanStaticData method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
@@ -212,16 +215,14 @@ public class FanSlipManagementServices
 		{
 			List<GetAllLatestFanSlipsDataResponseBean> listGetAllLatestFanSlipsDataResponseBean=new ArrayList<GetAllLatestFanSlipsDataResponseBean>();
 
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("DatePickerFormat"));
 			Date selDate=(Date)dateFormat.parse(selectedDate);
-			/*Date currentDate = new Date();
-			LOG.info("Current Date:::::"+dateFormat.format(currentDate));
-			 */
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(selDate);
-			cal.add(Calendar.HOUR, -24);
+			LOG.info("PastFanSlipDetails Configured Value....."+appProps.getProperty("NumberOfHoursPastFanSlipDetails"));
+			cal.add(Calendar.HOUR, Integer.parseInt(appProps.getProperty("NumberOfHoursPastFanSlipDetails")));
 			Date hoursBack = cal.getTime();
-			LOG.info("PastDate::::::"+dateFormat.format(hoursBack));
+			LOG.info("PastDate......."+dateFormat.format(hoursBack));
 
 			List<IoclFanslipDetail> listOfPastFanslips=ioclFanslipDetailsDAO.findAllLatestFanSlips(selDate,hoursBack);
 
@@ -233,8 +234,8 @@ public class FanSlipManagementServices
 				getAllLatestFanSlipsDataResponseBean.setDestination(ioclFanslipDetail.getDestination());
 				getAllLatestFanSlipsDataResponseBean.setFanId(ioclFanslipDetail.getFanId());
 				getAllLatestFanSlipsDataResponseBean.setFanPin(ioclFanslipDetail.getFanPin());
-				getAllLatestFanSlipsDataResponseBean.setFanPinCreation(ioclFanslipDetail.getFanCreationOn());
-				getAllLatestFanSlipsDataResponseBean.setFanPinExpiration(ioclFanslipDetail.getFanExpirationOn());
+				getAllLatestFanSlipsDataResponseBean.setFanPinCreation(dateFormat.format(ioclFanslipDetail.getFanCreationOn()));
+				getAllLatestFanSlipsDataResponseBean.setFanPinExpiration(dateFormat.format(ioclFanslipDetail.getFanExpirationOn()));
 				getAllLatestFanSlipsDataResponseBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
 				getAllLatestFanSlipsDataResponseBean.setLocationCode(ioclFanslipDetail.getIoclLocationDetail().getLocationCode());
 				getAllLatestFanSlipsDataResponseBean.setQuantity(ioclFanslipDetail.getQuantity());
@@ -245,7 +246,8 @@ public class FanSlipManagementServices
 				getAllLatestFanSlipsDataResponseBean.setVehicleWeight(ioclFanslipDetail.getVehicleWgt());
 
 				List<IoclBcBayoperation> listOfBCUpdates=iOCLBCBayOperationsDAO.findBayUpdatesByFanPin(ioclFanslipDetail.getFanPin());
-				LOG.info("findBayUpdatesByFanPin::::::::"+listOfBCUpdates.size());
+				LOG.info("findBayUpdatesByFanPin::::::::"+listOfBCUpdates);
+
 				//Fpin is generated but truck has not reached the point, so the BC table might not contain records for the truck.
 				if(listOfBCUpdates.size()==0)
 				{
@@ -275,14 +277,14 @@ public class FanSlipManagementServices
 		{
 			FanPinCreatedResponse fanPinCreatedResponse=new FanPinCreatedResponse();
 
-			IoclSupportedPinstatus ioclSupportedCancelPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Cancelled");
+			IoclSupportedPinstatus ioclSupportedCancelPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus(appProps.getProperty("FanCancelledStatus"));
 
 			IoclFanslipDetail ioclFanslipDetail=ioclFanslipDetailsDAO.findFanPinByFanId(fanId);
 
 			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
 			int userID=ioclUserDetail.getUserId();
 
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			Date updateTime = new Date();
 
 			//Set the fan pin status to cancel
@@ -308,7 +310,7 @@ public class FanSlipManagementServices
 
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(createddateobj);
-			cal.add(Calendar.HOUR, 3);
+			cal.add(Calendar.HOUR, Integer.parseInt(appProps.getProperty("FanExpirationNumberOfHours")));
 			Date fanExpirationTime = cal.getTime();
 
 			//GET THE LOCATIONID and STATUSID
@@ -316,7 +318,7 @@ public class FanSlipManagementServices
 
 			IoclContractorDetail ioclContractorDetail=iOCLContractorDetailsDAO.findContractorByContractorName(contarctorName);
 
-			IoclSupportedPinstatus ioclSupportedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Created");
+			IoclSupportedPinstatus ioclSupportedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus(appProps.getProperty("FanCreatedStatus"));
 
 			if(null!=ioclLocationDetail && null!=ioclSupportedPinstatus)
 			{
@@ -327,16 +329,16 @@ public class FanSlipManagementServices
 				fanPinCreatedResponse.setContractorName(contarctorName);
 				fanPinCreatedResponse.setDestination(destination);
 				fanPinCreatedResponse.setFanId(latestFanId);
-				fanPinCreatedResponse.setFanPinCreation(createddateobj);
-				fanPinCreatedResponse.setFanPinExpiration(fanExpirationTime);
-				fanPinCreatedResponse.setFanPinStatus("Created");
+				fanPinCreatedResponse.setFanPinCreation(dateFormat.format(createddateobj));
+				fanPinCreatedResponse.setFanPinExpiration(dateFormat.format(fanExpirationTime));
+				fanPinCreatedResponse.setFanPinStatus(appProps.getProperty("FanCreatedStatus"));
 				fanPinCreatedResponse.setLocationCode(locationCode);
 				fanPinCreatedResponse.setQuantity(quantity);
 				fanPinCreatedResponse.setTruckNumber(truckNo);
 				fanPinCreatedResponse.setDriverName(driverName);
 				fanPinCreatedResponse.setCustomer(customer);
 				fanPinCreatedResponse.setVehicleWeight(vehicleWgt);
-	
+
 			}
 			return Response.status(Response.Status.OK).entity(fanPinCreatedResponse).build();
 		}
@@ -355,16 +357,16 @@ public class FanSlipManagementServices
 		{
 			FanPinCancellationResponseBean fanPinCancellationResponseBean=new FanPinCancellationResponseBean();
 
-			IoclSupportedPinstatus ioclSupportedCancelPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Cancelled");
+			IoclSupportedPinstatus ioclSupportedCancelPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus(appProps.getProperty("FanCancelledStatus"));
 
 			IoclFanslipDetail ioclFanslipDetail=ioclFanslipDetailsDAO.findFanPinByFanId(fanId);
-			
+
 			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
 			int userID=ioclUserDetail.getUserId();
 
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			Date updateTime = new Date();
-			
+
 			//Set the fan pin status to cancel
 			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedCancelPinstatus,userID,updateTime);
 

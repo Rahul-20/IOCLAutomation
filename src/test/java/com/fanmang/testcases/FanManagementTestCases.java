@@ -15,7 +15,7 @@ public class FanManagementTestCases
 		System.out.println("sc::" + ac);
 
 		FanSlipManagementServices fms=(FanSlipManagementServices)ac.getBean("fanSlipManagementServices");
-		Response fanCreationResp=fms.fanSlipGeneration("AP0J8080","Rahul","1121233211","Iocl","1000","10000","Hyderabad","HYD","999999999",1,"Rahul","Rahul2");
+		Response fanCreationResp=fms.fanSlipGeneration("AP0J8080","Rahul","1121233211","Iocl","1000","10000","Hyderabad","HYD1","999999999",1,"Rahul","Rahul");
 		System.out.println("fanCreationResp::::::"+fanCreationResp.getEntity());
 	}
 }

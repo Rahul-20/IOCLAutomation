@@ -33,10 +33,21 @@ public class IoclLocationDetail implements Serializable {
 	@Column(name="Address")
 	private String locationAddress;
 
+	@Column(name="city")
+	private String city;
+
+	@Column(name="PinCode")
+	private String pinCode;
+
 	//bi-directional many-to-one association to IoclSupportedLocationstatus
 	@ManyToOne
 	@JoinColumn(name="LocationStatusId")
 	private IoclSupportedLocationstatus ioclSupportedLocationstatus;
+
+	//bi-directional many-to-one association to IoclStatesDetail
+	@ManyToOne
+	@JoinColumn(name="StateId")
+	private IoclStatesDetail ioclStatesDetail;
 
 	public IoclLocationDetail() {
 	}
@@ -79,5 +90,29 @@ public class IoclLocationDetail implements Serializable {
 
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getPinCode() {
+		return pinCode;
+	}
+
+	public void setPinCode(String pinCode) {
+		this.pinCode = pinCode;
+	}
+
+	public IoclStatesDetail getIoclStatesDetail() {
+		return ioclStatesDetail;
+	}
+
+	public void setIoclStatesDetail(IoclStatesDetail ioclStatesDetail) {
+		this.ioclStatesDetail = ioclStatesDetail;
 	}
 }

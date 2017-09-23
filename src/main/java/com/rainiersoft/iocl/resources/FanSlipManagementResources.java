@@ -1,12 +1,10 @@
 package com.rainiersoft.iocl.resources;
 
-import java.sql.Date;
-
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -34,8 +32,7 @@ public class FanSlipManagementResources
 	public FanSlipManagementResources() {}
 
 	@Path("/fanslipgen")
-	@PermitAll
-	@RolesAllowed({"Operator"})
+	@RolesAllowed({"TTES Operator","Supervisor"})
 	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -67,8 +64,7 @@ public class FanSlipManagementResources
 	}
 
 	@Path("/getFanStaticData")
-	@RolesAllowed({"Admin", "Super Admin"})
-	@PermitAll
+	@RolesAllowed({"TTES Operator","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -88,8 +84,7 @@ public class FanSlipManagementResources
 	}
 
 	@Path("/getFanslipsDetails")
-	@RolesAllowed({"Admin", "Super Admin"})
-	@PermitAll
+	@RolesAllowed({"TTES Operator","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -109,8 +104,7 @@ public class FanSlipManagementResources
 	}
 
 	@Path("/fanslipReGeneration")
-	@PermitAll
-	@RolesAllowed({"Operator"})
+	@RolesAllowed({"TTES Operator","Supervisor"})
 	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -118,8 +112,7 @@ public class FanSlipManagementResources
 	{
 		try
 		{
-			LOG.info("Entered into fanSlipGeneration resource class method........");
-			LOG.info("Entered into fanSlipGeneration resource class method........");
+			LOG.info("Entered into fanSlipReGeneration resource class method........");
 			String truckNo = request.getTruckNo();
 			String driverName = request.getDriverName();
 			String driverLicNo = request.getDriverLicNo();
@@ -143,9 +136,8 @@ public class FanSlipManagementResources
 	}
 	
 	@Path("/fanslipCancellation")
-	@PermitAll
-	@RolesAllowed({"Operator"})
-	@POST
+	@RolesAllowed({"TTES Operator","Supervisor"})
+	@PUT
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
 	public Response fanslipCancellation(@QueryParam("FanId") int fanId, @QueryParam("UserName") String userName) throws IOCLWSException
@@ -163,5 +155,4 @@ public class FanSlipManagementResources
 			throw iOCLWSException;
 		}
 	}
-
 }
