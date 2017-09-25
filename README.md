@@ -12,5 +12,16 @@ Spring 4.1.0.RELEASE
 Jersey 2.12
 Hibernate 4.3.11.Final
 
-ReleaseVersion: 1.0
-Includes SuperAdmin and admin features.
+Supported Users: 
+1.SuperAdmin
+2.Admin
+3.TTES Operator
+4.Supervisor
+
+Supported Features:
+1.BayMang
+2.FanslipMang
+3.UserMang
+4.ContractorMang
+5.LocationsMang
+6.QunatityMang
