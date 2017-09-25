@@ -56,33 +56,8 @@ This assumes you have Eclipse, m2e Maven plugin, Maven, and Git installed.
         [INFO] ------------------------------------------------------------------------
         [INFO]
         [INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ IOCLAutoma
-        tion ---
-        [INFO] Using 'UTF-8' encoding to copy filtered resources.
-        [INFO] Copying 5 resources
-        [INFO]
-        [INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ IOCLAutomation
-        ---
-        [INFO] Changes detected - recompiling the module!
         [INFO] Compiling 130 source files to C:\IOCLAutomation\IoclAutomation\target\cla
-        sses
-        [INFO]
-        [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ IO
-        CLAutomation ---
-        [INFO] Using 'UTF-8' encoding to copy filtered resources.
-        [INFO] skip non existing resourceDirectory C:\IOCLAutomation\IoclAutomation\src\
-        test\resources
-        [INFO]
-        [INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ IOCLAut
-        omation ---
-        [INFO] Nothing to compile - all classes are up to date
-        [INFO]
-        [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ IOCLAutomation ---
-
-        [INFO]
-        [INFO] --- maven-war-plugin:2.2:war (default-war) @ IOCLAutomation ---
-        [INFO] Packaging webapp
-        [INFO] Assembling webapp [IOCLAutomation] in [C:\IOCLAutomation\IoclAutomation\t
-        arget\IOCLAutomation]
+        sse
         [INFO] Processing war project
         [INFO] Copying webapp resources [C:\IOCLAutomation\IoclAutomation\src\main\webap
         p]
