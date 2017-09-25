@@ -31,7 +31,8 @@ This assumes you have Eclipse, m2e Maven plugin, Maven, and Git installed.
         
   3. Clean the project as below mentioned.
   
-        $mvn clean  
+        $mvn clean
+        
         [INFO] Scanning for projects...
         [INFO]
         [INFO] ------------------------------------------------------------------------
@@ -47,6 +48,7 @@ This assumes you have Eclipse, m2e Maven plugin, Maven, and Git installed.
   4. Build the project as below mentioned.
   
         $mvn install
+        
         [INFO] Scanning for projects...
         [INFO]
         [INFO] ------------------------------------------------------------------------
