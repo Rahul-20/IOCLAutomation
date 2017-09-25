@@ -30,6 +30,7 @@ This assumes you have Eclipse, m2e Maven plugin, Maven, and Git installed.
         OS name: "windows 7", version: "6.1", arch: "amd64", family: "dos"
         
   3. Clean the project as below mentioned.
+  
         $mvn clean  
         [INFO] Scanning for projects...
         [INFO]
@@ -44,6 +45,7 @@ This assumes you have Eclipse, m2e Maven plugin, Maven, and Git installed.
         [INFO] ------------------------------------------------------------------------
   
   4. Build the project as below mentioned.
+  
         $mvn install
         [INFO] Scanning for projects...
         [INFO]
