@@ -71,21 +71,21 @@ This assumes you have Eclipse, m2e Maven plugin, Maven, and Git installed.
         [INFO] ------------------------------------------------------------------------
        
 
-##Web Server:
+###Web Server:
 
 Tomcat-version[8]
 
-##Frameworks Used:
+###Frameworks Used:
 
 Java,Spring Framework,Jersery Restful Framework,Hibernate ORM Framework,Mysql Database,SL4J logging framework
 
-##Versions: 
+###Versions: 
 
 Java 1.7,Spring 4.1.0.RELEASE,Jersey 2.12,Hibernate 4.3.11.Final
 
-##Supported Users: 
+###Supported Users: 
 
 SuperAdmin,Admin,TTES Operator,Supervisor
 
-##Supported Features:
+###Supported Features:
 BayMang,FanslipMang,UserMang,ContractorMang,LocationsMang,QunatityMang
