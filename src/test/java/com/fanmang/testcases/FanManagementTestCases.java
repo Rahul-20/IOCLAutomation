@@ -20,8 +20,8 @@ public class FanManagementTestCases
 		//Response fanCreationResp=fms.fanSlipGeneration("AP0J8080","Rahul","1121233211","Iocl","1000","10000","Hyderabad","HYD1","999999999",1,"Rahul","Rahul");
 		//System.out.println("fanCreationResp::::::"+fanCreationResp.getEntity());
 		
-		Response allFanSlips=fms.getAllLatestFanslipsData("2017-09-23");
-		System.out.println("All FanSlips........."+allFanSlips.getEntity());
+		//Response allFanSlips=fms.getAllLatestFanslipsData("2017-09-23");
+		//System.out.println("All FanSlips........."+allFanSlips.getEntity());
 		
 	}
 }
