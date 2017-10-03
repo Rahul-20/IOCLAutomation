@@ -35,7 +35,7 @@ import com.rainiersoft.response.dto.GetContractorStaticDataResponseBean;
 
 /**
  * This is the class for contractors management services
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  */
 
 @Service

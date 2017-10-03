@@ -6,6 +6,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+
+/**
+ * This is the class for CommonUtilites across all the methods.
+ * @author RahulKumarPamidi
+ */
+
 public class CommonUtilites 
 {
 	public static int pinGen()

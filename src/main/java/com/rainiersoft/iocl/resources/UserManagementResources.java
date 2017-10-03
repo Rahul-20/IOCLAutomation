@@ -32,7 +32,7 @@ import com.rainiersoft.request.dto.UserMangRequestBean;
 
 /**
  * This is the class for User management resources.
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  */
 
 @Path("/usermanagement")

@@ -20,7 +20,7 @@ import com.rainiersoft.request.dto.ContractorRequestBean;
 
 /**
  * This is the class for contractors management resources.
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  */
 
 @Path("/contractorsmanagement")

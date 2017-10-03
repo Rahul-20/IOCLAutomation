@@ -10,6 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import com.rainiersoft.response.dto.ErrorResponseBean;
 
+
+/**
+ * User defined exception Handler for all the modules.
+ * @author RahulKumarPamidi
+ */
+
 @Provider
 @Singleton
 public class IOCLExceptionHandler implements ExceptionMapper<IOCLWSException>

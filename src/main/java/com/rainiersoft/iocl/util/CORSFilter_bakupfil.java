@@ -1,4 +1,4 @@
-package com.rainiersoft.iocl.util;
+/*package com.rainiersoft.iocl.util;
 
 import java.io.IOException;
 
@@ -29,3 +29,4 @@ public class CORSFilter_bakupfil implements Filter {
 	public void destroy() {}
 }
 
+*/

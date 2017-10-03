@@ -1,5 +1,10 @@
 package com.rainiersoft.iocl.util;
 
+/**
+ * This is the class contains error messages across all the modules.
+ * @author RahulKumarPamidi
+ */
+
 public class ErrorMessageConstants 
 {
 	public static final String User_Exist_Msg="User Already Exist!!";

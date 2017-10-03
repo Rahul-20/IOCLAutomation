@@ -19,7 +19,7 @@ import com.rainiersoft.iocl.dao.GenericDAO;
 /**
  * This is a Implementation class for generic methods used across
  * all other DAO Implemention classes.
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  * 
  */
 

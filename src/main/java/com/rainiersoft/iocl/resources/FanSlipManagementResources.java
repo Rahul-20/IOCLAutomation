@@ -20,6 +20,11 @@ import com.rainiersoft.iocl.services.FanSlipManagementServices;
 import com.rainiersoft.request.dto.FanSlipMangRequestBean;
 
 
+/**
+ * This is the class for FanSlip Management Resources
+ * @author RahulKumarPamidi
+ */
+
 @Path("/fanslipmanagement")
 @Component
 public class FanSlipManagementResources

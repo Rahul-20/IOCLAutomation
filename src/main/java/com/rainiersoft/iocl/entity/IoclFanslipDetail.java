@@ -26,8 +26,8 @@ import javax.persistence.TemporalType;
 	@NamedQuery(name="IoclFanslipDetail.findAll", query="SELECT i FROM IoclFanslipDetail i"),
 	@NamedQuery(name="findFanPinStatusByFanPin", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin"),
 	@NamedQuery(name="findFanPinByFanId", query="SELECT i FROM IoclFanslipDetail i where fanId=:fanId"),
-	@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn > :pastDate and f.fanCreationOn < :currDate and f.bayNo=:bayNo"),
-	@NamedQuery(name="findAllLatestFanSlips",query="select f from IoclFanslipDetail f where f.fanCreationOn > :pastDate and f.fanCreationOn < :currDate")	
+	@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn >= :pastDate and f.fanCreationOn <= :currDate and f.bayNo=:bayNo"),
+	@NamedQuery(name="findAllLatestFanSlips",query="select f from IoclFanslipDetail f where f.fanCreationOn>= :pastDate and f.fanCreationOn<= :currDate")	
 })
 public class IoclFanslipDetail implements Serializable {
 	private static final long serialVersionUID = 1L;

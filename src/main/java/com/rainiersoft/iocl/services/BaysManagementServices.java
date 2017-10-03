@@ -37,15 +37,19 @@ import com.rainiersoft.iocl.entity.IoclBcBayoperation;
 import com.rainiersoft.iocl.entity.IoclFanslipDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedBaystatus;
 import com.rainiersoft.iocl.entity.IoclSupportedBaytype;
-import com.rainiersoft.iocl.entity.IoclTruckregistrationDetail;
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.AllBayDetailsResponseBean;
 import com.rainiersoft.response.dto.AvailableBaysResponseBean;
 import com.rainiersoft.response.dto.BayCreationResponseBean;
 import com.rainiersoft.response.dto.BayDeletionResponseBean;
-import com.rainiersoft.response.dto.FanslipsAssignedBean;
 import com.rainiersoft.response.dto.GetBayStaticDataResponseBean;
+
+
+/**
+ * This is the class for Bays Management Services
+ * @author RahulKumarPamidi
+ */
 
 @Service
 @Singleton
@@ -491,7 +495,7 @@ public class BaysManagementServices
 						{
 							//else different status, then assign one more and keep in queue list
 							//check top 10 records, count of different status, if greater then 2 put in queue
-							if(!(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("completed")) || !(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("Errored Out")))
+							if(!(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("completed")) /*|| !(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("Errored Out"))*/)
 							{
 								pinSet.add(ioclBcBayoperation.getFanPin());
 								allCompletedFlag=false;
@@ -508,34 +512,34 @@ public class BaysManagementServices
 						}
 						else
 						{
-							for(String pinMap : pinSet)
+							/*for(String pinMap : pinSet)
+							{*/
+							//FanslipsAssignedBean fanslipsAssignedBean=new FanslipsAssignedBean();
+							if(pinSet.size()<supportedQueueSize)
 							{
-								//FanslipsAssignedBean fanslipsAssignedBean=new FanslipsAssignedBean();
-								if(pinSet.size()<supportedQueueSize)
-								{
-									//fanslipsAssignedBean.setFanPin(pinMap);
-									//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
-									//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
-									//listFanslipsAssignedBean.add(fanslipsAssignedBean);
-									availableBaysResponseBean.setBayNumber(bayNumber);
-									availableBaysResponseBean.setBayName(bayName);
-									availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
-									availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayAvailableInqueueFlag"));
-									//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-								}
-								else if(pinSet.size()==supportedQueueSize)
-								{
-									//fanslipsAssignedBean.setFanPin(pinMap);
-									//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
-									//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
-									//listFanslipsAssignedBean.add(fanslipsAssignedBean);
-									availableBaysResponseBean.setBayNumber(bayNumber);
-									availableBaysResponseBean.setBayName(bayName);
-									availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
-									availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayNotAvailableFlag"));
-									//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-								}
+								//fanslipsAssignedBean.setFanPin(pinMap);
+								//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
+								//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+								//listFanslipsAssignedBean.add(fanslipsAssignedBean);
+								availableBaysResponseBean.setBayNumber(bayNumber);
+								availableBaysResponseBean.setBayName(bayName);
+								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
+								availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayAvailableInqueueFlag"));
+								//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
 							}
+							else if(pinSet.size()==supportedQueueSize)
+							{
+								//fanslipsAssignedBean.setFanPin(pinMap);
+								//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
+								//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+								//listFanslipsAssignedBean.add(fanslipsAssignedBean);
+								availableBaysResponseBean.setBayNumber(bayNumber);
+								availableBaysResponseBean.setBayName(bayName);
+								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
+								availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayNotAvailableFlag"));
+								//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
+							}
+							//}
 							queueBays.add(availableBaysResponseBean);
 						}
 					}

@@ -20,7 +20,7 @@ import com.rainiersoft.request.dto.LocationMangRequestBean;
 
 /**
  * This is the class for location management resources.
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  */
 
 @Path("/locationsmanagement")

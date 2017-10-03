@@ -1,8 +1,12 @@
 package com.rainiersoft.iocl.exception;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/**
+ * User defined exception class for all the modules.
+ * @author RahulKumarPamidi
+ */
 
 public class IOCLWSException extends Exception
 {

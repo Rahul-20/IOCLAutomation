@@ -21,7 +21,7 @@ import com.rainiersoft.request.dto.BaysMangRequestBean;
 
 /**
  * This is the class for bays management resources.
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  */
 
 @Path("/baysmanagement")

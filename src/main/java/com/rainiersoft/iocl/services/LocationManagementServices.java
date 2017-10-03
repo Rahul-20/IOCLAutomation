@@ -31,6 +31,12 @@ import com.rainiersoft.response.dto.LocationCreationResponseBean;
 import com.rainiersoft.response.dto.LocationDeletionResponseBean;
 import com.rainiersoft.response.dto.LocationDetailsResponseBean;
 
+
+/**
+ * This is the class for LocationManagementServices
+ * @author RahulKumarPamidi
+ */
+
 @Service
 @Singleton
 public class LocationManagementServices 

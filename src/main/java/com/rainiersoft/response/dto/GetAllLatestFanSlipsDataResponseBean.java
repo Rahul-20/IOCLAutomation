@@ -4,6 +4,15 @@ import java.util.Date;
 
 public class GetAllLatestFanSlipsDataResponseBean 
 {
+	@Override
+	public String toString() {
+		return "GetAllLatestFanSlipsDataResponseBean [fanId=" + fanId + ", truckNumber=" + truckNumber + ", driverName="
+				+ driverName + ", fanPin=" + fanPin + ", customer=" + customer + ", bayNum=" + bayNum + ", bayStatus="
+				+ bayStatus + ", quantity=" + quantity + ", vehicleWeight=" + vehicleWeight + ", destination="
+				+ destination + ", locationCode=" + locationCode + ", contractorName=" + contractorName
+				+ ", fanPinStatus=" + fanPinStatus + ", fanPinCreation=" + fanPinCreation + ", fanPinExpiration="
+				+ fanPinExpiration + "]";
+	}
 	private int fanId;
 	private String truckNumber;
 	private String driverName;

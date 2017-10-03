@@ -20,7 +20,7 @@ import com.rainiersoft.request.dto.QunatityMangRequestBean;
 
 /**
  * This is the class for Qunatity management resources.
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  */
 
 @Path("/quantitymanagement")

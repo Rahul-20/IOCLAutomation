@@ -24,6 +24,12 @@ import com.rainiersoft.response.dto.QuantityCreationResponseBean;
 import com.rainiersoft.response.dto.QuantityDeletionResponseBean;
 import com.rainiersoft.response.dto.QuantityDetailsResponseBean;
 
+
+/**
+ * This is the class for QuantitiesManagementServices
+ * @author RahulKumarPamidi
+ */
+
 @Service
 @Singleton
 public class QuantitiesManagementServices 

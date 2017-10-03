@@ -1,18 +1,25 @@
 package com.rainiersoft.iocl.dao.impl;
 
-import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
-import com.rainiersoft.iocl.entity.IoclContractorDetail;
-import com.rainiersoft.iocl.entity.IoclFanslipDetail;
-import com.rainiersoft.iocl.entity.IoclLocationDetail;
-import com.rainiersoft.iocl.entity.IoclSupportedPinstatus;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 import javax.inject.Singleton;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
+import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
+import com.rainiersoft.iocl.entity.IoclContractorDetail;
+import com.rainiersoft.iocl.entity.IoclFanslipDetail;
+import com.rainiersoft.iocl.entity.IoclLocationDetail;
+import com.rainiersoft.iocl.entity.IoclSupportedPinstatus;
 
 @Repository
 @Singleton
@@ -69,8 +76,16 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 	{
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findAllLatestFanSlips");
-		query.setParameter("currDate", currDate);
-		query.setParameter("pastDate", pastDate);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try
+		{
+			query.setParameter("currDate", (Date)dateFormat.parse(dateFormat.format(currDate)));
+			query.setParameter("pastDate", (Date)dateFormat.parse(dateFormat.format(pastDate)));
+		}
+		catch (ParseException e) 
+		{
+			e.printStackTrace();
+		}
 		List<IoclFanslipDetail> ioclFanslipDetail = findObjectCollection(query);
 		return ioclFanslipDetail;
 	}

@@ -1,13 +1,10 @@
 package com.rainiersoft.iocl.services;
 
-import java.sql.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -48,7 +45,7 @@ import com.rainiersoft.response.dto.UserValidationResponse;
 
 /**
  * This is the class for user management services
- * @author Rahul Kumar Pamidi
+ * @author RahulKumarPamidi
  */
 
 @Service

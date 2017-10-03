@@ -37,6 +37,12 @@ import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.entity.IoclUserroleMapping;
 import com.rainiersoft.iocl.util.CommonUtilites;
 
+
+/**
+ * Authentication filter for all the modules.
+ * @author RahulKumarPamidi
+ */
+
 @Provider
 @Component
 public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequestFilter

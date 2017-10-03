@@ -45,6 +45,12 @@ import com.rainiersoft.response.dto.FanPinCreatedResponse;
 import com.rainiersoft.response.dto.GetAllLatestFanSlipsDataResponseBean;
 import com.rainiersoft.response.dto.GetFanMangStaticDataResponseBean;
 
+
+/**
+ * This is the class for FanSlipManagementServices
+ * @author RahulKumarPamidi
+ */
+
 @Service
 @Singleton
 public class FanSlipManagementServices 
@@ -186,11 +192,13 @@ public class FanSlipManagementServices
 			Set<String> setLocationCodes=new HashSet<String>();
 			for(IoclContractorDetail ioclContractorDetail:lIoclContractorDetail)
 			{
-				setContractorNames.add(ioclContractorDetail.getContractorName());
+				if((!ioclContractorDetail.getIoclSupportedContractorstatus().equals("In Active")))
+					setContractorNames.add(ioclContractorDetail.getContractorName());
 			}
 			for(IoclLocationDetail ioclLocationDetail:lIoclLocationDetail)
 			{
-				setLocationCodes.add(ioclLocationDetail.getLocationCode());
+				if((!ioclLocationDetail.getIoclSupportedLocationstatus().equals("In Active")))
+					setLocationCodes.add(ioclLocationDetail.getLocationCode());
 			}
 			List<String> contractorNames=new ArrayList<String>(setContractorNames);
 			List<String> locationCodes=new ArrayList<String>(setLocationCodes);
@@ -223,8 +231,15 @@ public class FanSlipManagementServices
 			cal.add(Calendar.HOUR, Integer.parseInt(appProps.getProperty("NumberOfHoursPastFanSlipDetails")));
 			Date hoursBack = cal.getTime();
 			LOG.info("PastDate......."+dateFormat.format(hoursBack));
-
-			List<IoclFanslipDetail> listOfPastFanslips=ioclFanslipDetailsDAO.findAllLatestFanSlips(selDate,hoursBack);
+			
+			cal.setTime(selDate);
+			cal.add(Calendar.HOUR,23);
+			Date selectDateWithTime = cal.getTime();
+			
+			
+			List<IoclFanslipDetail> listOfPastFanslips=ioclFanslipDetailsDAO.findAllLatestFanSlips(selectDateWithTime,hoursBack);
+			
+			System.out.println("listOfPastFanslips......."+listOfPastFanslips);
 
 			for(IoclFanslipDetail ioclFanslipDetail:listOfPastFanslips)
 			{
