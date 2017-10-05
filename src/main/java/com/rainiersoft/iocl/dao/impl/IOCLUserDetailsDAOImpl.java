@@ -89,7 +89,8 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 			e.printStackTrace();
 		}
 		ioclUserDetail.setUserAadharNum(userAadharNum);
-		//ioclUserDetail.setUserPassword(userPassword);
+		System.out.println("Password....."+userPassword);
+		ioclUserDetail.setUserPassword(userPassword);
 		ioclUserDetail.setUserMobileNum(userMobileNum);
 		ioclUserDetail.setIoclSupportedUserstatus(userStatus);
 		ioclUserDetail.setUserUpdatedOn(updatedTimeStamp);

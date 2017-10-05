@@ -23,7 +23,14 @@ public class UserMangRequestBean
 	private String UserStatus;
 	private int userId;
 	private boolean editUserNameFlag;
+	private boolean editPwdFlag;
 
+	public boolean getEditPwdFlag() {
+		return editPwdFlag;
+	}
+	public void setEditPwdFlag(boolean editPwdFlag) {
+		this.editPwdFlag = editPwdFlag;
+	}
 	public int getUserId() {
 		return userId;
 	}

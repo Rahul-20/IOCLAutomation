@@ -15,6 +15,8 @@ import java.util.Properties;
 import javax.annotation.Resource;
 import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.internal.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +108,10 @@ public class UserManagementServices
 			IoclSupportedUserstatus ioclSupportedUserstatus=iOCLSupportedUserStatusDAO.findUserStatusIdByUserStatus(userStatus);
 			LOG.info("Got the IoclSupportedUserrole object......"+ioclSupportedUserrole);
 			LOG.info("Got the IoclSupportedUserstatus object......"+ioclSupportedUserstatus);
+			
+			//Encrypt the password using SHA-1
+			userPassword=CommonUtilites.encryption(userPassword);
+			
 			Long userId=ioclUserDetailsDAO.insertUserDetails(userName,userPassword,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole,userMobileNum,ioclSupportedUserstatus,currentDateobj,expiryTimeStamp);
 			LOG.info("Created record id in user table:::::::"+userId);
 			creationResponseBean.setUserID(userId);
@@ -212,7 +218,7 @@ public class UserManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response updateUser(int userId,String userName,String userPassword,String userMobileNum,String userStatus,boolean editUserNameFlag,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType) throws IOCLWSException
+	public Response updateUser(int userId,String userName,String userPassword,String userMobileNum,String userStatus,boolean editUserNameFlag,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType,boolean editPwdFlag) throws IOCLWSException
 	{
 		try
 		{
@@ -235,7 +241,17 @@ public class UserManagementServices
 			LOG.info("Got the ioclSupportedUserstatus object......"+ioclSupportedUserstatus);
 			IoclSupportedUserrole ioclSupportedUserrole=iOCLSupportedUserRoleDAO.findRoleIdByRoleName(userType.get(0));
 			LOG.info("Got the ioclSupportedUserrole object......"+ioclSupportedUserrole);
-			ioclUserDetailsDAO.updateUserDetails(userName, userPassword, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole);
+			if(editPwdFlag)
+			{
+				String decodedPwd = new String(Base64.decode(userPassword.getBytes()));;
+				String encryptedPwd=CommonUtilites.encryption(decodedPwd);
+				ioclUserDetailsDAO.updateUserDetails(userName, encryptedPwd, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole);
+			}
+			else
+			{
+				ioclUserDetailsDAO.updateUserDetails(userName, userPassword, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole);
+			}
+
 			updationResponseBean.setUserName(userName);
 			updationResponseBean.setMobileNo(userMobileNum);
 			updationResponseBean.setMessage("User Updated SuccessFully : "+ userName);
@@ -293,7 +309,7 @@ public class UserManagementServices
 					userDetailsResponseBean.setUserDOB(user.getUserDOB().toString());
 					userDetailsResponseBean.setUserFirstName(user.getUserFirstName());
 					userDetailsResponseBean.setUserLastName(user.getUserLastName());
-					//userDetailsResponseBean.setUserPassword(user.getUserPassword());
+					userDetailsResponseBean.setUserPassword(user.getUserPassword());
 					userDetailsResponseBean.setUserID(user.getUserId());
 					userDetailsResponseBean.setUserStatus(user.getIoclSupportedUserstatus().getUserStatus());
 					List<IoclUserroleMapping> lIoclUserroleMappings=user.getIoclUserroleMappings();

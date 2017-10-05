@@ -5,11 +5,13 @@ import java.text.SimpleDateFormat;
 
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.internal.util.Base64;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.rainiersoft.iocl.services.BaysManagementServices;
+import com.rainiersoft.iocl.util.CommonUtilites;
 
 public class BayManagementTestCases
 {
@@ -17,9 +19,13 @@ public class BayManagementTestCases
 
 	public static void main(String[] args) throws Exception
 	{
-		ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
-		System.out.println("sc::" + ac);
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+		//System.out.println("sc::" + ac);
+		//DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		String aaa="cmFodWxAMTIzOg";
+		String de=new String (Base64.decode(aaa.getBytes()));
+		System.out.println("DE"+de);
 		
 		//BaysManagementServices baysManagementServices=(BaysManagementServices)ac.getBean("baysManagementServices");
 		//Response allBayDetailsResp=baysManagementServices.getAllBayDetails();

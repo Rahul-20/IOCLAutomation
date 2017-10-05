@@ -74,8 +74,7 @@ public class IoclUserDetail implements Serializable {
 	private String userName;
 
 	@Column(name="UserPassword")
-	@ColumnTransformer(read = "userPassword", 
-	write = "sha1(?)")
+	/*@ColumnTransformer(read = "userPassword", write = "sha1(?)")*/
 	private String userPassword;
 
 	@Temporal(TemporalType.TIMESTAMP)

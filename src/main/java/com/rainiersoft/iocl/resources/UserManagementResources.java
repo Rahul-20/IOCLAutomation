@@ -135,9 +135,10 @@ public class UserManagementResources
 			String userAadharNum = request.getUserAadharNum();
 			List<String> userType = request.getUserType();
 			boolean editUserNameFlag=request.getEditUserNameFlag();
+			boolean editPwdFlag=request.getEditPwdFlag();
 			int userId=request.getUserId();
 			LOG.info("Request Object For Update Creation........"+request);
-			return userManagementServices.updateUser(userId,userName, userPassword, userMobileNum, userStatus,editUserNameFlag,userFirstName,userLastName,userDOB,userAadharNum,userType);
+			return userManagementServices.updateUser(userId,userName, userPassword, userMobileNum, userStatus,editUserNameFlag,userFirstName,userLastName,userDOB,userAadharNum,userType,editPwdFlag);
 		}
 		catch(IOCLWSException ioclwsException)
 		{

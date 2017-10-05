@@ -18,7 +18,7 @@ public class UserDetailsResponseBean
 	private String UserDOB;
 	private String UserAadharNum;
 	private String UserMobileNum;
-	//private String UserPassword;
+	private String UserPassword;
 	private List<String> UserType;
 	private String UserStatus;
 	private boolean UserEditFlag;
@@ -71,12 +71,12 @@ public class UserDetailsResponseBean
 	public void setUserMobileNum(String userMobileNum) {
 		UserMobileNum = userMobileNum;
 	}
-	/*public String getUserPassword() {
+	public String getUserPassword() {
 		return UserPassword;
 	}
 	public void setUserPassword(String userPassword) {
 		UserPassword = userPassword;
-	}*/
+	}
 	public List<String> getUserType() {
 		return UserType;
 	}
