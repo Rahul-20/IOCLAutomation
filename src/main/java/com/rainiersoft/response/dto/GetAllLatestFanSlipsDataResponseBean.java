@@ -16,6 +16,7 @@ public class GetAllLatestFanSlipsDataResponseBean
 	private int fanId;
 	private String truckNumber;
 	private String driverName;
+	private String driverLicenceNumber;
 	private String fanPin;
 	private String customer;
 	private int bayNum;
@@ -40,6 +41,12 @@ public class GetAllLatestFanSlipsDataResponseBean
 	}
 	public String getDriverName() {
 		return driverName;
+	}
+	public String getDriverLicenceNumber() {
+		return driverLicenceNumber;
+	}
+	public void setDriverLicenceNumber(String driverLicenceNumber) {
+		this.driverLicenceNumber = driverLicenceNumber;
 	}
 	public void setDriverName(String driverName) {
 		this.driverName = driverName;

@@ -79,7 +79,6 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 		Response ACCESS_FORBIDDEN = Response.status(Response.Status.FORBIDDEN).entity("Access blocked for all users !!").build();
 
 		if (requestContext.getMethod().equalsIgnoreCase("OPTIONS")) {
-			System.out.println("Entered::::::::"+requestContext.getMethod());
 			requestContext.abortWith(Response.ok().build());
 			return;
 		}

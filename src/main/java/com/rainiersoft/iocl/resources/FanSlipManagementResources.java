@@ -46,7 +46,6 @@ public class FanSlipManagementResources
 		try
 		{
 			LOG.info("Entered into fanSlipGeneration resource class method........");
-			LOG.info("Entered into fanSlipGeneration resource class method........");
 			String truckNo = request.getTruckNo();
 			String driverName = request.getDriverName();
 			String driverLicNo = request.getDriverLicNo();
@@ -76,7 +75,6 @@ public class FanSlipManagementResources
 	public Response getData() throws IOCLWSException
 	{
 		LOG.info("Entered into getData resource class method........");
-		LOG.info("Entered into getData resource class method........");
 		try
 		{
 			return fanSlipManagementServices.getFanStaticData();
@@ -95,7 +93,6 @@ public class FanSlipManagementResources
 	@Produces({"application/json"})
 	public Response getFanslipsDetails(@QueryParam("selectedDate") String selectedDate) throws IOCLWSException
 	{
-		LOG.info("Entered into getFanslipsDetails resource class method........");
 		LOG.info("Entered into getFanslipsDetails resource class method........");
 		try
 		{
@@ -139,7 +136,7 @@ public class FanSlipManagementResources
 			throw iOCLWSException;
 		}
 	}
-	
+
 	@Path("/fanslipCancellation")
 	@RolesAllowed({"TTES Operator","Supervisor"})
 	@PUT
@@ -149,9 +146,7 @@ public class FanSlipManagementResources
 	{
 		try
 		{
-			LOG.info("Entered into fanSlipGeneration resource class method........");
-			LOG.info("Entered into fanSlipGeneration resource class method........");
-			
+			LOG.info("Entered into fanslipCancellation resource class method........");
 			return fanSlipManagementServices.fanslipCancellation(fanId,userName);
 		}
 		catch(IOCLWSException iOCLWSException)

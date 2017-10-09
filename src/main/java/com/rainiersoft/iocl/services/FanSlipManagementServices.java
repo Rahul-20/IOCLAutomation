@@ -169,7 +169,7 @@ public class FanSlipManagementServices
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Logging the occured exception in the service class getFanStaticData method catch block........"+exception);
+			LOG.info("Logging the occured exception in the service class fanSlipGeneration method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}	
 	}
@@ -192,12 +192,12 @@ public class FanSlipManagementServices
 			Set<String> setLocationCodes=new HashSet<String>();
 			for(IoclContractorDetail ioclContractorDetail:lIoclContractorDetail)
 			{
-				if((!ioclContractorDetail.getIoclSupportedContractorstatus().equals("In Active")))
+				if((!ioclContractorDetail.getIoclSupportedContractorstatus().equals(appProps.getProperty("ContractorSupportedInActiveStatus"))))
 					setContractorNames.add(ioclContractorDetail.getContractorName());
 			}
 			for(IoclLocationDetail ioclLocationDetail:lIoclLocationDetail)
 			{
-				if((!ioclLocationDetail.getIoclSupportedLocationstatus().equals("In Active")))
+				if((!ioclLocationDetail.getIoclSupportedLocationstatus().equals(appProps.getProperty("LocationSupportedInActiveStatus"))))
 					setLocationCodes.add(ioclLocationDetail.getLocationCode());
 			}
 			List<String> contractorNames=new ArrayList<String>(setContractorNames);
@@ -233,7 +233,7 @@ public class FanSlipManagementServices
 			LOG.info("PastDate......."+dateFormat.format(hoursBack));
 			
 			cal.setTime(selDate);
-			cal.add(Calendar.HOUR,23);
+			cal.add(Calendar.HOUR,Integer.parseInt(appProps.getProperty("GetAllLatestFanslipsData")));
 			Date selectDateWithTime = cal.getTime();
 			
 			
@@ -259,7 +259,7 @@ public class FanSlipManagementServices
 				getAllLatestFanSlipsDataResponseBean.setDriverName(ioclTruckDetails.getDriverName());
 				getAllLatestFanSlipsDataResponseBean.setCustomer(ioclTruckDetails.getCustomer());
 				getAllLatestFanSlipsDataResponseBean.setVehicleWeight(ioclFanslipDetail.getVehicleWgt());
-
+				getAllLatestFanSlipsDataResponseBean.setDriverLicenceNumber(ioclTruckDetails.getDriverLicNo());
 				List<IoclBcBayoperation> listOfBCUpdates=iOCLBCBayOperationsDAO.findBayUpdatesByFanPin(ioclFanslipDetail.getFanPin());
 				LOG.info("findBayUpdatesByFanPin::::::::"+listOfBCUpdates);
 
@@ -359,7 +359,7 @@ public class FanSlipManagementServices
 		}
 		catch(Exception exception)
 		{
-			LOG.info("Logging the occured exception in the service class getFanStaticData method catch block........"+exception);
+			LOG.info("Logging the occured exception in the service class fanslipReGeneration method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}	
 	}
@@ -392,7 +392,7 @@ public class FanSlipManagementServices
 		}
 		catch (Exception exception) 
 		{
-			LOG.info("Logging the occured exception in the service class getFanStaticData method catch block........"+exception);
+			LOG.info("Logging the occured exception in the service class fanslipCancellation method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
