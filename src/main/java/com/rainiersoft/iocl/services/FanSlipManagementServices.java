@@ -249,8 +249,8 @@ public class FanSlipManagementServices
 				getAllLatestFanSlipsDataResponseBean.setDestination(ioclFanslipDetail.getDestination());
 				getAllLatestFanSlipsDataResponseBean.setFanId(ioclFanslipDetail.getFanId());
 				getAllLatestFanSlipsDataResponseBean.setFanPin(ioclFanslipDetail.getFanPin());
-				getAllLatestFanSlipsDataResponseBean.setFanPinCreation(dateFormat.format(ioclFanslipDetail.getFanCreationOn()));
-				getAllLatestFanSlipsDataResponseBean.setFanPinExpiration(dateFormat.format(ioclFanslipDetail.getFanExpirationOn()));
+				getAllLatestFanSlipsDataResponseBean.setFanPinCreation(new SimpleDateFormat(appProps.getProperty("AppDateFormat")).format(ioclFanslipDetail.getFanCreationOn()));
+				getAllLatestFanSlipsDataResponseBean.setFanPinExpiration(new SimpleDateFormat(appProps.getProperty("AppDateFormat")).format(ioclFanslipDetail.getFanExpirationOn()));
 				getAllLatestFanSlipsDataResponseBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
 				getAllLatestFanSlipsDataResponseBean.setLocationCode(ioclFanslipDetail.getIoclLocationDetail().getLocationCode());
 				getAllLatestFanSlipsDataResponseBean.setQuantity(ioclFanslipDetail.getQuantity());

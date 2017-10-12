@@ -19,20 +19,20 @@ public class BayManagementTestCases
 
 	public static void main(String[] args) throws Exception
 	{
-		//ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+		ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
 		//System.out.println("sc::" + ac);
 		//DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
-		String aaa="cmFodWxAMTIzOg";
+		/*String aaa="cmFodWxAMTIzOg";
 		String de=new String (Base64.decode(aaa.getBytes()));
 		System.out.println("DE"+de);
-		
-		//BaysManagementServices baysManagementServices=(BaysManagementServices)ac.getBean("baysManagementServices");
+		*/
+		BaysManagementServices baysManagementServices=(BaysManagementServices)ac.getBean("baysManagementServices");
 		//Response allBayDetailsResp=baysManagementServices.getAllBayDetails();
 		//System.out.println("All BayDetails::::::"+allBayDetailsResp.getEntity());
 
-		//Response getAvailableBays=baysManagementServices.getAvailableBays();
-		//System.out.println("getAvailableBays::::::"+getAvailableBays.getEntity());
+		Response getAvailableBays=baysManagementServices.getAvailableBays();
+		System.out.println("getAvailableBays::::::"+getAvailableBays.getEntity());
 		
 		//Response bayCreation=baysManagementServices.bayCreation("bay2",2, "LPG", "Active");
 		//System.out.println("All BayDetails::::::"+bayCreation.getEntity());
