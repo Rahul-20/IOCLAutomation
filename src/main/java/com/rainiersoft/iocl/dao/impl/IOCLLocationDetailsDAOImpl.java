@@ -1,5 +1,6 @@
 package com.rainiersoft.iocl.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -50,7 +51,7 @@ public class IOCLLocationDetailsDAOImpl extends GenericDAOImpl<IoclLocationDetai
 	}
 
 	@Override
-	public Long insertLocationDetails(String locationName, String locationCode, IoclSupportedLocationstatus ioclSupportedLocationstatus,String locationAddress,String city,String pinCode,IoclStatesDetail ioclStatesDetail) 
+	public Long insertLocationDetails(String locationName, String locationCode, IoclSupportedLocationstatus ioclSupportedLocationstatus,String locationAddress,String city,String pinCode,IoclStatesDetail ioclStatesDetail,int userID,Date locationCreateddateobj) 
 	{
 		Session session=getCurrentSession();
 		IoclLocationDetail ioclLocationDetail=new IoclLocationDetail();
@@ -61,6 +62,8 @@ public class IOCLLocationDetailsDAOImpl extends GenericDAOImpl<IoclLocationDetai
 		ioclLocationDetail.setCity(city);
 		ioclLocationDetail.setIoclStatesDetail(ioclStatesDetail);
 		ioclLocationDetail.setPinCode(pinCode);
+		ioclLocationDetail.setLocationCreatedBy(userID);
+		ioclLocationDetail.setLocationCreatedOn(locationCreateddateobj);
 		Integer locationId=(Integer) session.save(ioclLocationDetail);
 		return Long.valueOf(locationId);
 	}
@@ -72,7 +75,7 @@ public class IOCLLocationDetailsDAOImpl extends GenericDAOImpl<IoclLocationDetai
 	}
 
 	@Override
-	public void updateLocationDetails(String locationName, String locationCode,IoclSupportedLocationstatus locationStatus, String locationAddress, int locationId,IoclLocationDetail ioclLocationDetail,String city,String pinCode,IoclStatesDetail ioclStatesDetail) 
+	public void updateLocationDetails(String locationName, String locationCode,IoclSupportedLocationstatus locationStatus, String locationAddress, int locationId,IoclLocationDetail ioclLocationDetail,String city,String pinCode,IoclStatesDetail ioclStatesDetail,int userID,Date locationUpdateddateobj) 
 	{
 		Session session=getCurrentSession();
 		ioclLocationDetail.setLocationAddress(locationAddress);
@@ -82,6 +85,8 @@ public class IOCLLocationDetailsDAOImpl extends GenericDAOImpl<IoclLocationDetai
 		ioclLocationDetail.setCity(city);
 		ioclLocationDetail.setIoclStatesDetail(ioclStatesDetail);
 		ioclLocationDetail.setPinCode(pinCode);
+		ioclLocationDetail.setLocationUpdatedBy(userID);
+		ioclLocationDetail.setLocationUpdatedOn(locationUpdateddateobj);
 		session.update(ioclLocationDetail);
 	}
 

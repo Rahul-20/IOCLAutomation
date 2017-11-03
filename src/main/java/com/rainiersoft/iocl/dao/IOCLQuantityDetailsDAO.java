@@ -1,5 +1,6 @@
 package com.rainiersoft.iocl.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.rainiersoft.iocl.entity.IoclQuantitiesDetail;
@@ -17,7 +18,7 @@ public interface IOCLQuantityDetailsDAO extends GenericDAO<IoclQuantitiesDetail,
 	
 	public boolean deleteQunatity(int quantityId);
 	
-	public Long insertQuantitiesDetails(String quantityName,String quantity,IoclSupportedQuantitystatus quantityStatus);
+	public Long insertQuantitiesDetails(String quantityName,String quantity,IoclSupportedQuantitystatus quantityStatus,int userID,Date createdOn);
 	
-	public void updateQuantitiesDetails(String quantityName,String quantity,IoclSupportedQuantitystatus quantityStatus,IoclQuantitiesDetail ioclQuantitiesDetail);
+	public void updateQuantitiesDetails(String quantityName,String quantity,IoclSupportedQuantitystatus quantityStatus,IoclQuantitiesDetail ioclQuantitiesDetail,int userID,Date updatedOn);
 }

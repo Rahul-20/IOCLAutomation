@@ -66,8 +66,9 @@ public class QuantitiesManagementResources
 			String quantityName=qunatityMangRequestBean.getQuantityName();
 			String quantity=qunatityMangRequestBean.getQuantity();
 			String quantityStatus=qunatityMangRequestBean.getQuantityStatus();
+			String userName=qunatityMangRequestBean.getUserName();
 			LOG.info("Request Object For Add Quantity........"+qunatityMangRequestBean);
-			return quantitiesManagementServices.addQunatity(quantityName,quantity,quantityStatus);
+			return quantitiesManagementServices.addQunatity(quantityName,quantity,quantityStatus,userName);
 		}
 		catch(IOCLWSException ioclwsException)
 		{
@@ -91,7 +92,7 @@ public class QuantitiesManagementResources
 			String quantity=qunatityMangRequestBean.getQuantity();
 			String quantityStatus=qunatityMangRequestBean.getQuantityStatus();
 			LOG.info("Request Object For update Quantity........"+qunatityMangRequestBean);
-			return quantitiesManagementServices.updateQuantity(quantityId,quantityName,quantity,quantityStatus,qunatityMangRequestBean.getEditQuantityNameFlag(),qunatityMangRequestBean.getEditQuantityFlag());
+			return quantitiesManagementServices.updateQuantity(quantityId,quantityName,quantity,quantityStatus,qunatityMangRequestBean.getEditQuantityNameFlag(),qunatityMangRequestBean.getEditQuantityFlag(),qunatityMangRequestBean.getUserName());
 		}
 		catch(IOCLWSException ioclwsException)
 		{

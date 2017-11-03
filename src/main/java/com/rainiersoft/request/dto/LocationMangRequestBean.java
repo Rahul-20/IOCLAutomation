@@ -19,7 +19,14 @@ public class LocationMangRequestBean
 	private String city;
 	private String pinCode;
 	private String state;
+	private String userName;
 
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public String getCity() {
 		return city;
 	}

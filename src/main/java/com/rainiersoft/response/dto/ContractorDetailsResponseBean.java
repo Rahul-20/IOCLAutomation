@@ -17,7 +17,35 @@ public class ContractorDetailsResponseBean
 	private String contractorPinCode;
 	private String contractorOperationalStatus;
 	private int contractorId;
+	private String contractorCreatedBy;
+	private String contractorUpdatedBy;
+	private String contractorCreatedOn;
+	private String contractorUpdatedOn;
 	
+	public String getContractorCreatedBy() {
+		return contractorCreatedBy;
+	}
+	public void setContractorCreatedBy(String contractorCreatedBy) {
+		this.contractorCreatedBy = contractorCreatedBy;
+	}
+	public String getContractorUpdatedBy() {
+		return contractorUpdatedBy;
+	}
+	public void setContractorUpdatedBy(String contractorUpdatedBy) {
+		this.contractorUpdatedBy = contractorUpdatedBy;
+	}
+	public String getContractorCreatedOn() {
+		return contractorCreatedOn;
+	}
+	public void setContractorCreatedOn(String contractorCreatedOn) {
+		this.contractorCreatedOn = contractorCreatedOn;
+	}
+	public String getContractorUpdatedOn() {
+		return contractorUpdatedOn;
+	}
+	public void setContractorUpdatedOn(String contractorUpdatedOn) {
+		this.contractorUpdatedOn = contractorUpdatedOn;
+	}
 	public int getContractorId() {
 		return contractorId;
 	}

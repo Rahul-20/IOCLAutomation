@@ -29,7 +29,7 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 
 	public IOCLUserDetailsDAOImpl() {}
 
-	public Long insertUserDetails(String userName, String userPassword, String userFirstName, String userLastName, String userDOB, String userAadharNum, IoclSupportedUserrole userType, String userMobileNum, IoclSupportedUserstatus userStatus, Date createdTimeStamp, Date expiryTimeStamp) 
+	public Long insertUserDetails(String userName, String userPassword, String userFirstName, String userLastName, String userDOB, String userAadharNum, IoclSupportedUserrole userType, String userMobileNum, IoclSupportedUserstatus userStatus, Date createdTimeStamp, Date expiryTimeStamp,int userID) 
 	{
 		Session session = getCurrentSession();
 		IoclUserDetail ioclUserDetails = new IoclUserDetail();
@@ -50,6 +50,7 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 		ioclUserDetails.setUserMobileNum(userMobileNum);
 		ioclUserDetails.setIoclSupportedUserstatus(userStatus);
 		ioclUserDetails.setUserCreatedOn(createdTimeStamp);
+		ioclUserDetails.setUserCreatedBy(userID);
 		ioclUserDetails.setPwdExpiryDate(expiryTimeStamp);
 
 		List<IoclUserroleMapping> listIoclUserroleMappings = new ArrayList<IoclUserroleMapping>();
@@ -73,7 +74,7 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 		return ioclUserDetail;
 	}
 
-	public void updateUserDetails(String userName, String userPassword, String userMobileNum, IoclSupportedUserstatus userStatus, Date updatedTimeStamp, IoclUserDetail ioclUserDetail,String userFirstName,String userLastName,String userDOB,String userAadharNum,IoclSupportedUserrole userType)
+	public void updateUserDetails(String userName, String userPassword, String userMobileNum, IoclSupportedUserstatus userStatus, Date updatedTimeStamp, IoclUserDetail ioclUserDetail,String userFirstName,String userLastName,String userDOB,String userAadharNum,IoclSupportedUserrole userType,int userID)
 	{
 		Session session = getCurrentSession();
 		ioclUserDetail.setUserName(userName);
@@ -94,6 +95,7 @@ public class IOCLUserDetailsDAOImpl  extends GenericDAOImpl<IoclUserDetail, Long
 		ioclUserDetail.setUserMobileNum(userMobileNum);
 		ioclUserDetail.setIoclSupportedUserstatus(userStatus);
 		ioclUserDetail.setUserUpdatedOn(updatedTimeStamp);
+		ioclUserDetail.setUserUpdatedBy(userID);
 		ioclUserDetail.getIoclUserroleMappings().get(0).setIoclSupportedUserrole(userType);
 		session.update(ioclUserDetail);
 	}

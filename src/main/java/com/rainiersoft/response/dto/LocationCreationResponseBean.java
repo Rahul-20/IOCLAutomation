@@ -1,5 +1,7 @@
 package com.rainiersoft.response.dto;
 
+import java.util.Date;
+
 public class LocationCreationResponseBean 
 {
 	private String locationName;
@@ -11,7 +13,22 @@ public class LocationCreationResponseBean
 	private String city;
 	private String state;
 	private String message;
+	private String userName;
+	private String timeStamp;
 	private boolean successFlag;
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
 
 	public String getPinCode() {
 		return pinCode;

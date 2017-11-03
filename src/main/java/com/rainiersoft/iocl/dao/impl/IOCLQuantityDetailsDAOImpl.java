@@ -1,5 +1,6 @@
 package com.rainiersoft.iocl.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -42,13 +43,15 @@ public class IOCLQuantityDetailsDAOImpl extends GenericDAOImpl<IoclQuantitiesDet
 	}
 
 	@Override
-	public Long insertQuantitiesDetails(String quantityName, String quantity, IoclSupportedQuantitystatus quantityStatus) 
+	public Long insertQuantitiesDetails(String quantityName, String quantity, IoclSupportedQuantitystatus quantityStatus,int userID,Date createdOn) 
 	{
 		Session session=getCurrentSession();
 		IoclQuantitiesDetail ioclQuantitiesDetail=new IoclQuantitiesDetail();
 		ioclQuantitiesDetail.setIoclSupportedQuantitystatus(quantityStatus);
 		ioclQuantitiesDetail.setQuantity(quantity);
 		ioclQuantitiesDetail.setQuantityName(quantityName);
+		ioclQuantitiesDetail.setQuantityCreatedBy(userID);
+		ioclQuantitiesDetail.setQuantityCreatedOn(createdOn);
 		Integer quantityId=(Integer) session.save(ioclQuantitiesDetail);
 		return quantityId.longValue();
 	}
@@ -65,11 +68,13 @@ public class IOCLQuantityDetailsDAOImpl extends GenericDAOImpl<IoclQuantitiesDet
 
 	@Override
 	public void updateQuantitiesDetails(String quantityName, String quantity,
-			IoclSupportedQuantitystatus quantityStatus, IoclQuantitiesDetail ioclQuantitiesDetail) {
+			IoclSupportedQuantitystatus quantityStatus, IoclQuantitiesDetail ioclQuantitiesDetail,int userID,Date updatedOn) {
 		Session session=getCurrentSession();
 		ioclQuantitiesDetail.setIoclSupportedQuantitystatus(quantityStatus);
 		ioclQuantitiesDetail.setQuantity(quantity);
 		ioclQuantitiesDetail.setQuantityName(quantityName);
+		ioclQuantitiesDetail.setQuantityUpdatedBy(userID);
+		ioclQuantitiesDetail.setQuantityUpdatedOn(updatedOn);
 		session.update(ioclQuantitiesDetail);
 	}
 

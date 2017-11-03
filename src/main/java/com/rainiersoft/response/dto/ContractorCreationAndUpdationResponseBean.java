@@ -9,10 +9,25 @@ public class ContractorCreationAndUpdationResponseBean
 	private String contractorState;
 	private String contractorPinCode;
 	private String contractorOperationalStatus;
+	private String userName;
+	private String timeStamp;
 	private String message;
 	private boolean successFlag;
 	private Long contractorId;
-
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+	
 	public String getMessage() {
 		return message;
 	}

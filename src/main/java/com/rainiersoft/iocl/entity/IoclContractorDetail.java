@@ -1,7 +1,20 @@
 package com.rainiersoft.iocl.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the iocl_contractor_details database table.
@@ -39,6 +52,20 @@ public class IoclContractorDetail implements Serializable {
 	@Column(name="ContractorName")
 	private String contractorName;
 
+	@Column(name="ContractorCreatedBy")
+	private int contractorCreatedBy;
+
+	@Column(name="ContractorCreatedOn")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date contractorCreatedOn;
+
+	@Column(name="ContractorUpdatedBy")
+	private int contractorUpdatedBy;
+
+	@Column(name="ContractorUpdatedOn")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date contractorUpdatedOn;
+
 	/*@Column(name="ContractorType")
 	private String contractorType;
 	 */
@@ -57,7 +84,6 @@ public class IoclContractorDetail implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="ContractorStateId")
 	private IoclStatesDetail ioclStatesDetail;
-
 
 	public IoclContractorDetail() {
 	}
@@ -140,5 +166,37 @@ public class IoclContractorDetail implements Serializable {
 
 	public void setIoclStatesDetail(IoclStatesDetail ioclStatesDetail) {
 		this.ioclStatesDetail = ioclStatesDetail;
+	}
+	
+	public int getContractorCreatedBy() {
+		return this.contractorCreatedBy;
+	}
+
+	public void setContractorCreatedBy(int contractorCreatedBy) {
+		this.contractorCreatedBy = contractorCreatedBy;
+	}
+
+	public Date getContractorCreatedOn() {
+		return this.contractorCreatedOn;
+	}
+
+	public void setContractorCreatedOn(Date contractorCreatedOn) {
+		this.contractorCreatedOn = contractorCreatedOn;
+	}
+
+	public int getContractorUpdatedBy() {
+		return this.contractorUpdatedBy;
+	}
+
+	public void setContractorUpdatedBy(int contractorUpdatedBy) {
+		this.contractorUpdatedBy = contractorUpdatedBy;
+	}
+
+	public Date getContractorUpdatedOn() {
+		return this.contractorUpdatedOn;
+	}
+
+	public void setContractorUpdatedOn(Date contractorUpdatedOn) {
+		this.contractorUpdatedOn = contractorUpdatedOn;
 	}
 }

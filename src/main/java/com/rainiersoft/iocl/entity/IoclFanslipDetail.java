@@ -25,11 +25,22 @@ import javax.persistence.TemporalType;
 @NamedQueries({
 	@NamedQuery(name="IoclFanslipDetail.findAll", query="SELECT i FROM IoclFanslipDetail i"),
 	@NamedQuery(name="findFanPinStatusByFanPin", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin"),
+	@NamedQuery(name="findFanSlipDetailsByFanPinAndBayNum", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin and bayNo=:bayNo"),
 	@NamedQuery(name="findFanPinByFanId", query="SELECT i FROM IoclFanslipDetail i where fanId=:fanId"),
 	@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn >= :pastDate and f.fanCreationOn <= :currDate and f.bayNo=:bayNo"),
 	@NamedQuery(name="findAllLatestFanSlips",query="select f from IoclFanslipDetail f where f.fanCreationOn>= :pastDate and f.fanCreationOn<= :currDate")	
 })
 public class IoclFanslipDetail implements Serializable {
+	@Override
+	public String toString() {
+		return "IoclFanslipDetail [fanId=" + fanId + ", bayNo=" + bayNo + ", destination=" + destination
+				+ ", fanCreationOn=" + fanCreationOn + ", fanExpirationOn=" + fanExpirationOn + ", fanPin=" + fanPin
+				+ ", quantity=" + quantity + ", truckId=" + truckId + ", vehicleWgt=" + vehicleWgt + ", fanUpdatedBy="
+				+ fanUpdatedBy + ", fanCreatedBy=" + fanCreatedBy + ", fanUpdatedOn=" + fanUpdatedOn
+				+ ", ioclContractorDetail=" + ioclContractorDetail + ", ioclLocationDetail=" + ioclLocationDetail
+				+ ", ioclSupportedPinstatus=" + ioclSupportedPinstatus + "]";
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -71,6 +82,9 @@ public class IoclFanslipDetail implements Serializable {
 
 	@Column(name="FanUpdatedOn")
 	private Date fanUpdatedOn;
+	
+	@Column(name="Comments")
+	private String comments;
 
 	//bi-directional many-to-one association to IoclContractorDetail
 	@ManyToOne
@@ -82,6 +96,10 @@ public class IoclFanslipDetail implements Serializable {
 	@JoinColumn(name="LocationID")
 	private IoclLocationDetail ioclLocationDetail;
 
+	//bi-directional many-to-one association to IoclContractorDetail
+	@ManyToOne
+	@JoinColumn(name="QuantityID")
+	private IoclQuantitiesDetail ioclQuantitiesDetail;
 
 	//bi-directional many-to-one association to IoclSupportedPinstatus
 	@ManyToOne
@@ -89,6 +107,14 @@ public class IoclFanslipDetail implements Serializable {
 	private IoclSupportedPinstatus ioclSupportedPinstatus;
 
 	public IoclFanslipDetail() {
+	}
+	
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 	public int getFanId() {
@@ -177,6 +203,14 @@ public class IoclFanslipDetail implements Serializable {
 
 	public void setIoclContractorDetail(IoclContractorDetail ioclContractorDetail) {
 		this.ioclContractorDetail = ioclContractorDetail;
+	}
+	
+	public IoclQuantitiesDetail getIoclQuantitiesDetail() {
+		return ioclQuantitiesDetail;
+	}
+
+	public void setIoclQuantitiesDetail(IoclQuantitiesDetail ioclQuantitiesDetail) {
+		this.ioclQuantitiesDetail = ioclQuantitiesDetail;
 	}
 
 	public Date getFanExpirationOn() {

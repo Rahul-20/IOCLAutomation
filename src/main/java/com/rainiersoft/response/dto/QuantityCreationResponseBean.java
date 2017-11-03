@@ -8,6 +8,21 @@ public class QuantityCreationResponseBean
 	private String qunatityName;
 	private String qunatity;
 	private String operationalStatus;
+	private String userName;
+	private String timeStamp; 
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
 	public boolean isSuccessFlag() {
 		return successFlag;
 	}

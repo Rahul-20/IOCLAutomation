@@ -1,5 +1,6 @@
 package com.rainiersoft.iocl.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -28,7 +29,7 @@ public class IOCLContractorDetailsDAOImpl extends GenericDAOImpl<IoclContractorD
 	@Override
 	public Long insertContractorDetails(String contractorName, IoclContractortypeDetail contractorType, String contractorAddress,
 			String contractorCity, IoclSupportedContractorstatus contractorOperationalStatus, String contractorPinCode,
-			IoclStatesDetail contractorState) {
+			IoclStatesDetail contractorState,int userID,Date contractorCreatedOn) {
 		Session session=getCurrentSession();
 		IoclContractorDetail ioclContractorDetail=new IoclContractorDetail();
 		ioclContractorDetail.setContractorAddress(contractorAddress);
@@ -36,6 +37,8 @@ public class IOCLContractorDetailsDAOImpl extends GenericDAOImpl<IoclContractorD
 		ioclContractorDetail.setContractorCity(contractorCity);
 		ioclContractorDetail.setContractorName(contractorName);
 		ioclContractorDetail.setIoclStatesDetail(contractorState);
+		ioclContractorDetail.setContractorCreatedBy(userID);
+		ioclContractorDetail.setContractorCreatedOn(contractorCreatedOn);
 		ioclContractorDetail.setIoclSupportedContractorstatus(contractorOperationalStatus);
 		ioclContractorDetail.setZipCode(contractorPinCode);
 		Integer contractorId=(Integer) session.save(ioclContractorDetail);
@@ -45,13 +48,15 @@ public class IOCLContractorDetailsDAOImpl extends GenericDAOImpl<IoclContractorD
 	@Override
 	public void updateContractorDetails(String contractorName, IoclContractortypeDetail contractorType, String contractorAddress,
 			String contractorCity, IoclSupportedContractorstatus contractorOperationalStatus, String contractorPinCode, IoclStatesDetail contractorState,
-			IoclContractorDetail ioclContractorDetail) {
+			IoclContractorDetail ioclContractorDetail,int userID,Date contractorUpdatedOn) {
 		Session session=getCurrentSession();
 		ioclContractorDetail.setContractorAddress(contractorAddress);
 		ioclContractorDetail.setContractorCity(contractorCity);
 		ioclContractorDetail.setContractorName(contractorName);
 		ioclContractorDetail.setIoclStatesDetail(contractorState);
 		ioclContractorDetail.setIoclContractortypeDetail(contractorType);
+		ioclContractorDetail.setContractorUpdatedBy(userID);
+		ioclContractorDetail.setContractorUpdatedOn(contractorUpdatedOn);
 		ioclContractorDetail.setIoclSupportedContractorstatus(contractorOperationalStatus);
 		ioclContractorDetail.setZipCode(contractorPinCode);
 		session.update(ioclContractorDetail);

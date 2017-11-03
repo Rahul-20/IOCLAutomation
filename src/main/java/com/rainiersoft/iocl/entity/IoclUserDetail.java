@@ -56,7 +56,11 @@ public class IoclUserDetail implements Serializable {
 	@Column(name="UserDeletedOn")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date userDeletedOn;
-
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="UserUpdatedOn")
+	private Date userUpdatedOn;
+	
 	@Column(name="UserDOB")
 	@Temporal(TemporalType.DATE)
 	private Date userDOB;
@@ -77,9 +81,11 @@ public class IoclUserDetail implements Serializable {
 	/*@ColumnTransformer(read = "userPassword", write = "sha1(?)")*/
 	private String userPassword;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="UserUpdatedOn")
-	private Date userUpdatedOn;
+	@Column(name="UserCreatedBy")
+	private int userCreatedBy;
+	
+	@Column(name="UserUpdatedBy")
+	private int userUpdatedBy;
 
 	//bi-directional many-to-one association to IoclSupportedUserstatus
 	@ManyToOne
@@ -91,6 +97,22 @@ public class IoclUserDetail implements Serializable {
 	private List<IoclUserroleMapping> ioclUserroleMappings;
 
 	public IoclUserDetail() {
+	}
+	
+	public int getUserUpdatedBy() {
+		return userUpdatedBy;
+	}
+
+	public void setUserUpdatedBy(int userUpdatedBy) {
+		this.userUpdatedBy = userUpdatedBy;
+	}
+	
+	public int getUserCreatedBy() {
+		return userCreatedBy;
+	}
+
+	public void setUserCreatedBy(int userCreatedBy) {
+		this.userCreatedBy = userCreatedBy;
 	}
 
 	public int getUserId() {

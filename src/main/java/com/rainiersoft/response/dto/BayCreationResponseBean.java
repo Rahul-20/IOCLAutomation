@@ -8,13 +8,31 @@ public class BayCreationResponseBean
 				+ bayType + ", bayStatus=" + bayStatus + ", successFlag=" + successFlag + ", message=" + message + "]";
 	}
 
-	public Long bayId;
-	public String bayName;
-	public int bayNum;
-	public String bayType;
-	public String bayStatus;
-	public boolean successFlag;
-	public String message;
+	private Long bayId;
+	private String bayName;
+	private int bayNum;
+	private String bayType;
+	private String bayStatus;
+	private boolean successFlag;
+	private String message;
+	private String userName;
+	private String timeStamp;
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
 	
 	public Long getBayId() {
 		return bayId;

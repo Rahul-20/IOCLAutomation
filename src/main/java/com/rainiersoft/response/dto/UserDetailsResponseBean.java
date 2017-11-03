@@ -8,8 +8,10 @@ public class UserDetailsResponseBean
 	public String toString() {
 		return "UserDetailsResponseBean [UserID=" + UserID + ", UserName=" + UserName + ", UserFirstName="
 				+ UserFirstName + ", UserLastName=" + UserLastName + ", UserDOB=" + UserDOB + ", UserAadharNum="
-				+ UserAadharNum + ", UserMobileNum=" + UserMobileNum + ", UserType=" + UserType + ", UserStatus="
-				+ UserStatus + ", UserEditFlag=" + UserEditFlag + "]";
+				+ UserAadharNum + ", UserMobileNum=" + UserMobileNum + ", UserPassword=" + UserPassword + ", UserType="
+				+ UserType + ", UserStatus=" + UserStatus + ", UserEditFlag=" + UserEditFlag + ", userCreatedBy="
+				+ userCreatedBy + ", userUpdatedBy=" + userUpdatedBy + ", userCreatedOn=" + userCreatedOn
+				+ ", userUpdatedOn=" + userUpdatedOn + "]";
 	}
 	private int UserID;
 	private String UserName;
@@ -22,7 +24,36 @@ public class UserDetailsResponseBean
 	private List<String> UserType;
 	private String UserStatus;
 	private boolean UserEditFlag;
-
+	private String userCreatedBy;
+	private String userUpdatedBy;
+	private String userCreatedOn;
+	private String userUpdatedOn;
+	
+	public String getUserCreatedBy() {
+		return userCreatedBy;
+	}
+	public void setUserCreatedBy(String userCreatedBy) {
+		this.userCreatedBy = userCreatedBy;
+	}
+	public String getUserUpdatedBy() {
+		return userUpdatedBy;
+	}
+	public void setUserUpdatedBy(String userUpdatedBy) {
+		this.userUpdatedBy = userUpdatedBy;
+	}
+	public String getUserCreatedOn() {
+		return userCreatedOn;
+	}
+	public void setUserCreatedOn(String userCreatedOn) {
+		this.userCreatedOn = userCreatedOn;
+	}
+	public String getUserUpdatedOn() {
+		return userUpdatedOn;
+	}
+	public void setUserUpdatedOn(String userUpdatedOn) {
+		this.userUpdatedOn = userUpdatedOn;
+	}
+	
 	public boolean getUserEditFlag() {
 		return UserEditFlag;
 	}

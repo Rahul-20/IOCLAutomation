@@ -14,7 +14,14 @@ public class QunatityMangRequestBean
 	private String quantityStatus;
 	private boolean editQuantityFlag;
 	private boolean editQuantityNameFlag;
+	private String userName;
 
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public String getQuantityName() {
 		return quantityName;
 	}

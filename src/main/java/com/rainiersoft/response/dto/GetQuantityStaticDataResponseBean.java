@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class GetQuantityStaticDataResponseBean 
 {
-	Map<String,List<String>> data;
+	private Map<String,List<String>> data;
 
 	public Map<String, List<String>> getData() {
 		return data;

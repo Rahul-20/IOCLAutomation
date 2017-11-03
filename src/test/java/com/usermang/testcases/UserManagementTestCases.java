@@ -22,12 +22,12 @@ public class UserManagementTestCases
 
 		UserManagementServices ums=(UserManagementServices)ac.getBean("userManagementServices");
 
-		Response availableUsersResp=ums.getAvailableUsers("Admin");
-		System.out.println("AvailableUsersResp:::::"+availableUsersResp.getEntity());
-		
-		Response getDate=ums.getData("Admin");
+		//Response availableUsersResp=ums.getAvailableUsers("Admin");
+		//System.out.println("AvailableUsersResp:::::"+availableUsersResp.getEntity());
+
+		Response getDate=ums.getAvailableUsers("Admin");
 		System.out.println("getDate:::::"+getDate.getEntity());
-		
+
 		//Response availableUsersStatus=ums.supportedUserStatus();
 		//System.out.println("availableUsersStatus:::::"+availableUsersStatus.getEntity());
 
@@ -79,7 +79,9 @@ public class UserManagementTestCases
 		Response res=bms.getData();
 		System.out.println("Respo::"+res.getEntity());
 		 */	
-		
-		
+
+		//Response val=ums.validateUser("IOCLAdmin","IOCLAdmin@123","");
+		//System.out.println("VALLLLLLLLL....."+val.getEntity());
+
 	}
 }

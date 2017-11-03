@@ -70,8 +70,9 @@ public class ContractorsManagementResources
 			String contractorPinCode=contractorRequestBean.getContractorPinCode();
 			String contractorState=contractorRequestBean.getContractorState();
 			String contractorType=contractorRequestBean.getContractorType();
+			String userName=contractorRequestBean.getUserName();
 			LOG.info("Request Object For Contractor Creation........"+contractorRequestBean);
-			return contractorsManagementServices.addContractor(contractorName,contractorType,contractorAddress,contractorCity,contractorOperationalStatus,contractorPinCode,contractorState);
+			return contractorsManagementServices.addContractor(contractorName,contractorType,contractorAddress,contractorCity,contractorOperationalStatus,contractorPinCode,contractorState,userName);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -99,8 +100,9 @@ public class ContractorsManagementResources
 			String contractorState=contractorRequestBean.getContractorState();
 			String contractorType=contractorRequestBean.getContractorType();
 			boolean editContractorFlag=contractorRequestBean.getEditContractorNameFlag();
+			String userName=contractorRequestBean.getUserName();
 			LOG.info("Request Object For Contractor Updation........"+contractorRequestBean);
-			return contractorsManagementServices.updateContractor(contractorId,contractorName,contractorType,contractorAddress,contractorCity,contractorOperationalStatus,contractorPinCode,contractorState,editContractorFlag);
+			return contractorsManagementServices.updateContractor(contractorId,contractorName,contractorType,contractorAddress,contractorCity,contractorOperationalStatus,contractorPinCode,contractorState,editContractorFlag,userName);
 		}
 		catch(IOCLWSException ioclwsException)
 		{

@@ -1,13 +1,17 @@
 package com.rainiersoft.iocl.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 import javax.inject.Singleton;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
 import com.rainiersoft.iocl.dao.IOCLBayDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclBayDetail;
 import com.rainiersoft.iocl.entity.IoclBayType;
@@ -26,12 +30,14 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 		return findAll(IoclBayDetail.class);
 	}
 
-	public Long insertBayDetails(String bayName, int bayNum, int bayTypeId, IoclSupportedBaystatus ioclSupportedBaystatus)
+	public Long insertBayDetails(String bayName, int bayNum, int bayTypeId, IoclSupportedBaystatus ioclSupportedBaystatus,int userID,Date bayCreatedDateObj)
 	{
 		Session session = getCurrentSession();
 		IoclBayDetail ioclBayDetail = new IoclBayDetail();
 		ioclBayDetail.setBayName(bayName);
 		ioclBayDetail.setBayNum(bayNum);
+		ioclBayDetail.setBayCreatedBy(userID);
+		ioclBayDetail.setBayCreatedOn(bayCreatedDateObj);
 		ioclBayDetail.setIoclSupportedBaystatus(ioclSupportedBaystatus);
 		List<IoclBayType> listIoclBayType = new ArrayList<IoclBayType>();
 		IoclBayType ioclBayType = new IoclBayType();
@@ -60,11 +66,13 @@ public class IOCLBayDetailsDAOImpl extends GenericDAOImpl<IoclBayDetail, Long> i
 	}
 
 	@Override
-	public void updateBayDetails(String bayName, int bayNum, int bayTypeId,IoclSupportedBaystatus ioclSupportedBaystatus,IoclBayDetail ioclBayDetail,IoclSupportedBaytype ioclSupportedBaytype) 
+	public void updateBayDetails(String bayName, int bayNum, int bayTypeId,IoclSupportedBaystatus ioclSupportedBaystatus,IoclBayDetail ioclBayDetail,IoclSupportedBaytype ioclSupportedBaytype,int userID,Date bayUpdatedDateObj) 
 	{
 		Session session = getCurrentSession();
 		ioclBayDetail.setBayName(bayName);
 		ioclBayDetail.setBayNum(bayNum);
+		ioclBayDetail.setBayUpdatedBy(userID);
+		ioclBayDetail.setBayUpdatedOn(bayUpdatedDateObj);
 		ioclBayDetail.setIoclSupportedBaystatus(ioclSupportedBaystatus);
 		ioclBayDetail.getIoclBayTypes().get(0).setBayTypeId(bayTypeId);
 		ioclBayDetail.getIoclBayTypes().get(0).setIoclBayDetail(ioclBayDetail);

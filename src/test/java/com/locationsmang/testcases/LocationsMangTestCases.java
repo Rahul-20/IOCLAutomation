@@ -15,14 +15,14 @@ public class LocationsMangTestCases
 		System.out.println("sc::" + ac);
 		
 		LocationManagementServices lms=(LocationManagementServices) ac.getBean("locationManagementServices");
-		//lms.addLocation("Banglore10","BNG12","Not Active","Mumbai");
+		//lms.addLocation("ABC", "ABC","Active","AAAAAAA","TL","500035","AP","IOCLAdmin");
 		
 		//lms.updateLocation("Banglore1","BNG1","Not Active","Mumbai",2,false,true);
 		
 		Response resp=lms.getLocationDetails();
 		System.out.println("Response:::::"+resp.getEntity());
 		
-		lms.deleteLocation(2);
+		//lms.deleteLocation(2);
 		
 	}
 }

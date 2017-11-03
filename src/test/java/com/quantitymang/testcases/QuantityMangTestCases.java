@@ -15,7 +15,9 @@ public class QuantityMangTestCases
 		System.out.println("sc::" + ac);
 		
 		QuantitiesManagementServices qms=(QuantitiesManagementServices) ac.getBean("quantitiesManagementServices");
+		Response res=qms.getQuantityDetails();
+		System.out.println("Res...."+res.getEntity());
 		//qms.addQunatity("BigTruck","100","Active");
-		qms.updateQuantity(1,"Big","10000","Not Active",true,true);
+		//qms.updateQuantity(1,"Big","10000","Not Active",true,true);
 	}	
 }

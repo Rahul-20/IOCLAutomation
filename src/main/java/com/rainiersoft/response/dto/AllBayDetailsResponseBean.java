@@ -12,7 +12,35 @@ public class AllBayDetailsResponseBean
 	private String bayType;
 	private String functionalStatus;
 	private int bayId;
+	private String bayCreatedBy;
+	private String bayUpdatedBy;
+	private String bayCreatedOn;
+	private String bayUpdatedOn;
 
+	public String getBayCreatedBy() {
+		return bayCreatedBy;
+	}
+	public void setBayCreatedBy(String bayCreatedBy) {
+		this.bayCreatedBy = bayCreatedBy;
+	}
+	public String getBayUpdatedBy() {
+		return bayUpdatedBy;
+	}
+	public void setBayUpdatedBy(String bayUpdatedBy) {
+		this.bayUpdatedBy = bayUpdatedBy;
+	}
+	public String getBayCreatedOn() {
+		return bayCreatedOn;
+	}
+	public void setBayCreatedOn(String bayCreatedOn) {
+		this.bayCreatedOn = bayCreatedOn;
+	}
+	public String getBayUpdatedOn() {
+		return bayUpdatedOn;
+	}
+	public void setBayUpdatedOn(String bayUpdatedOn) {
+		this.bayUpdatedOn = bayUpdatedOn;
+	}
 	public int getBayId() {
 		return bayId;
 	}

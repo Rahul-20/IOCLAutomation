@@ -9,9 +9,37 @@ public class LocationDetailsResponseBean
 	private String state;
 	private String pinCode;
 	private String city;
+	private String locationCreatedBy;
+	private String locationUpdatedBy;
+	private String locationCreatedOn;
+	private String locationUpdatedOn;
 	
 	public String getState() {
 		return state;
+	}
+	public String getLocationCreatedBy() {
+		return locationCreatedBy;
+	}
+	public void setLocationCreatedBy(String locationCreatedBy) {
+		this.locationCreatedBy = locationCreatedBy;
+	}
+	public String getLocationUpdatedBy() {
+		return locationUpdatedBy;
+	}
+	public void setLocationUpdatedBy(String locationUpdatedBy) {
+		this.locationUpdatedBy = locationUpdatedBy;
+	}
+	public String getLocationCreatedOn() {
+		return locationCreatedOn;
+	}
+	public void setLocationCreatedOn(String locationCreatedOn) {
+		this.locationCreatedOn = locationCreatedOn;
+	}
+	public String getLocationUpdatedOn() {
+		return locationUpdatedOn;
+	}
+	public void setLocationUpdatedOn(String locationUpdatedOn) {
+		this.locationUpdatedOn = locationUpdatedOn;
 	}
 	public void setState(String state) {
 		this.state = state;

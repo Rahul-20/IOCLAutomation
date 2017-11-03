@@ -198,7 +198,7 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 			LOG.info("User:::"+userRole);
 			if(rolesSet.contains(userRole))
 			{
-				System.out.println("returning");
+				LOG.info("returning");
 				isAllowed = true;
 				break;
 			}

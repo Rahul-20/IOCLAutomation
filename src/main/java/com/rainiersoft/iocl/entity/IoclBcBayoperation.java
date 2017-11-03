@@ -26,7 +26,8 @@ import javax.persistence.TemporalType;
 @NamedQueries({
 	@NamedQuery(name="IoclBcBayoperation.findAll", query="SELECT i FROM IoclBcBayoperation i"),
 	@NamedQuery(name="findBayUpdatesByBC",query="select f from IoclBcBayoperation f where f.BCInputTime > :pastDate and f.BCInputTime < :currDate and f.bayNum=:bayNum"),
-	@NamedQuery(name="findBayUpdatesByFanPin",query="select f from IoclBcBayoperation f where f.fanPin=:fanPin")
+	@NamedQuery(name="findBayUpdatesByFanPin",query="select f from IoclBcBayoperation f where f.fanPin=:fanPin"),
+	@NamedQuery(name="findTopBayUpdatesByBC",query="select f from IoclBcBayoperation f where f.BCInputTime > :pastDate and f.BCInputTime < :currDate and f.bayNum=:bayNum order by BCInputTime desc")
 })
 public class IoclBcBayoperation implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -107,7 +108,7 @@ public class IoclBcBayoperation implements Serializable {
 	public void setFanPin(String fanPin) {
 		this.fanPin = fanPin;
 	}
-	
+
 	public IoclSupportedBayoperationalstatus getIoclSupportedBayoperationalstatus() {
 		return ioclSupportedBayoperationalstatus;
 	}

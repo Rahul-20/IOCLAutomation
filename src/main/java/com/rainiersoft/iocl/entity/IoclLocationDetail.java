@@ -1,7 +1,20 @@
 package com.rainiersoft.iocl.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**
@@ -38,6 +51,21 @@ public class IoclLocationDetail implements Serializable {
 
 	@Column(name="PinCode")
 	private String pinCode;
+
+	@Column(name="LocationCreatedBy")
+	private int locationCreatedBy;
+
+	@Column(name="LocationCreatedOn")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date locationCreatedOn;
+
+	@Column(name="LocationUpdatedBy")
+	private int locationUpdatedBy;
+
+	@Column(name="LocationUpdatedOn")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date locationUpdatedOn;
+
 
 	//bi-directional many-to-one association to IoclSupportedLocationstatus
 	@ManyToOne
@@ -114,5 +142,37 @@ public class IoclLocationDetail implements Serializable {
 
 	public void setIoclStatesDetail(IoclStatesDetail ioclStatesDetail) {
 		this.ioclStatesDetail = ioclStatesDetail;
+	}
+	
+	public int getLocationCreatedBy() {
+		return this.locationCreatedBy;
+	}
+
+	public void setLocationCreatedBy(int locationCreatedBy) {
+		this.locationCreatedBy = locationCreatedBy;
+	}
+
+	public Date getLocationCreatedOn() {
+		return this.locationCreatedOn;
+	}
+
+	public void setLocationCreatedOn(Date locationCreatedOn) {
+		this.locationCreatedOn = locationCreatedOn;
+	}
+
+	public int getLocationUpdatedBy() {
+		return this.locationUpdatedBy;
+	}
+
+	public void setLocationUpdatedBy(int locationUpdatedBy) {
+		this.locationUpdatedBy = locationUpdatedBy;
+	}
+
+	public Date getLocationUpdatedOn() {
+		return this.locationUpdatedOn;
+	}
+
+	public void setLocationUpdatedOn(Date locationUpdatedOn) {
+		this.locationUpdatedOn = locationUpdatedOn;
 	}
 }

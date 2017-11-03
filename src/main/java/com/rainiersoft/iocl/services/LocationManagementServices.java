@@ -1,10 +1,14 @@
 package com.rainiersoft.iocl.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.inject.Singleton;
@@ -21,9 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rainiersoft.iocl.dao.IOCLLocationDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLStatesDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedLocationStatusDAO;
+import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclLocationDetail;
 import com.rainiersoft.iocl.entity.IoclStatesDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedLocationstatus;
+import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.GetLocationStaticDataResponseBean;
@@ -51,6 +57,12 @@ public class LocationManagementServices
 	
 	@Autowired
 	IOCLStatesDetailsDAO iOCLStatesDetailsDAO;
+	
+	@Autowired
+	IOCLUserDetailsDAO iOCLUserDetailsDAO;
+	
+	@Autowired
+	Properties appProps;
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getLocationDetails() throws IOCLWSException
@@ -60,6 +72,7 @@ public class LocationManagementServices
 			LOG.info("Entered into getLocationDetails service class method........");
 			List<LocationDetailsResponseBean> listLocationDetailsResponseBean=new ArrayList<LocationDetailsResponseBean>();
 			List<IoclLocationDetail> lIoclLocationDetails=iOCLLocationDetailsDAO.findAllLocationCodes();
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			for(IoclLocationDetail ioclLocationDetail:lIoclLocationDetails)
 			{
 				LocationDetailsResponseBean locationDetailsResponseBean=new LocationDetailsResponseBean();
@@ -71,6 +84,19 @@ public class LocationManagementServices
 				locationDetailsResponseBean.setState(ioclLocationDetail.getIoclStatesDetail().getStateName());
 				locationDetailsResponseBean.setCity(ioclLocationDetail.getCity());
 				locationDetailsResponseBean.setOperationalStatus(ioclLocationDetail.getIoclSupportedLocationstatus().getLocationStatus());
+				
+				if(ioclLocationDetail.getLocationUpdatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclLocationDetail.getLocationUpdatedBy());
+					locationDetailsResponseBean.setLocationUpdatedBy(ioclUserDetail.getUserName());
+					locationDetailsResponseBean.setLocationUpdatedOn(dateFormat.format(ioclLocationDetail.getLocationUpdatedOn()));
+				}
+				if(ioclLocationDetail.getLocationCreatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclLocationDetail.getLocationCreatedBy());
+					locationDetailsResponseBean.setLocationCreatedBy(ioclUserDetail.getUserName());
+					locationDetailsResponseBean.setLocationCreatedOn(dateFormat.format(ioclLocationDetail.getLocationCreatedOn()));
+				}
 				listLocationDetailsResponseBean.add(locationDetailsResponseBean);
 			}
 			return Response.status(Response.Status.OK).entity(listLocationDetailsResponseBean).build();
@@ -84,7 +110,7 @@ public class LocationManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response addLocation(String locationName,String locationCode,String locationStatus,String locationAddress,String city,String pinCode,String state) throws IOCLWSException
+	public Response addLocation(String locationName,String locationCode,String locationStatus,String locationAddress,String city,String pinCode,String state,String userName) throws IOCLWSException
 	{
 		LOG.info("Entered into addLocation service class method........");
 		LocationCreationResponseBean locationCreationResponseBean=new LocationCreationResponseBean();
@@ -105,9 +131,19 @@ public class LocationManagementServices
 			{
 				IoclSupportedLocationstatus ioclSupportedLocationstatus=iOCLSupportedLocationStatusDAO.findStatusIdByLocationStatus(locationStatus);
 				IoclStatesDetail ioclStatesDetail=iOCLStatesDetailsDAO.findStateIdByStateName(state);
-				if(null!=ioclSupportedLocationstatus && null!=ioclStatesDetail)
+				
+				LOG.info("createdBy::::::"+userName);
+				IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+				LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+				int userID=ioclUserDetail.getUserId();
+				LOG.info("usrId:::"+userID);
+			
+				if(null!=ioclSupportedLocationstatus && null!=ioclStatesDetail && null!=ioclUserDetail)
 				{
-					Long locationId=iOCLLocationDetailsDAO.insertLocationDetails(locationName, locationCode, ioclSupportedLocationstatus, locationAddress,city,pinCode,ioclStatesDetail);
+					DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+					Date locationCreateddateobj = new Date();
+					
+					Long locationId=iOCLLocationDetailsDAO.insertLocationDetails(locationName, locationCode, ioclSupportedLocationstatus, locationAddress,city,pinCode,ioclStatesDetail,userID,locationCreateddateobj);
 					locationCreationResponseBean.setLocationAddress(locationAddress);
 					locationCreationResponseBean.setLocationCode(locationCode);
 					locationCreationResponseBean.setLocationId(locationId);
@@ -115,6 +151,8 @@ public class LocationManagementServices
 					locationCreationResponseBean.setCity(city);
 					locationCreationResponseBean.setPinCode(pinCode);
 					locationCreationResponseBean.setState(state);
+					locationCreationResponseBean.setUserName(userName);
+					locationCreationResponseBean.setTimeStamp(dateFormat.format(locationCreateddateobj));
 					locationCreationResponseBean.setMessage("Location SuccessFully Created : "+locationName);
 					locationCreationResponseBean.setSuccessFlag(true);
 				}
@@ -134,7 +172,7 @@ public class LocationManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response updateLocation(String locationName,String locationCode,String locationStatus,String locationAddress,int locationId,boolean locationNameEditFlag,boolean locationCodeEditFlag,String city,String pinCode,String state) throws IOCLWSException
+	public Response updateLocation(String locationName,String locationCode,String locationStatus,String locationAddress,int locationId,boolean locationNameEditFlag,boolean locationCodeEditFlag,String city,String pinCode,String state,String userName) throws IOCLWSException
 	{
 		LOG.info("Entered into updateLocation service class method........");
 		LocationCreationResponseBean locationCreationResponseBean=new LocationCreationResponseBean();
@@ -161,9 +199,18 @@ public class LocationManagementServices
 			IoclSupportedLocationstatus ioclSupportedLocationstatus=iOCLSupportedLocationStatusDAO.findStatusIdByLocationStatus(locationStatus);
 			if(null!=ioclSupportedLocationstatus)
 			{
+				LOG.info("createdBy::::::"+userName);
+				IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+				LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+				int userID=ioclUserDetail.getUserId();
+				LOG.info("usrId:::"+userID);
+				
+				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+				Date locationUpdateddateobj = new Date();
+				
 				IoclLocationDetail ioclLocationDetail=iOCLLocationDetailsDAO.findLocationByLocationId(locationId);
 				IoclStatesDetail ioclStatesDetail=iOCLStatesDetailsDAO.findStateIdByStateName(state);
-				iOCLLocationDetailsDAO.updateLocationDetails(locationName, locationCode, ioclSupportedLocationstatus, locationAddress,locationId,ioclLocationDetail,city,pinCode,ioclStatesDetail);
+				iOCLLocationDetailsDAO.updateLocationDetails(locationName, locationCode, ioclSupportedLocationstatus, locationAddress,locationId,ioclLocationDetail,city,pinCode,ioclStatesDetail,userID,locationUpdateddateobj);
 				locationCreationResponseBean.setLocationAddress(locationAddress);
 				locationCreationResponseBean.setLocationCode(locationCode);
 				locationCreationResponseBean.setLocationId(Long.valueOf(locationId));
@@ -171,6 +218,8 @@ public class LocationManagementServices
 				locationCreationResponseBean.setPinCode(ioclLocationDetail.getPinCode());
 				locationCreationResponseBean.setState(ioclLocationDetail.getIoclStatesDetail().getStateName());
 				locationCreationResponseBean.setCity(ioclLocationDetail.getCity());
+				locationCreationResponseBean.setUserName(userName);
+				locationCreationResponseBean.setTimeStamp(dateFormat.format(locationUpdateddateobj));
 				locationCreationResponseBean.setMessage("Location SuccessFully Updated : "+locationName);
 				locationCreationResponseBean.setSuccessFlag(true);
 			}

@@ -1,11 +1,17 @@
 package com.rainiersoft.iocl.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
 import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.rainiersoft.iocl.dao.IOCLQuantityDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedQunatityStatusDAO;
+import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclQuantitiesDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedQuantitystatus;
+import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.GetQuantityStaticDataResponseBean;
@@ -41,6 +50,12 @@ public class QuantitiesManagementServices
 
 	@Autowired
 	IOCLSupportedQunatityStatusDAO iOCLSupportedQunatityStatusDAO;
+	
+	@Autowired
+	IOCLUserDetailsDAO iOCLUserDetailsDAO;
+	
+	@Autowired
+	Properties appProps;
 
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
@@ -51,13 +66,27 @@ public class QuantitiesManagementServices
 		{
 			List<QuantityDetailsResponseBean> listQuantityDetailsResponseBean=new ArrayList<QuantityDetailsResponseBean>();
 			List<IoclQuantitiesDetail> lIoclQuantitiesDetail=ioclQuantityDetailsDAO.findAllQuantites();
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			for(IoclQuantitiesDetail ioclQuantitiesDetail:lIoclQuantitiesDetail)
 			{
+				System.out.println("IoclQuantitiesDetail......"+ioclQuantitiesDetail);
 				QuantityDetailsResponseBean quantityDetailsResponseBean=new QuantityDetailsResponseBean();
 				quantityDetailsResponseBean.setQunatityId(ioclQuantitiesDetail.getQuantityId());
 				quantityDetailsResponseBean.setOperationalStatus(ioclQuantitiesDetail.getIoclSupportedQuantitystatus().getQuantityStatus());
 				quantityDetailsResponseBean.setQuantity(ioclQuantitiesDetail.getQuantity());
 				quantityDetailsResponseBean.setQuantityName(ioclQuantitiesDetail.getQuantityName());
+				if(ioclQuantitiesDetail.getQuantityUpdatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclQuantitiesDetail.getQuantityUpdatedBy());
+					quantityDetailsResponseBean.setQuantityUpdatedBy(ioclUserDetail.getUserName());
+					quantityDetailsResponseBean.setQuantityUpdatedOn(dateFormat.format(ioclQuantitiesDetail.getQuantityUpdatedOn()));
+				}
+				if(ioclQuantitiesDetail.getQuantityCreatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclQuantitiesDetail.getQuantityCreatedBy());
+					quantityDetailsResponseBean.setQuantityCreatedBy(ioclUserDetail.getUserName());
+					quantityDetailsResponseBean.setQuantityCreatedOn(dateFormat.format(ioclQuantitiesDetail.getQuantityCreatedOn()));
+				}
 				//quantityDetailsResponseBean.setQuantityUnit(ioclQuantitiesDetail.getQuantityUnits());
 				listQuantityDetailsResponseBean.add(quantityDetailsResponseBean);
 			}
@@ -71,7 +100,7 @@ public class QuantitiesManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response addQunatity(String quantityName,String quantity,String quantityStatus) throws IOCLWSException
+	public Response addQunatity(String quantityName,String quantity,String quantityStatus,String userName) throws IOCLWSException
 	{
 		LOG.info("Entered into addQunatity service class method........");
 		QuantityCreationResponseBean quantityCreationResponseBean=new QuantityCreationResponseBean();
@@ -94,11 +123,22 @@ public class QuantitiesManagementServices
 				IoclSupportedQuantitystatus ioclSupportedQuantitystatus=iOCLSupportedQunatityStatusDAO.findStatusIdByQuantityStatus(quantityStatus);
 				if(null!=ioclSupportedQuantitystatus)
 				{
-					Long quantityId=ioclQuantityDetailsDAO.insertQuantitiesDetails(quantityName,quantity,ioclSupportedQuantitystatus);
+					LOG.info("createdBy::::::"+userName);
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+					LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+					int userID=ioclUserDetail.getUserId();
+					LOG.info("usrId:::"+userID);
+					
+					DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+					Date quantityCreatedDateobj = new Date();
+					
+					Long quantityId=ioclQuantityDetailsDAO.insertQuantitiesDetails(quantityName,quantity,ioclSupportedQuantitystatus,userID,quantityCreatedDateobj);
 					quantityCreationResponseBean.setQuantityId(quantityId);
 					quantityCreationResponseBean.setQunatity(quantity);
 					quantityCreationResponseBean.setQunatityName(quantityName);
 					quantityCreationResponseBean.setOperationalStatus(quantityStatus);
+					quantityCreationResponseBean.setUserName(userName);
+					quantityCreationResponseBean.setTimeStamp(dateFormat.format(quantityCreatedDateobj));
 					quantityCreationResponseBean.setMessage("Quantity SuccessFully Created : "+quantityName);
 					quantityCreationResponseBean.setSuccessFlag(true);
 				}
@@ -118,7 +158,7 @@ public class QuantitiesManagementServices
 	}	
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response updateQuantity(int qunatityId,String quantityName,String quantity,String quantityStatus,boolean editQunatityNameFlag,boolean editQunatityFlag) throws IOCLWSException
+	public Response updateQuantity(int qunatityId,String quantityName,String quantity,String quantityStatus,boolean editQunatityNameFlag,boolean editQunatityFlag,String userName) throws IOCLWSException
 	{
 		LOG.info("Entered into updateQuantity service class method........");
 		QuantityCreationResponseBean quantityUpdationResponseBean=new QuantityCreationResponseBean();
@@ -146,11 +186,22 @@ public class QuantitiesManagementServices
 			IoclSupportedQuantitystatus ioclSupportedQuantitystatus=iOCLSupportedQunatityStatusDAO.findStatusIdByQuantityStatus(quantityStatus);
 			if(null!=ioclSupportedQuantitystatus)
 			{
-				ioclQuantityDetailsDAO.updateQuantitiesDetails(quantityName,quantity,ioclSupportedQuantitystatus,ioclQuantitiesDetail);
+				LOG.info("createdBy::::::"+userName);
+				IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+				LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+				int userID=ioclUserDetail.getUserId();
+				LOG.info("usrId:::"+userID);
+				
+				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+				Date quantityUpdateddateobj = new Date();
+				
+				ioclQuantityDetailsDAO.updateQuantitiesDetails(quantityName,quantity,ioclSupportedQuantitystatus,ioclQuantitiesDetail,userID,quantityUpdateddateobj);
 				quantityUpdationResponseBean.setQuantityId(Long.valueOf(qunatityId));
 				quantityUpdationResponseBean.setQunatity(quantity);
 				quantityUpdationResponseBean.setQunatityName(quantityName);
 				quantityUpdationResponseBean.setOperationalStatus(quantityStatus);
+				quantityUpdationResponseBean.setUserName(userName);
+				quantityUpdationResponseBean.setTimeStamp(dateFormat.format(quantityUpdateddateobj));
 				quantityUpdationResponseBean.setMessage("Quantity SuccessFully Updated : "+quantityName);
 				quantityUpdationResponseBean.setSuccessFlag(true);
 			}

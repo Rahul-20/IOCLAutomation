@@ -9,12 +9,27 @@ public class FanSlipMangRequestBean
 	private String DriverLicNo;
 	private String Customer;
 	private String Quantity;
+	private int QuantityID;
 	private String VehicleWgt;
 	private String Destination;
 	private String LocationCode;
 	private String MobileNumber;
 	private int BayNum;
 	private int FanId;
+	private String comments;
+
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	public int getQuantityID() {
+		return QuantityID;
+	}
+	public void setQuantityID(int quantityID) {
+		QuantityID = quantityID;
+	}
 
 	public int getFanId() {
 		return FanId;

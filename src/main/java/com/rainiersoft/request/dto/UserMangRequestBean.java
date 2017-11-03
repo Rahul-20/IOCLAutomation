@@ -24,7 +24,21 @@ public class UserMangRequestBean
 	private int userId;
 	private boolean editUserNameFlag;
 	private boolean editPwdFlag;
+	private String userCreatedBy;
+	private String userUpdatedBy;
 
+	public String getUserUpdatedBy() {
+		return userUpdatedBy;
+	}
+	public void setUserUpdatedBy(String userUpdatedBy) {
+		this.userUpdatedBy = userUpdatedBy;
+	}
+	public String getUserCreatedBy() {
+		return userCreatedBy;
+	}
+	public void setUserCreatedBy(String userCreatedBy) {
+		this.userCreatedBy = userCreatedBy;
+	}
 	public boolean getEditPwdFlag() {
 		return editPwdFlag;
 	}

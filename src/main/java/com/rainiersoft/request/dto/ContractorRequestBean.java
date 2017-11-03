@@ -19,7 +19,14 @@ public class ContractorRequestBean
 	private String contractorOperationalStatus;
 	private boolean editContractorNameFlag;
 	private int contractorId;
+	private String userName;
 
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public boolean getEditContractorNameFlag() {
 		return editContractorNameFlag;
 	}

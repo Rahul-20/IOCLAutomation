@@ -1,8 +1,24 @@
 package com.rainiersoft.iocl.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**
@@ -37,6 +53,20 @@ public class IoclBayDetail implements Serializable {
 
 	@Column(name="BayNum")
 	private int bayNum;
+	
+	@Column(name="BayCreatedBy")
+	private int bayCreatedBy;
+	
+	@Column(name="BayUpdatedBy")
+	private int bayUpdatedBy;
+
+	@Column(name="BayCreatedOn")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date bayCreatedOn;
+	
+	@Column(name="BayUpdatedOn")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date bayUpdatedOn;
 
 	//bi-directional many-to-one association to IoclSupportedBaystatus
 	@ManyToOne
@@ -88,5 +118,37 @@ public class IoclBayDetail implements Serializable {
 
 	public void setIoclBayTypes(List<IoclBayType> ioclBayTypes) {
 		this.ioclBayTypes = ioclBayTypes;
+	}
+	
+	public int getBayCreatedBy() {
+		return this.bayCreatedBy;
+	}
+
+	public void setBayCreatedBy(int bayCreatedBy) {
+		this.bayCreatedBy = bayCreatedBy;
+	}
+
+	public Date getBayCreatedOn() {
+		return this.bayCreatedOn;
+	}
+
+	public void setBayCreatedOn(Date bayCreatedOn) {
+		this.bayCreatedOn = bayCreatedOn;
+	}
+	
+	public int getBayUpdatedBy() {
+		return this.bayUpdatedBy;
+	}
+
+	public void setBayUpdatedBy(int bayUpdatedBy) {
+		this.bayUpdatedBy = bayUpdatedBy;
+	}
+
+	public Date getBayUpdatedOn() {
+		return this.bayUpdatedOn;
+	}
+
+	public void setBayUpdatedOn(Date bayUpdatedOn) {
+		this.bayUpdatedOn = bayUpdatedOn;
 	}
 }

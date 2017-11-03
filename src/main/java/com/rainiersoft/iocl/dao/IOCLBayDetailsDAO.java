@@ -1,5 +1,6 @@
 package com.rainiersoft.iocl.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.rainiersoft.iocl.entity.IoclBayDetail;
@@ -10,7 +11,7 @@ public interface IOCLBayDetailsDAO extends GenericDAO<IoclBayDetail, Long>
 {
 	public List<IoclBayDetail> findAllAvailableBaysInApplication();
 
-	public Long insertBayDetails(String bayName, int bayNum, int bayType, IoclSupportedBaystatus ioclSupportedBaystatus);
+	public Long insertBayDetails(String bayName, int bayNum, int bayType, IoclSupportedBaystatus ioclSupportedBaystatus,int userID,Date bayCreatedOn);
 
 	public IoclBayDetail findBayByBayNum(int bayNum);
 	
@@ -20,5 +21,5 @@ public interface IOCLBayDetailsDAO extends GenericDAO<IoclBayDetail, Long>
 
 	public boolean deleteBay(int bayId);
 	
-	public void updateBayDetails(String bayName,int bayNum,int bayTypeId, IoclSupportedBaystatus ioclSupportedBaystatus,IoclBayDetail ioclBayDetail,IoclSupportedBaytype ioclSupportedBaytype);
+	public void updateBayDetails(String bayName,int bayNum,int bayTypeId, IoclSupportedBaystatus ioclSupportedBaystatus,IoclBayDetail ioclBayDetail,IoclSupportedBaytype ioclSupportedBaytype,int userID,Date bayUpdatedOn);
 }

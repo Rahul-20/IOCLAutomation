@@ -106,7 +106,7 @@ public class UserManagementResources
 			String userMobileNum = request.getUserMobileNum();
 			String userStatus = request.getUserStatus();
 			LOG.info("Request Object For User Creation........"+request);
-			return userManagementServices.createNewUser(userName, userPassword, userFirstName, userLastName, userDOB, userAadharNum, userType, userMobileNum, userStatus);
+			return userManagementServices.createNewUser(userName, userPassword, userFirstName, userLastName, userDOB, userAadharNum, userType, userMobileNum, userStatus,request.getUserCreatedBy());
 		}
 		catch(IOCLWSException ioclwsException)
 		{
@@ -138,7 +138,7 @@ public class UserManagementResources
 			boolean editPwdFlag=request.getEditPwdFlag();
 			int userId=request.getUserId();
 			LOG.info("Request Object For Update Creation........"+request);
-			return userManagementServices.updateUser(userId,userName, userPassword, userMobileNum, userStatus,editUserNameFlag,userFirstName,userLastName,userDOB,userAadharNum,userType,editPwdFlag);
+			return userManagementServices.updateUser(userId,userName, userPassword, userMobileNum, userStatus,editUserNameFlag,userFirstName,userLastName,userDOB,userAadharNum,userType,editPwdFlag,request.getUserUpdatedBy());
 		}
 		catch(IOCLWSException ioclwsException)
 		{

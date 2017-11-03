@@ -32,17 +32,21 @@ import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedBayStatusDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedBayTypesDAO;
 import com.rainiersoft.iocl.dao.IOCLTruckRegistrationDetailsDAO;
+import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclBayDetail;
 import com.rainiersoft.iocl.entity.IoclBcBayoperation;
 import com.rainiersoft.iocl.entity.IoclFanslipDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedBaystatus;
 import com.rainiersoft.iocl.entity.IoclSupportedBaytype;
+import com.rainiersoft.iocl.entity.IoclTruckregistrationDetail;
+import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.AllBayDetailsResponseBean;
 import com.rainiersoft.response.dto.AvailableBaysResponseBean;
 import com.rainiersoft.response.dto.BayCreationResponseBean;
 import com.rainiersoft.response.dto.BayDeletionResponseBean;
+import com.rainiersoft.response.dto.CurrentBayOperationResponseBean;
 import com.rainiersoft.response.dto.GetBayStaticDataResponseBean;
 
 
@@ -76,7 +80,10 @@ public class BaysManagementServices
 	IOCLBayTypeDAO iOCLBayTypeDAO;
 
 	@Autowired
-	IOCLTruckRegistrationDetailsDAO  iOCLTruckRegistrationDetailsDAO;
+	IOCLTruckRegistrationDetailsDAO iOCLTruckRegistrationDetailsDAO;
+
+	@Autowired
+	IOCLUserDetailsDAO iOCLUserDetailsDAO;
 
 	@Resource
 	Properties appProps;
@@ -92,7 +99,7 @@ public class BaysManagementServices
 		{
 			List<AllBayDetailsResponseBean> listAllBayDetailsResponseBean=new ArrayList<AllBayDetailsResponseBean>();
 			List<IoclBayDetail> listOfIocBayDetails=iOCLBayDetailsDAO.findAllAvailableBaysInApplication();
-
+			DateFormat df = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			for(IoclBayDetail ioclBayDetail:listOfIocBayDetails)
 			{
 				AllBayDetailsResponseBean allBayDetailsResponseBean=new AllBayDetailsResponseBean();
@@ -103,6 +110,19 @@ public class BaysManagementServices
 				IoclSupportedBaytype ioclSupportedBaytype=iOCLSupportedBayTypesDAO.findBayTypeByBayTypeId(bayTypeId);
 				allBayDetailsResponseBean.setBayType(ioclSupportedBaytype.getBayType());
 				allBayDetailsResponseBean.setFunctionalStatus(ioclBayDetail.getIoclSupportedBaystatus().getBayFunctionalStatus());
+
+				if(ioclBayDetail.getBayUpdatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclBayDetail.getBayUpdatedBy());
+					allBayDetailsResponseBean.setBayUpdatedBy(ioclUserDetail.getUserName());
+					allBayDetailsResponseBean.setBayUpdatedOn(df.format(ioclBayDetail.getBayUpdatedOn()));
+				}
+				if(ioclBayDetail.getBayCreatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclBayDetail.getBayCreatedBy());
+					allBayDetailsResponseBean.setBayCreatedBy(ioclUserDetail.getUserName());
+					allBayDetailsResponseBean.setBayCreatedOn(df.format(ioclBayDetail.getBayCreatedOn()));
+				}
 				listAllBayDetailsResponseBean.add(allBayDetailsResponseBean);
 			}
 			return  Response.status(Response.Status.OK).entity(listAllBayDetailsResponseBean).build();
@@ -299,7 +319,7 @@ public class BaysManagementServices
 	 */
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response bayCreation(String bayName,int bayNum,String bayType,String functionalStatus)  throws IOCLWSException
+	public Response bayCreation(String bayName,int bayNum,String bayType,String functionalStatus,String userName)  throws IOCLWSException
 	{
 		LOG.info("Entered into bayCreation service class method........");
 		BayCreationResponseBean bayCreationResponseBean=new BayCreationResponseBean();
@@ -321,14 +341,25 @@ public class BaysManagementServices
 				IoclSupportedBaystatus ioclSupportedBaystatus=iOCLSupportedBayStatusDAO.findStatusIdByStatus(functionalStatus);
 				if(null!=ioclSupportedBaystatus)
 				{
+					LOG.info("createdBy::::::"+userName);
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+					LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+					int userID=ioclUserDetail.getUserId();
+					LOG.info("usrId:::"+userID);
+
+					DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+					Date bayCreatedDateobj = new Date();
+
 					IoclSupportedBaytype ioclSupportedBaytype=iOCLSupportedBayTypesDAO.findBayTypeIdByBayType(bayType);
 					int bayTypeId=ioclSupportedBaytype.getTypeId();
-					Long bayId=iOCLBayDetailsDAO.insertBayDetails(bayName, bayNum, bayTypeId, ioclSupportedBaystatus);
+					Long bayId=iOCLBayDetailsDAO.insertBayDetails(bayName, bayNum, bayTypeId, ioclSupportedBaystatus,userID,bayCreatedDateobj);
 					bayCreationResponseBean.setBayId(bayId);
 					bayCreationResponseBean.setBayName(bayName);
 					bayCreationResponseBean.setBayNum(bayNum);
 					bayCreationResponseBean.setBayType(bayType);
 					bayCreationResponseBean.setBayStatus(functionalStatus);
+					bayCreationResponseBean.setUserName(userName);
+					bayCreationResponseBean.setTimeStamp(dateFormat.format(bayCreatedDateobj));
 					bayCreationResponseBean.setMessage("Bay SuccessFully Created : "+ bayName);
 					bayCreationResponseBean.setSuccessFlag(true);
 				}
@@ -348,7 +379,7 @@ public class BaysManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response bayUpdation(int bayId,String bayName,int bayNum,String bayType,String functionalStatus,boolean bayNumEditFlag,boolean bayNameEditFlag) throws IOCLWSException
+	public Response bayUpdation(int bayId,String bayName,int bayNum,String bayType,String functionalStatus,boolean bayNumEditFlag,boolean bayNameEditFlag,String userName) throws IOCLWSException
 	{
 		LOG.info("Entered into bayUpdation service class method........");
 		try
@@ -383,7 +414,6 @@ public class BaysManagementServices
 				}
 			}
 
-
 			if(bayNameEditFlag && bayNameExistFlag)
 			{
 				throw new IOCLWSException(Response.Status.CONFLICT.getStatusCode(),ErrorMessageConstants.BayName_Already_Exist_Msg);
@@ -404,8 +434,16 @@ public class BaysManagementServices
 				IoclBayDetail ioclBayDetail=iOCLBayDetailsDAO.findBayByBayId(bayId);
 				System.out.println(":::::"+ioclBayDetail.getIoclBayTypes().get(0));
 
+				LOG.info("createdBy::::::"+userName);
+				IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+				LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+				int userID=ioclUserDetail.getUserId();
+				LOG.info("usrId:::"+userID);
 
-				iOCLBayDetailsDAO.updateBayDetails(bayName, bayNum,bayTypeId, ioclSupportedBaystatus,ioclBayDetail,ioclSupportedBaytype);
+				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+				Date bayUpdatedDateobj = new Date();
+
+				iOCLBayDetailsDAO.updateBayDetails(bayName, bayNum,bayTypeId, ioclSupportedBaystatus,ioclBayDetail,ioclSupportedBaytype,userID,bayUpdatedDateobj);
 
 				bayUpdationResponseBean.setBayId(Long.valueOf(bayId));
 				bayUpdationResponseBean.setBayName(bayName);
@@ -413,6 +451,8 @@ public class BaysManagementServices
 				bayUpdationResponseBean.setBayType(bayType);
 				bayUpdationResponseBean.setBayStatus(functionalStatus);
 				bayUpdationResponseBean.setSuccessFlag(true);
+				bayUpdationResponseBean.setUserName(userName);
+				bayUpdationResponseBean.setTimeStamp(dateFormat.format(bayUpdatedDateobj));
 				bayUpdationResponseBean.setMessage("Bay Updated Successfully");
 			}
 			return Response.status(Response.Status.OK).entity(bayUpdationResponseBean).build();
@@ -443,6 +483,7 @@ public class BaysManagementServices
 			LOG.info("List Of Available Bays In Application:::::::::"+listOfAllTheBays);
 			for(IoclBayDetail ioclBayDetail:listOfAllTheBays)
 			{
+				LOG.info("BayNums Iteration........"+ioclBayDetail.getBayNum());
 				AvailableBaysResponseBean availableBaysResponseBean=new AvailableBaysResponseBean();
 				//List<FanslipsAssignedBean> listFanslipsAssignedBean=new ArrayList<FanslipsAssignedBean>();
 
@@ -466,7 +507,7 @@ public class BaysManagementServices
 				int queueCounter = 0;
 				int supportedQueueSize=Integer.parseInt(bayQueueMaxSize);
 
-				LOG.info("::::::::::::::::::::::::::::::::::::::::::::::::::::"+supportedQueueSize);
+				LOG.info("supportedQueueSize::::::::::::::::::::::::::::::::::::::::::::::::::::"+supportedQueueSize);
 				List<IoclFanslipDetail> listOfPastFanslips=iOCLFanslipDetailsDAO.findAnyBayIsAssignedInPast(bayNumber,currentDate,hoursBack);
 				LOG.info("findAnyBayIsAssignedInPast::::::::::"+listOfPastFanslips);
 
@@ -488,15 +529,24 @@ public class BaysManagementServices
 					}
 					else
 					{
-						//This will never come because without fanslip is not generated for that particular day then no records will not present in BC table
+						//This will never come because without fanslip not generated for that particular day then no records will not present in BC table
+						LOG.info("This will never come because without fanslip not generated for that particular day then no records will not present in BC table");
 						boolean allCompletedFlag=true;
 						Set<String> pinSet=new HashSet<String>();
 						for(IoclBcBayoperation ioclBcBayoperation:listOfBCUpdates)							
 						{
 							//else different status, then assign one more and keep in queue list
 							//check top 10 records, count of different status, if greater then 2 put in queue
-							if(!(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("completed")) /*|| !(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("Errored Out"))*/)
+							IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(ioclBcBayoperation.getFanPin());
+							if((ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Expired")) || (ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Cancelled")))
 							{
+								LOG.info("Fanslip is expired continue......");
+								continue;
+							}
+
+							if(!(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("completed")))
+							{
+								LOG.info("Add the fanslip........");
 								pinSet.add(ioclBcBayoperation.getFanPin());
 								allCompletedFlag=false;
 								queueCounter=queueCounter+1;
@@ -515,6 +565,7 @@ public class BaysManagementServices
 							/*for(String pinMap : pinSet)
 							{*/
 							//FanslipsAssignedBean fanslipsAssignedBean=new FanslipsAssignedBean();
+							LOG.info("pinSetSize......"+pinSet.size());
 							if(pinSet.size()<supportedQueueSize)
 							{
 								//fanslipsAssignedBean.setFanPin(pinMap);
@@ -558,13 +609,21 @@ public class BaysManagementServices
 						//Fpin is generated but truck has not reached the point, so the BC table might not contain records for the truck.
 						if(listOfBCUpdates.size()==0)
 						{
-							fanDetailsMap.put(ioclFanslipDetail.getFanPin(), appProps.getProperty("NOT_REACHED"));
+							if(!(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Expired")) && !(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Cancelled")))
+							{
+								LOG.info("ioclFanslipDetail.getIoclSupportedPinstatus...."+ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+								fanDetailsMap.put(ioclFanslipDetail.getFanPin(), appProps.getProperty("NOT_REACHED"));
+							}
 						}
 						else
 						{
 							for(IoclBcBayoperation ioclBcBayoperation:listOfBCUpdates)
 							{
-								fanDetailsMap.put(ioclFanslipDetail.getFanPin(), ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus());
+								LOG.info("Else block IoclFanslipDetail.getIoclSupportedPinstatus...."+ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+								if(!(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Expired")) && !(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Cancelled")))
+								{
+									fanDetailsMap.put(ioclFanslipDetail.getFanPin(), ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus());
+								}
 							}
 						}
 					}
@@ -596,6 +655,7 @@ public class BaysManagementServices
 						{*/
 						//FanslipsAssignedBean fanslipsAssignedBean=new FanslipsAssignedBean();
 						LOG.info("GET Pins::::"+pinSet);
+						LOG.info("pinSetSize......"+pinSet.size());
 						if(pinSet.size()<supportedQueueSize)
 						{
 							/*fanslipsAssignedBean.setFanPin(fanpin);
@@ -776,4 +836,76 @@ public class BaysManagementServices
 		}
 	}
 
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=Exception.class)
+	public Response getCurrentBayOperationalDetails() throws IOCLWSException
+	{
+		LOG.info("Entered into getCurrentBayOperationalDetails service class method........");
+		List<CurrentBayOperationResponseBean> listAvailableBaysResponseBean=new ArrayList<CurrentBayOperationResponseBean>();
+		try
+		{
+			List<IoclBayDetail> listOfAllTheBays=iOCLBayDetailsDAO.findAllAvailableBaysInApplication();
+			LOG.info("=======================Bays Logic Starts===============");
+			LOG.info("List Of Available Bays In Application:::::::::"+listOfAllTheBays);
+			for(IoclBayDetail ioclBayDetail:listOfAllTheBays)
+			{
+				LOG.info("BayNums Iteration........"+ioclBayDetail.getBayNum());
+				CurrentBayOperationResponseBean availableBaysResponseBean=new CurrentBayOperationResponseBean();
+				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+				Date currentDate = new Date();
+				LOG.info("Current Date:::::"+dateFormat.format(currentDate));
+
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(currentDate);
+				cal.add(Calendar.HOUR, Integer.parseInt(appProps.getProperty("GetAvailableBaysPastHours")));
+				Date hoursBack = cal.getTime();
+				LOG.info("PastDate::::::"+dateFormat.format(hoursBack));
+
+				int bayNumber=ioclBayDetail.getBayNum();
+				String bayName=ioclBayDetail.getBayName();
+				String functionalStatus=ioclBayDetail.getIoclSupportedBaystatus().getBayFunctionalStatus();
+
+				List<IoclBcBayoperation> listOfBCUpdates=iOCLBCBayOperationsDAO.findTopBayUpdatesByBC(bayNumber,currentDate,hoursBack);
+				LOG.info("findTopBayUpdatesByBC::::::::"+listOfBCUpdates);
+				if(listOfBCUpdates.size()==0)
+				{
+					availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
+					availableBaysResponseBean.setBayNumber(bayNumber);
+					availableBaysResponseBean.setBayName(bayName);
+					availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayAvailableEmptyFlag"));
+					listAvailableBaysResponseBean.add(availableBaysResponseBean);
+				}
+				else
+				{
+					availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
+					availableBaysResponseBean.setBayNumber(bayNumber);
+					availableBaysResponseBean.setBayName(bayName);
+					IoclBcBayoperation ioclBcBayoperation=listOfBCUpdates.get(0);
+					availableBaysResponseBean.setBayAvailableStatus(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus());
+					IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanSlipDetailsByFanPinAndBayNum(ioclBcBayoperation.getFanPin(),ioclBcBayoperation.getBayNum());
+					availableBaysResponseBean.setContractorName(ioclFanslipDetail.getIoclContractorDetail().getContractorName());
+					availableBaysResponseBean.setDestination(ioclFanslipDetail.getDestination());
+					availableBaysResponseBean.setFanId(ioclFanslipDetail.getFanId());
+					availableBaysResponseBean.setFanPinCreation(dateFormat.format(ioclFanslipDetail.getFanCreationOn()));
+					availableBaysResponseBean.setFanPinExpiration(dateFormat.format(ioclFanslipDetail.getFanExpirationOn()));
+					availableBaysResponseBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+					availableBaysResponseBean.setLocationCode(ioclFanslipDetail.getIoclLocationDetail().getLocationCode());
+					availableBaysResponseBean.setQuantity(ioclFanslipDetail.getIoclQuantitiesDetail().getQuantityName()+"("+ioclFanslipDetail.getIoclQuantitiesDetail().getQuantity()+")");
+					availableBaysResponseBean.setQuantityID(ioclFanslipDetail.getIoclQuantitiesDetail().getQuantityId());
+					availableBaysResponseBean.setPreSet(ioclFanslipDetail.getQuantity());
+					IoclTruckregistrationDetail ioclTruckDetails=iOCLTruckRegistrationDetailsDAO.findTruckByTruckId(ioclFanslipDetail.getTruckId());
+					availableBaysResponseBean.setTruckNumber(ioclTruckDetails.getTruckNo());
+					availableBaysResponseBean.setDriverName(ioclTruckDetails.getDriverName());
+					availableBaysResponseBean.setCustomer(ioclTruckDetails.getCustomer());
+					availableBaysResponseBean.setVehicleWeight(ioclFanslipDetail.getVehicleWgt());
+					listAvailableBaysResponseBean.add(availableBaysResponseBean);
+				}
+			}
+			return  Response.status(Response.Status.OK).entity(listAvailableBaysResponseBean).build();
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class getCurrentBayOperationalDetails method catch block........"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
+		}
+	}
 }

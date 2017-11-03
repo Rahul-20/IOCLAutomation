@@ -1,5 +1,6 @@
 package com.rainiersoft.iocl.resources;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
@@ -11,10 +12,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.services.BaysManagementServices;
 import com.rainiersoft.request.dto.BaysMangRequestBean;
@@ -107,8 +110,9 @@ public class BaysManagementResources
 			int bayNum = request.getBayNum();
 			String bayType = request.getBayType();
 			String functionalStatus = request.getFunctionalStatus();
+			String userName=request.getUserName();
 			LOG.info("Request Object For Bay Creation........"+request);
-			return baysManagementServices.bayCreation(bayName, bayNum, bayType, functionalStatus);
+			return baysManagementServices.bayCreation(bayName, bayNum, bayType, functionalStatus,userName);
 		}
 		catch(IOCLWSException ioclwsException)
 		{
@@ -186,7 +190,7 @@ public class BaysManagementResources
 		try
 		{
 			LOG.info("Request Object For Bay Updation........"+request);
-			return baysManagementServices.bayUpdation(request.getBayId(),request.getBayName(),request.getBayNum(), request.getBayType(),request.getFunctionalStatus(),request.getEditbayNumFlag(),request.getEditbayNameFlag());
+			return baysManagementServices.bayUpdation(request.getBayId(),request.getBayName(),request.getBayNum(), request.getBayType(),request.getFunctionalStatus(),request.getEditbayNumFlag(),request.getEditbayNameFlag(),request.getUserName());
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -194,5 +198,24 @@ public class BaysManagementResources
 			throw iOCLWSException;
 		}
 	}
-
+	
+	@Path("/getCurrentBayOperationalDetails")
+	//@RolesAllowed({"Admin", "Super Admin"})
+	@PermitAll
+	@GET
+	@Consumes({"application/json"})
+	@Produces({"application/json"})
+	public Response getCurrentBayOperationalDetails() throws IOCLWSException
+	{
+		try
+		{
+			LOG.info("Entered into getCurrentBayOperationalDetails resource class method........");
+			return baysManagementServices.getCurrentBayOperationalDetails();
+		}
+		catch(IOCLWSException iOCLWSException)
+		{
+			LOG.info("Logging the occured exception in the resouce class getAllBayDetails method........"+iOCLWSException);
+			throw iOCLWSException;
+		}
+	}
 }

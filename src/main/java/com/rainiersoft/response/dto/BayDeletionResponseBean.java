@@ -4,6 +4,7 @@ public class BayDeletionResponseBean
 {
 	private boolean successFlag;
 	private String msg;
+	
 	public boolean getSuccessFlag() {
 		return successFlag;
 	}

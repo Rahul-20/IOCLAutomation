@@ -31,8 +31,11 @@ public class BayManagementTestCases
 		//Response allBayDetailsResp=baysManagementServices.getAllBayDetails();
 		//System.out.println("All BayDetails::::::"+allBayDetailsResp.getEntity());
 
-		Response getAvailableBays=baysManagementServices.getAvailableBays();
-		System.out.println("getAvailableBays::::::"+getAvailableBays.getEntity());
+		//Response AvailableBays=baysManagementServices.getAvailableBays();
+		//System.out.println("getAvailableBays::::::"+AvailableBays.getEntity());
+		
+		Response getCurrentBayOperationalDetails=baysManagementServices.getCurrentBayOperationalDetails();
+		System.out.println("getCurrentBayOperationalDetails::::::"+getCurrentBayOperationalDetails.getEntity());
 		
 		//Response bayCreation=baysManagementServices.bayCreation("bay2",2, "LPG", "Active");
 		//System.out.println("All BayDetails::::::"+bayCreation.getEntity());

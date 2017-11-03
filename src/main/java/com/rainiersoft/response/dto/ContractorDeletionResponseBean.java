@@ -4,6 +4,7 @@ public class ContractorDeletionResponseBean
 {
 	private boolean successFlag;
 	private String message;
+	
 	public boolean getSuccessFlag() {
 		return successFlag;
 	}

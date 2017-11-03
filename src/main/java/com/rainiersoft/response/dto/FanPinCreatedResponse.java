@@ -12,6 +12,7 @@ public class FanPinCreatedResponse
 	private int bayNum;
 	//private String bayStatus;
 	private String quantity;
+	private int quantityID;
 	private String vehicleWeight;
 	private String destination;
 	private String locationCode;
@@ -23,6 +24,14 @@ public class FanPinCreatedResponse
 	public FanPinCreatedResponse()
 	{
 
+	}
+	
+	public int getQuantityID() {
+		return quantityID;
+	}
+
+	public void setQuantityID(int quantityID) {
+		this.quantityID = quantityID;
 	}
 
 	public Long getFanId() {

@@ -70,7 +70,8 @@ public class LocationsManagementResources
 			String city=locationMangRequestBean.getCity();
 			String pinCode=locationMangRequestBean.getPinCode();
 			String state=locationMangRequestBean.getState();
-			return locationManagementServices.addLocation(locationName,locationCode,quantityStatus,locationAddress,city,pinCode,state);
+			String userName=locationMangRequestBean.getUserName();
+			return locationManagementServices.addLocation(locationName,locationCode,quantityStatus,locationAddress,city,pinCode,state,userName);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -97,7 +98,8 @@ public class LocationsManagementResources
 			String city=locationMangRequestBean.getCity();
 			String pinCode=locationMangRequestBean.getPinCode();
 			String state=locationMangRequestBean.getState();
-			return locationManagementServices.updateLocation(locationName,locationCode,quantityStatus,locationAddress,locationId,locationMangRequestBean.getEditLocationNameFlag(),locationMangRequestBean.getEditLocationCodeFlag(),city,pinCode,state);
+			String userName=locationMangRequestBean.getUserName();
+			return locationManagementServices.updateLocation(locationName,locationCode,quantityStatus,locationAddress,locationId,locationMangRequestBean.getEditLocationNameFlag(),locationMangRequestBean.getEditLocationCodeFlag(),city,pinCode,state,userName);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{

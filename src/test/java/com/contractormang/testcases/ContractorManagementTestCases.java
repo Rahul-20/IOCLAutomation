@@ -22,8 +22,8 @@ public class ContractorManagementTestCases
 
 		ContractorsManagementServices cms=(ContractorsManagementServices)ac.getBean("contractorsManagementServices");
 
-		//Response addresp=cms.addContractor("RahulKumar","LPG","Saroornagar","Hyd","Active","500035","Hyderabad");
-		//System.out.println("Add Contractors:::::"+addresp.getEntity());
+		Response addresp=cms.addContractor("ABCCC","iocl","qa" ,"dddd","Active","500035","AP", "IOCLAdmin");
+		System.out.println("Add Contractors:::::"+addresp.getEntity());
 
 		//Response updateresp=cms.updateContractor(2,"RahulKumar","IOCL","Saroornagar","Hyderabad","Not Active","500035","Telangana",true);
 		//System.out.println("Add Contractors:::::"+updateresp.getEntity());
@@ -31,8 +31,8 @@ public class ContractorManagementTestCases
 		Response resp=cms.getContractorDetails();
 		System.out.println("Get ALL Contractors:::::"+resp.getEntity());
 		
-		Response respStat=cms.getContractorStaticData();
-		System.out.println("Get ALL Contractors:::::"+respStat.getEntity());
+		//Response respStat=cms.getContractorStaticData();
+		//System.out.println("Get ALL Contractors:::::"+respStat.getEntity());
 		
 		//Response resp=cms.getData();
 		//System.out.println("Get ALL Contractors:::::"+resp.getEntity());

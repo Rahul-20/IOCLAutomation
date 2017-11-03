@@ -9,4 +9,6 @@ public interface IOCLBCBayOperationsDAO extends GenericDAO<IoclBcBayoperation, L
 	public List<IoclBcBayoperation> findBayUpdatesByBC(int bayNo, Date currDate, Date pastDate);
 
 	public List<IoclBcBayoperation> findBayUpdatesByFanPin(String fanPin);
+	
+	public List<IoclBcBayoperation> findTopBayUpdatesByBC(int bayNo, Date currDate, Date pastDate);
 }

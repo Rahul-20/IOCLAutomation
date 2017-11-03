@@ -2,10 +2,10 @@ package com.rainiersoft.request.dto;
 
 public class BayMangUpdationSubRequestBean 
 {
-	String bayName;
-	String bayNum;
-	String editBayNumFlag;
-	String editBayNameFlag;
+	private String bayName;
+	private String bayNum;
+	private String editBayNumFlag;
+	private String editBayNameFlag;
 	
 	public String getBayName() {
 		return bayName;

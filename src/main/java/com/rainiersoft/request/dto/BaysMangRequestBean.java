@@ -16,7 +16,14 @@ public class BaysMangRequestBean
 	private String functionalStatus;
 	private boolean editbayNumFlag;
 	private boolean editbayNameFlag;
+	private String userName;
 
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public int getBayId() {
 		return bayId;
 	}

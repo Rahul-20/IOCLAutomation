@@ -1,6 +1,5 @@
 package com.rainiersoft.iocl.dao.impl;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +18,7 @@ import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclContractorDetail;
 import com.rainiersoft.iocl.entity.IoclFanslipDetail;
 import com.rainiersoft.iocl.entity.IoclLocationDetail;
+import com.rainiersoft.iocl.entity.IoclQuantitiesDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedPinstatus;
 
 @Repository
@@ -29,7 +29,7 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 
 	public IOCLFanslipDetailsDAOImpl() {}
 
-	public Long insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanPinExpirationOn,IoclContractorDetail ioclContractorDetail,int fanCreatedBy) 
+	public Long insertFanSlipDetails(int bayNo, String fanPin, IoclSupportedPinstatus fanPinStatusId, int truckID, Date createdOn, String quantity, String vehicleWgt, String destination, IoclLocationDetail locationId,Date fanPinExpirationOn,IoclContractorDetail ioclContractorDetail,int fanCreatedBy,IoclQuantitiesDetail ioclQuantitiesDetail) 
 	{
 		Session session=getCurrentSession();
 		IoclFanslipDetail ioclFanslipDetail = new IoclFanslipDetail();
@@ -45,6 +45,7 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		ioclFanslipDetail.setIoclSupportedPinstatus(fanPinStatusId);
 		ioclFanslipDetail.setFanExpirationOn(fanPinExpirationOn);
 		ioclFanslipDetail.setFanCreatedBy(fanCreatedBy);
+		ioclFanslipDetail.setIoclQuantitiesDetail(ioclQuantitiesDetail);
 		Integer fanId=(Integer) session.save(ioclFanslipDetail);
 		return fanId.longValue();
 	}
@@ -77,6 +78,9 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findAllLatestFanSlips");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("dateFormat.parse(dateFormat.format(currDate)..."+dateFormat.format(currDate));
+		System.out.println(dateFormat.format(pastDate));
+		
 		try
 		{
 			query.setParameter("currDate", (Date)dateFormat.parse(dateFormat.format(currDate)));
@@ -101,11 +105,22 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 	}
 
 	@Override
-	public void updateFanPinDetails(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus,int userID,Date fanUpdatedOn) 
+	public void updateFanPinDetails(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus,int userID,Date fanUpdatedOn,String comments) 
 	{
 		ioclFanslipDetail.setIoclSupportedPinstatus(ioclSupportedPinstatus);
 		ioclFanslipDetail.setFanUpdatedBy(userID);
 		ioclFanslipDetail.setFanUpdatedOn(fanUpdatedOn);
+		ioclFanslipDetail.setComments(comments);
 		saveOrUpdate(ioclFanslipDetail);
+	}
+
+	@Override
+	public IoclFanslipDetail findFanSlipDetailsByFanPinAndBayNum(String fanPin, int bayNo) {
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findFanSlipDetailsByFanPinAndBayNum");
+		query.setParameter("fanPin", fanPin);
+		query.setParameter("bayNo", bayNo);
+		IoclFanslipDetail ioclFanslipDetail = (IoclFanslipDetail)findObject(query);
+		return ioclFanslipDetail;
 	}
 }

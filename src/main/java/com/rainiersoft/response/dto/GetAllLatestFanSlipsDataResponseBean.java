@@ -22,6 +22,7 @@ public class GetAllLatestFanSlipsDataResponseBean
 	private int bayNum;
 	private String bayStatus;
 	private String quantity;
+	private String preSet;
 	private String vehicleWeight;
 	private String destination;
 	private String locationCode;
@@ -29,6 +30,27 @@ public class GetAllLatestFanSlipsDataResponseBean
 	private String fanPinStatus;
 	private String fanPinCreation;
 	private String fanPinExpiration;
+	private int quantityID;
+	private String comments;
+	
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	public String getPreSet() {
+		return preSet;
+	}
+	public void setPreSet(String preSet) {
+		this.preSet = preSet;
+	}
+	public int getQuantityID() {
+		return quantityID;
+	}
+	public void setQuantityID(int quantityID) {
+		this.quantityID = quantityID;
+	}
 	
 	public int getFanId() {
 		return fanId;

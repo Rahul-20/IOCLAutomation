@@ -1,5 +1,6 @@
 package com.rainiersoft.iocl.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.rainiersoft.iocl.entity.IoclContractorDetail;
@@ -15,9 +16,9 @@ public interface IOCLContractorDetailsDAO extends GenericDAO<IoclContractorDetai
 	
 	public IoclContractorDetail findContractorByContractorId(int contractorId);
 	
-	public Long insertContractorDetails(String contractorName,IoclContractortypeDetail contractorType,String contractorAddress,String contractorCity,IoclSupportedContractorstatus contractorOperationalStatus,String contractorPinCode,IoclStatesDetail contractorState);
+	public Long insertContractorDetails(String contractorName,IoclContractortypeDetail contractorType,String contractorAddress,String contractorCity,IoclSupportedContractorstatus contractorOperationalStatus,String contractorPinCode,IoclStatesDetail contractorState,int userID,Date contractorCreatedOn);
 	
-	public void updateContractorDetails(String contractorName,IoclContractortypeDetail contractorType,String contractorAddress,String contractorCity,IoclSupportedContractorstatus contractorOperationalStatus,String contractorPinCode,IoclStatesDetail contractorState,IoclContractorDetail ioclContractorDetail);
+	public void updateContractorDetails(String contractorName,IoclContractortypeDetail contractorType,String contractorAddress,String contractorCity,IoclSupportedContractorstatus contractorOperationalStatus,String contractorPinCode,IoclStatesDetail contractorState,IoclContractorDetail ioclContractorDetail,int userID,Date contractorUpdatedOn);
 	
 	public boolean deleteContractor(int contractorId);
 	

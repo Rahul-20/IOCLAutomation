@@ -1,10 +1,14 @@
 package com.rainiersoft.iocl.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.inject.Singleton;
@@ -22,10 +26,12 @@ import com.rainiersoft.iocl.dao.IOCLContractorDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLContractorTypeDAO;
 import com.rainiersoft.iocl.dao.IOCLStatesDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLSupportedContractorStatusDAO;
+import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclContractorDetail;
 import com.rainiersoft.iocl.entity.IoclContractortypeDetail;
 import com.rainiersoft.iocl.entity.IoclStatesDetail;
 import com.rainiersoft.iocl.entity.IoclSupportedContractorstatus;
+import com.rainiersoft.iocl.entity.IoclUserDetail;
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.ContractorCreationAndUpdationResponseBean;
@@ -55,6 +61,12 @@ public class ContractorsManagementServices
 
 	@Autowired
 	IOCLStatesDetailsDAO iOCLStatesDetailsDAO;
+	
+	@Autowired
+	IOCLUserDetailsDAO iOCLUserDetailsDAO;
+	
+	@Autowired
+	Properties appProps;
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getContractorDetails() throws IOCLWSException
@@ -65,6 +77,7 @@ public class ContractorsManagementServices
 			List<ContractorDetailsResponseBean> listContractorDetailsResponseBean=new ArrayList<ContractorDetailsResponseBean>();
 			List<IoclContractorDetail> lIoclContractorDetail=iOCLContractorDetailsDAO.findAllContractors();
 			LOG.info("Got the lIoclContractorDetail object......"+lIoclContractorDetail);
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			for(IoclContractorDetail ioclContractorDetail:lIoclContractorDetail)
 			{
 				ContractorDetailsResponseBean contractorDetailsResponseBean=new ContractorDetailsResponseBean();
@@ -76,6 +89,18 @@ public class ContractorsManagementServices
 				contractorDetailsResponseBean.setContractorPinCode(ioclContractorDetail.getZipCode());
 				contractorDetailsResponseBean.setContractorState(ioclContractorDetail.getIoclStatesDetail().getStateName());
 				contractorDetailsResponseBean.setContractorType(ioclContractorDetail.getIoclContractortypeDetail().getContractorType());
+				if(ioclContractorDetail.getContractorUpdatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclContractorDetail.getContractorUpdatedBy());
+					contractorDetailsResponseBean.setContractorUpdatedBy(ioclUserDetail.getUserName());
+					contractorDetailsResponseBean.setContractorUpdatedOn(dateFormat.format(ioclContractorDetail.getContractorUpdatedOn()));
+				}
+				if(ioclContractorDetail.getContractorCreatedBy()!=0)
+				{
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserId(ioclContractorDetail.getContractorCreatedBy());
+					contractorDetailsResponseBean.setContractorCreatedBy(ioclUserDetail.getUserName());
+					contractorDetailsResponseBean.setContractorCreatedOn(dateFormat.format(ioclContractorDetail.getContractorCreatedOn()));
+				}
 				listContractorDetailsResponseBean.add(contractorDetailsResponseBean);
 			}
 			LOG.info("getContractorDetails response object::::::"+listContractorDetailsResponseBean);
@@ -88,7 +113,7 @@ public class ContractorsManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response addContractor(String contractorName,String contractorType,String contractorAddress,String contractorCity,String contractorOperationalStatus,String contractorPinCode,String contractorState) throws IOCLWSException
+	public Response addContractor(String contractorName,String contractorType,String contractorAddress,String contractorCity,String contractorOperationalStatus,String contractorPinCode,String contractorState,String userName) throws IOCLWSException
 	{
 		ContractorCreationAndUpdationResponseBean contractorCreationAndUpdationResponseBean=new ContractorCreationAndUpdationResponseBean();
 		try
@@ -111,7 +136,16 @@ public class ContractorsManagementServices
 				LOG.info("Got the ioclStatesDetail object......"+ioclStatesDetail);
 				if(null!=ioclSupportedContractorstatus && null!=ioclContractortypeDetail && null!=ioclStatesDetail)
 				{
-					Long contractorId=iOCLContractorDetailsDAO.insertContractorDetails(contractorName, ioclContractortypeDetail, contractorAddress, contractorCity, ioclSupportedContractorstatus, contractorPinCode, ioclStatesDetail);
+					LOG.info("createdBy::::::"+userName);
+					IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+					LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+					int userID=ioclUserDetail.getUserId();
+					LOG.info("usrId:::"+userID);
+					
+					DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+					Date contractorCreateddateobj = new Date();
+					
+					Long contractorId=iOCLContractorDetailsDAO.insertContractorDetails(contractorName, ioclContractortypeDetail, contractorAddress, contractorCity, ioclSupportedContractorstatus, contractorPinCode, ioclStatesDetail,userID,contractorCreateddateobj);
 					contractorCreationAndUpdationResponseBean.setContractorAddress(contractorAddress);
 					contractorCreationAndUpdationResponseBean.setContractorCity(contractorCity);
 					contractorCreationAndUpdationResponseBean.setContractorId(contractorId);
@@ -120,6 +154,8 @@ public class ContractorsManagementServices
 					contractorCreationAndUpdationResponseBean.setContractorPinCode(contractorPinCode);
 					contractorCreationAndUpdationResponseBean.setContractorState(contractorState);
 					contractorCreationAndUpdationResponseBean.setContractorType(contractorType);
+					contractorCreationAndUpdationResponseBean.setUserName(userName);
+					contractorCreationAndUpdationResponseBean.setTimeStamp(dateFormat.format(contractorCreateddateobj));
 					contractorCreationAndUpdationResponseBean.setMessage("Contractor SuccessFully Created : "+contractorName);
 					contractorCreationAndUpdationResponseBean.setSuccessFlag(true);
 					LOG.info("addContractor response object::::::"+contractorCreationAndUpdationResponseBean);
@@ -140,7 +176,7 @@ public class ContractorsManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response updateContractor(int contractorId,String contractorName,String contractorType,String contractorAddress,String contractorCity,String contractorOperationalStatus,String contractorPinCode,String contractorState,boolean editContractorNameFlag) throws IOCLWSException
+	public Response updateContractor(int contractorId,String contractorName,String contractorType,String contractorAddress,String contractorCity,String contractorOperationalStatus,String contractorPinCode,String contractorState,boolean editContractorNameFlag,String userName) throws IOCLWSException
 	{
 		LOG.info("Entered into updateContractor service class method........");
 		ContractorCreationAndUpdationResponseBean contractorCreationAndUpdationResponseBean=new ContractorCreationAndUpdationResponseBean();
@@ -163,7 +199,17 @@ public class ContractorsManagementServices
 			LOG.info("Got the ioclContractortypeDetail object......"+ioclContractortypeDetail);
 			IoclStatesDetail ioclStatesDetail=iOCLStatesDetailsDAO.findStateIdByStateName(contractorState);
 			LOG.info("Got the ioclStatesDetail object......"+ioclStatesDetail);
-			iOCLContractorDetailsDAO.updateContractorDetails(contractorName, ioclContractortypeDetail, contractorAddress, contractorCity, ioclSupportedContractorstatus, contractorPinCode, ioclStatesDetail, ioclContractorDetail);
+			
+			LOG.info("updatedBy::::::"+userName);
+			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+			LOG.info("ioclUserDetail:::::::"+ioclUserDetail);
+			int userID=ioclUserDetail.getUserId();
+			LOG.info("usrId:::"+userID);
+			
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date contractorUpdateddateobj = new Date();
+			
+			iOCLContractorDetailsDAO.updateContractorDetails(contractorName, ioclContractortypeDetail, contractorAddress, contractorCity, ioclSupportedContractorstatus, contractorPinCode, ioclStatesDetail, ioclContractorDetail,userID,contractorUpdateddateobj);
 			contractorCreationAndUpdationResponseBean.setContractorAddress(contractorAddress);
 			contractorCreationAndUpdationResponseBean.setContractorCity(contractorCity);
 			contractorCreationAndUpdationResponseBean.setContractorAddress(contractorAddress);
@@ -174,6 +220,8 @@ public class ContractorsManagementServices
 			contractorCreationAndUpdationResponseBean.setContractorPinCode(contractorPinCode);
 			contractorCreationAndUpdationResponseBean.setContractorState(contractorState);
 			contractorCreationAndUpdationResponseBean.setContractorType(contractorType);
+			contractorCreationAndUpdationResponseBean.setUserName(userName);
+			contractorCreationAndUpdationResponseBean.setTimeStamp(dateFormat.format(contractorUpdateddateobj));			
 			contractorCreationAndUpdationResponseBean.setMessage("Contractor SuccessFully Updated : "+contractorName);
 			contractorCreationAndUpdationResponseBean.setSuccessFlag(true);
 			LOG.info("updateContractor response object::::::"+contractorCreationAndUpdationResponseBean);

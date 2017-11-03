@@ -82,7 +82,7 @@ public class UserManagementServices
 
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response createNewUser(String userName,String userPassword,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType,String userMobileNum,String userStatus) throws IOCLWSException
+	public Response createNewUser(String userName,String userPassword,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType,String userMobileNum,String userStatus,String userCreatedBy) throws IOCLWSException
 	{
 		LOG.info("Entered into createNewUser service class method........");
 		CreationAndUpdationResponseBean creationResponseBean=new CreationAndUpdationResponseBean();
@@ -108,11 +108,17 @@ public class UserManagementServices
 			IoclSupportedUserstatus ioclSupportedUserstatus=iOCLSupportedUserStatusDAO.findUserStatusIdByUserStatus(userStatus);
 			LOG.info("Got the IoclSupportedUserrole object......"+ioclSupportedUserrole);
 			LOG.info("Got the IoclSupportedUserstatus object......"+ioclSupportedUserstatus);
-			
+
 			//Encrypt the password using SHA-1
 			userPassword=CommonUtilites.encryption(userPassword);
-			
-			Long userId=ioclUserDetailsDAO.insertUserDetails(userName,userPassword,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole,userMobileNum,ioclSupportedUserstatus,currentDateobj,expiryTimeStamp);
+
+			LOG.info("createdBy::::::"+userCreatedBy);
+			IoclUserDetail ioclUserDetailToUpdateUserName=ioclUserDetailsDAO.findUserByUserName(userCreatedBy);
+			LOG.info("ioclUserDetailToUpdateUserName:::::::"+ioclUserDetailToUpdateUserName);
+			int userID=ioclUserDetailToUpdateUserName.getUserId();
+			LOG.info("usrId:::"+userID);
+
+			Long userId=ioclUserDetailsDAO.insertUserDetails(userName,userPassword,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole,userMobileNum,ioclSupportedUserstatus,currentDateobj,expiryTimeStamp,userID);
 			LOG.info("Created record id in user table:::::::"+userId);
 			creationResponseBean.setUserID(userId);
 			creationResponseBean.setAadhaar(userAadharNum);
@@ -174,6 +180,8 @@ public class UserManagementServices
 				}
 
 				userPassword=CommonUtilites.encryption(userPassword);
+				LOG.info("userPassword........"+userPassword+".......ioclUserDetail.getUserPassword()"+ioclUserDetail.getUserPassword());
+
 				if(!(ioclUserDetail.getUserPassword().equals(userPassword)))
 				{
 					throw new IOCLWSException(ErrorMessageConstants.UserPwd_MissMatch_Code,ErrorMessageConstants.UserPwd_MissMatch_Msg);
@@ -199,8 +207,10 @@ public class UserManagementServices
 
 				userValidationResponse.setSuccessfulFlag(true);
 				userValidationResponse.setSuccessfulMsg("SuccessFully Logged In");
+				userValidationResponse.setUserName(ioclUserDetail.getUserName());
 				userValidationResponse.setUserPrivilages(lUserPrivileges);
 				userValidationResponse.setUserRole(ioclUserDetail.getIoclUserroleMappings().get(0).getIoclSupportedUserrole().getRoleName());
+				userValidationResponse.setUserId(ioclUserDetail.getUserId());
 				LOG.info("Validation User Response Object::::::"+userValidationResponse);
 			}
 			return  Response.status(Response.Status.OK).entity(userValidationResponse).build();
@@ -218,7 +228,7 @@ public class UserManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response updateUser(int userId,String userName,String userPassword,String userMobileNum,String userStatus,boolean editUserNameFlag,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType,boolean editPwdFlag) throws IOCLWSException
+	public Response updateUser(int userId,String userName,String userPassword,String userMobileNum,String userStatus,boolean editUserNameFlag,String userFirstName,String userLastName,String userDOB,String userAadharNum,List<String> userType,boolean editPwdFlag,String userUpdatedBy) throws IOCLWSException
 	{
 		try
 		{
@@ -241,15 +251,22 @@ public class UserManagementServices
 			LOG.info("Got the ioclSupportedUserstatus object......"+ioclSupportedUserstatus);
 			IoclSupportedUserrole ioclSupportedUserrole=iOCLSupportedUserRoleDAO.findRoleIdByRoleName(userType.get(0));
 			LOG.info("Got the ioclSupportedUserrole object......"+ioclSupportedUserrole);
+
+			LOG.info("updateUser::::::"+userUpdatedBy);
+			IoclUserDetail ioclUserDetailToUpdateUserName=ioclUserDetailsDAO.findUserByUserName(userUpdatedBy);
+			LOG.info("ioclUserDetailToUpdateUserName:::::::"+ioclUserDetailToUpdateUserName);
+			int userID=ioclUserDetailToUpdateUserName.getUserId();
+			LOG.info("usrId:::"+userID);
+
 			if(editPwdFlag)
 			{
 				String decodedPwd = new String(Base64.decode(userPassword.getBytes()));;
 				String encryptedPwd=CommonUtilites.encryption(decodedPwd);
-				ioclUserDetailsDAO.updateUserDetails(userName, encryptedPwd, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole);
+				ioclUserDetailsDAO.updateUserDetails(userName, encryptedPwd, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole,userID);
 			}
 			else
 			{
-				ioclUserDetailsDAO.updateUserDetails(userName, userPassword, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole);
+				ioclUserDetailsDAO.updateUserDetails(userName, userPassword, userMobileNum, ioclSupportedUserstatus,updatedTimeStamp,ioclUserDetail,userFirstName,userLastName,userDOB,userAadharNum,ioclSupportedUserrole,userID);
 			}
 
 			updationResponseBean.setUserName(userName);
@@ -293,6 +310,8 @@ public class UserManagementServices
 			String childRoles=ioclSupportedUserrole.getChildRoles();
 			LOG.info("ChildRoles....."+childRoles);
 			ArrayList<String> listOfRoleIDs=null;
+			DateFormat df = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			
 			if(null!=childRoles && childRoles.length()>0)
 			{
 				listOfRoleIDs=new ArrayList<String>(Arrays.asList(childRoles.split(",")));
@@ -312,6 +331,18 @@ public class UserManagementServices
 					userDetailsResponseBean.setUserPassword(user.getUserPassword());
 					userDetailsResponseBean.setUserID(user.getUserId());
 					userDetailsResponseBean.setUserStatus(user.getIoclSupportedUserstatus().getUserStatus());
+					if(user.getUserUpdatedBy()!=0)
+					{
+						IoclUserDetail ioclUserDetailToGetUserName=ioclUserDetailsDAO.findUserByUserId(user.getUserUpdatedBy());
+						userDetailsResponseBean.setUserUpdatedBy(ioclUserDetailToGetUserName.getUserName());
+						userDetailsResponseBean.setUserUpdatedOn(df.format(user.getUserUpdatedOn()));
+					}
+					if(user.getUserCreatedBy()!=0)
+					{
+						IoclUserDetail ioclUserDetailToGetUserName=ioclUserDetailsDAO.findUserByUserId(user.getUserCreatedBy());
+						userDetailsResponseBean.setUserCreatedBy(ioclUserDetailToGetUserName.getUserName());
+						userDetailsResponseBean.setUserCreatedOn(df.format(user.getUserCreatedOn()));
+					}
 					List<IoclUserroleMapping> lIoclUserroleMappings=user.getIoclUserroleMappings();
 					List<String> userTypes=new ArrayList<String>();
 					for(IoclUserroleMapping ioclUserroleMappings:lIoclUserroleMappings)

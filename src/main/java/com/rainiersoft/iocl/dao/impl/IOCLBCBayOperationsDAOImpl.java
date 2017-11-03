@@ -41,4 +41,16 @@ public class IOCLBCBayOperationsDAOImpl extends GenericDAOImpl<IoclBcBayoperatio
 		List<IoclBcBayoperation> ioclBcBayoperation = findObjectCollection(query);
 		return ioclBcBayoperation;
 	}
+
+	@Override
+	public List<IoclBcBayoperation> findTopBayUpdatesByBC(int bayNo, Date currDate, Date pastDate) 
+	{
+		Session session = getCurrentSession();
+		Query query = session.getNamedQuery("findTopBayUpdatesByBC");
+		query.setParameter("bayNum", Integer.valueOf(bayNo));
+		query.setParameter("currDate", currDate);
+		query.setParameter("pastDate", pastDate);
+		List<IoclBcBayoperation> ioclBcBayoperation = findObjectCollection(query);
+		return ioclBcBayoperation;
+	}
 }

@@ -17,7 +17,9 @@ import org.springframework.stereotype.Component;
 
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.services.FanSlipManagementServices;
+import com.rainiersoft.request.dto.CancellationRequestBean;
 import com.rainiersoft.request.dto.FanSlipMangRequestBean;
+import com.sun.research.ws.wadl.Request;
 
 
 /**
@@ -51,6 +53,7 @@ public class FanSlipManagementResources
 			String driverLicNo = request.getDriverLicNo();
 			String customer = request.getCustomer();
 			String quantity = request.getQuantity();
+			int quantityID=request.getQuantityID();
 			String vehicleWgt = request.getVehicleWgt();
 			String destination = request.getDestination();
 			String locationCode = request.getLocationCode();
@@ -58,7 +61,7 @@ public class FanSlipManagementResources
 			String mobileNumber = request.getMobileNumber();
 			String contractorName=request.getContractorName();
 			String createdBy=request.getFanCreatedBy();
-			return fanSlipManagementServices.fanSlipGeneration(truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName,createdBy);
+			return fanSlipManagementServices.fanSlipGeneration(truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName,createdBy,quantityID);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -128,7 +131,9 @@ public class FanSlipManagementResources
 			String contractorName=request.getContractorName();
 			int fanId=request.getFanId();
 			String userName=request.getFanCreatedBy();
-			return fanSlipManagementServices.fanslipReGeneration(fanId,truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName,userName);
+			int quantityID=request.getQuantityID();
+			String comments=request.getComments();
+			return fanSlipManagementServices.fanslipReGeneration(fanId,truckNo, driverName, driverLicNo, customer, quantity, vehicleWgt, destination, locationCode, mobileNumber, bayNum,contractorName,userName,quantityID,comments);
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -142,12 +147,12 @@ public class FanSlipManagementResources
 	@PUT
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response fanslipCancellation(@QueryParam("FanId") int fanId, @QueryParam("UserName") String userName) throws IOCLWSException
+	public Response fanslipCancellation(CancellationRequestBean cancellationRequestBean) throws IOCLWSException
 	{
 		try
 		{
 			LOG.info("Entered into fanslipCancellation resource class method........");
-			return fanSlipManagementServices.fanslipCancellation(fanId,userName);
+			return fanSlipManagementServices.fanslipCancellation(cancellationRequestBean.getFanId(),cancellationRequestBean.getUserName(),cancellationRequestBean.getComments());
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
