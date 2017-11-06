@@ -24,4 +24,6 @@ public interface IOCLFanslipDetailsDAO extends GenericDAO<IoclFanslipDetail, Lon
 	public IoclFanslipDetail findFanPinByFanId(int FanId);
 	
 	public void updateFanPinDetails(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus,int userID,Date updatedOn,String comments);
+	
+	public void updateFanpinExpirationTime(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus,int userID,Date updatedOn,Date fanExpirationDate);
 }

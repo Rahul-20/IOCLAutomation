@@ -44,8 +44,10 @@ import com.rainiersoft.iocl.util.CommonUtilites;
 import com.rainiersoft.iocl.util.ErrorMessageConstants;
 import com.rainiersoft.response.dto.FanPinCancellationResponseBean;
 import com.rainiersoft.response.dto.FanPinCreatedResponse;
+import com.rainiersoft.response.dto.FanReauthorizationResponseBean;
 import com.rainiersoft.response.dto.GetAllLatestFanSlipsDataResponseBean;
 import com.rainiersoft.response.dto.GetFanMangStaticDataResponseBean;
+import com.rainiersoft.response.dto.StoppingBatchResponseBean;
 
 
 /**
@@ -259,7 +261,7 @@ public class FanSlipManagementServices
 			cal.setTime(selDate);
 			cal.add(Calendar.HOUR,Integer.parseInt(appProps.getProperty("GetAllLatestFanslipsData")));
 			Date selectDateWithTime = cal.getTime();
-			
+
 			LOG.info("selectDateWithTime....."+dateFormat.format(selectDateWithTime));
 
 			List<IoclFanslipDetail> listOfPastFanslips=ioclFanslipDetailsDAO.findAllLatestFanSlips(selectDateWithTime,hoursBack);
@@ -428,4 +430,78 @@ public class FanSlipManagementServices
 		}
 	}
 
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
+	public Response fanslipReauthorization(int fanId,String userName) throws IOCLWSException
+	{
+		LOG.info("Entered into fanslipReauthorization service class method........");
+		try
+		{
+			FanReauthorizationResponseBean fanReauthorizationResponseBean=new FanReauthorizationResponseBean();
+			IoclFanslipDetail ioclFanslipDetail=ioclFanslipDetailsDAO.findFanPinByFanId(fanId);
+
+			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+			int userID=ioclUserDetail.getUserId();
+
+			if(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equals("Expired"))
+			{
+				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+				Date createddateobj = new Date();
+
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(createddateobj);
+				cal.add(Calendar.HOUR, Integer.parseInt(appProps.getProperty("FanExpirationNumberOfHours")));
+				Date fanExpirationTime = cal.getTime();
+				LOG.info("fanExpirationTime::::::"+dateFormat.format(fanExpirationTime));
+
+				IoclSupportedPinstatus ioclSupportedCreatedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Created");
+
+				ioclFanslipDetailsDAO.updateFanpinExpirationTime(ioclFanslipDetail, ioclSupportedCreatedPinstatus, userID, createddateobj,fanExpirationTime);
+
+				fanReauthorizationResponseBean.setFlag(true);
+				fanReauthorizationResponseBean.setMessage("Successfully Reauthorized!!!");
+			}
+			else
+			{
+				fanReauthorizationResponseBean.setFlag(false);
+				fanReauthorizationResponseBean.setMessage("Not Successfully Reauthorized!!!");
+			}
+			return  Response.status(Response.Status.OK).entity(fanReauthorizationResponseBean).build();
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class fanslipReauthorization method catch block........"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
+		}
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
+	public Response stoppingBatch(int fanId,String userName) throws IOCLWSException
+	{
+		LOG.info("Entered into stoppingBatch service class method........");
+		try
+		{
+			StoppingBatchResponseBean stoppingBatchResponseBean=new StoppingBatchResponseBean();
+			IoclFanslipDetail ioclFanslipDetail=ioclFanslipDetailsDAO.findFanPinByFanId(fanId);
+
+			IoclSupportedPinstatus ioclSupportedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("AbortInitiated");
+
+			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
+			int userID=ioclUserDetail.getUserId();
+
+			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date updatedOn = new Date();
+
+			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedPinstatus, userID, updatedOn, "");
+			
+			stoppingBatchResponseBean.setFlag(true);
+			stoppingBatchResponseBean.setMessage("Successfully Aborted!!");
+			
+			return  Response.status(Response.Status.OK).entity(stoppingBatchResponseBean).build();
+		}
+		catch (Exception exception) 
+		{
+			LOG.info("Logging the occured exception in the service class stoppingBatch method catch block........"+exception);
+			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
+		}
+	}
 }

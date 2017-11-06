@@ -123,4 +123,14 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		IoclFanslipDetail ioclFanslipDetail = (IoclFanslipDetail)findObject(query);
 		return ioclFanslipDetail;
 	}
+
+	@Override
+	public void updateFanpinExpirationTime(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus, int userID, Date updatedOn,Date fanExpirationDate) 
+	{
+		ioclFanslipDetail.setIoclSupportedPinstatus(ioclSupportedPinstatus);
+		ioclFanslipDetail.setFanUpdatedBy(userID);
+		ioclFanslipDetail.setFanUpdatedOn(updatedOn);
+		ioclFanslipDetail.setFanExpirationOn(fanExpirationDate);
+		saveOrUpdate(ioclFanslipDetail);
+	}
 }

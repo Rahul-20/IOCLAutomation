@@ -19,7 +19,6 @@ import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.services.FanSlipManagementServices;
 import com.rainiersoft.request.dto.CancellationRequestBean;
 import com.rainiersoft.request.dto.FanSlipMangRequestBean;
-import com.sun.research.ws.wadl.Request;
 
 
 /**
@@ -157,6 +156,44 @@ public class FanSlipManagementResources
 		catch(IOCLWSException iOCLWSException)
 		{
 			LOG.info("Logging the occured exception in the resouce class fanSlipGeneration method........"+iOCLWSException);
+			throw iOCLWSException;
+		}
+	}
+	
+	@Path("/fanslipReauthorizationOfPin")
+	@RolesAllowed({"TTES Operator","Supervisor"})
+	@GET
+	@Consumes({"application/json"})
+	@Produces({"application/json"})
+	public Response fanslipReauthorization(@QueryParam("fanId") int fanId,@QueryParam("userName") String userName) throws IOCLWSException
+	{
+		try
+		{
+			LOG.info("Entered into fanslipReauthorization resource class method........");
+			return fanSlipManagementServices.fanslipReauthorization(fanId,userName);
+		}
+		catch(IOCLWSException iOCLWSException)
+		{
+			LOG.info("Logging the occured exception in the resouce class fanslipReauthorization method........"+iOCLWSException);
+			throw iOCLWSException;
+		}
+	}
+	
+	@Path("/stoppingBatch")
+	@RolesAllowed({"TTES Operator","Supervisor"})
+	@GET
+	@Consumes({"application/json"})
+	@Produces({"application/json"})
+	public Response stoppingBatch(@QueryParam("fanId") int fanId,@QueryParam("userName") String userName) throws IOCLWSException
+	{
+		try
+		{
+			LOG.info("Entered into fanslipReauthorization resource class method........");
+			return fanSlipManagementServices.stoppingBatch(fanId,userName);
+		}
+		catch(IOCLWSException iOCLWSException)
+		{
+			LOG.info("Logging the occured exception in the resouce class fanslipReauthorization method........"+iOCLWSException);
 			throw iOCLWSException;
 		}
 	}
