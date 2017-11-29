@@ -4,6 +4,7 @@ public class FanSlipMangRequestBean
 {
 	private String TruckNo;
 	private String FanCreatedBy;
+	private String FanUpdatedBy;
 	private String DriverName;
 	private String ContractorName;
 	private String DriverLicNo;
@@ -17,7 +18,13 @@ public class FanSlipMangRequestBean
 	private int BayNum;
 	private int FanId;
 	private String comments;
-
+	
+	public String getFanUpdatedBy() {
+		return FanUpdatedBy;
+	}
+	public void setFanUpdatedBy(String fanUpdatedBy) {
+		FanUpdatedBy = fanUpdatedBy;
+	}
 	public String getComments() {
 		return comments;
 	}

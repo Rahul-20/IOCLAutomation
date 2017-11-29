@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.rainiersoft.iocl.exception.IOCLWSException;
 import com.rainiersoft.iocl.services.FanSlipManagementServices;
-import com.rainiersoft.request.dto.CancellationRequestBean;
+import com.rainiersoft.request.dto.RegenerationAndCancellationRequestBean;
 import com.rainiersoft.request.dto.FanSlipMangRequestBean;
 
 
@@ -38,7 +38,7 @@ public class FanSlipManagementResources
 	public FanSlipManagementResources() {}
 
 	@Path("/fanslipgen")
-	@RolesAllowed({"TTES Operator","Supervisor"})
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
 	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -70,7 +70,7 @@ public class FanSlipManagementResources
 	}
 
 	@Path("/getFanStaticData")
-	@RolesAllowed({"TTES Operator","Supervisor"})
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -89,7 +89,7 @@ public class FanSlipManagementResources
 	}
 
 	@Path("/getFanslipsDetails")
-	@RolesAllowed({"TTES Operator","Supervisor"})
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -108,7 +108,7 @@ public class FanSlipManagementResources
 	}
 
 	@Path("/fanslipReGeneration")
-	@RolesAllowed({"TTES Operator","Supervisor"})
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
 	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
@@ -142,11 +142,11 @@ public class FanSlipManagementResources
 	}
 
 	@Path("/fanslipCancellation")
-	@RolesAllowed({"TTES Operator","Supervisor"})
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
 	@PUT
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response fanslipCancellation(CancellationRequestBean cancellationRequestBean) throws IOCLWSException
+	public Response fanslipCancellation(RegenerationAndCancellationRequestBean cancellationRequestBean) throws IOCLWSException
 	{
 		try
 		{
@@ -161,16 +161,16 @@ public class FanSlipManagementResources
 	}
 	
 	@Path("/fanslipReauthorizationOfPin")
-	@RolesAllowed({"TTES Operator","Supervisor"})
-	@GET
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
+	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response fanslipReauthorization(@QueryParam("fanId") int fanId,@QueryParam("userName") String userName) throws IOCLWSException
+	public Response fanslipReauthorization(RegenerationAndCancellationRequestBean regenerationRequestBean) throws IOCLWSException
 	{
 		try
 		{
 			LOG.info("Entered into fanslipReauthorization resource class method........");
-			return fanSlipManagementServices.fanslipReauthorization(fanId,userName);
+			return fanSlipManagementServices.fanslipReauthorization(regenerationRequestBean.getFanId(),regenerationRequestBean.getUserName(),regenerationRequestBean.getComments());
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
@@ -180,20 +180,39 @@ public class FanSlipManagementResources
 	}
 	
 	@Path("/stoppingBatch")
-	@RolesAllowed({"TTES Operator","Supervisor"})
-	@GET
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
+	@POST
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response stoppingBatch(@QueryParam("fanId") int fanId,@QueryParam("userName") String userName) throws IOCLWSException
+	public Response stoppingBatch(RegenerationAndCancellationRequestBean regenerationRequestBean) throws IOCLWSException
 	{
 		try
 		{
 			LOG.info("Entered into fanslipReauthorization resource class method........");
-			return fanSlipManagementServices.stoppingBatch(fanId,userName);
+			return fanSlipManagementServices.stoppingBatch(regenerationRequestBean.getFanId(),regenerationRequestBean.getUserName(),regenerationRequestBean.getComments());
 		}
 		catch(IOCLWSException iOCLWSException)
 		{
 			LOG.info("Logging the occured exception in the resouce class fanslipReauthorization method........"+iOCLWSException);
+			throw iOCLWSException;
+		}
+	}
+	
+	@Path("/getComments")
+	@RolesAllowed({"Admin","TTES Operator","Supervisor"})
+	@GET
+	@Consumes({"application/json"})
+	@Produces({"application/json"})
+	public Response getComments(@QueryParam("Type") String type) throws IOCLWSException
+	{
+		try
+		{
+			LOG.info("Entered into getComments resource class method........");
+			return fanSlipManagementServices.getComments(type);
+		}
+		catch(IOCLWSException iOCLWSException)
+		{
+			LOG.info("Logging the occured exception in the resouce class getComments method........"+iOCLWSException);
 			throw iOCLWSException;
 		}
 	}

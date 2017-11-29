@@ -83,6 +83,9 @@ public class IoclFanslipDetail implements Serializable {
 	@Column(name="FanUpdatedOn")
 	private Date fanUpdatedOn;
 	
+	@Column(name="TransformedPreset")
+	private String transformedPreset;
+	
 	@Column(name="Comments")
 	private String comments;
 
@@ -107,6 +110,14 @@ public class IoclFanslipDetail implements Serializable {
 	private IoclSupportedPinstatus ioclSupportedPinstatus;
 
 	public IoclFanslipDetail() {
+	}
+	
+	public String getTransformedPreset() {
+		return transformedPreset;
+	}
+
+	public void setTransformedPreset(String transformedPreset) {
+		this.transformedPreset = transformedPreset;
 	}
 	
 	public String getComments() {

@@ -881,6 +881,16 @@ public class BaysManagementServices
 					availableBaysResponseBean.setBayName(bayName);
 					IoclBcBayoperation ioclBcBayoperation=listOfBCUpdates.get(0);
 					availableBaysResponseBean.setBayAvailableStatus(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus());
+					
+					if(appProps.getProperty("BayOperationalStoppedStatus").toString().equalsIgnoreCase(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus()))
+					{
+						availableBaysResponseBean.setStoppedFlag(true);
+					}
+					else
+					{
+						availableBaysResponseBean.setStoppedFlag(false);
+					}
+					
 					IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanSlipDetailsByFanPinAndBayNum(ioclBcBayoperation.getFanPin(),ioclBcBayoperation.getBayNum());
 					availableBaysResponseBean.setContractorName(ioclFanslipDetail.getIoclContractorDetail().getContractorName());
 					availableBaysResponseBean.setDestination(ioclFanslipDetail.getDestination());

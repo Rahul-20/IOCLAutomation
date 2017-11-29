@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rainiersoft.iocl.dao.IOCLBCBayOperationsDAO;
+import com.rainiersoft.iocl.dao.IOCLCommentsDAO;
 import com.rainiersoft.iocl.dao.IOCLContractorDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLFanslipDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLLocationDetailsDAO;
@@ -32,6 +33,7 @@ import com.rainiersoft.iocl.dao.IOCLSupportedPinStatusDAO;
 import com.rainiersoft.iocl.dao.IOCLTruckRegistrationDetailsDAO;
 import com.rainiersoft.iocl.dao.IOCLUserDetailsDAO;
 import com.rainiersoft.iocl.entity.IoclBcBayoperation;
+import com.rainiersoft.iocl.entity.IoclComments;
 import com.rainiersoft.iocl.entity.IoclContractorDetail;
 import com.rainiersoft.iocl.entity.IoclFanslipDetail;
 import com.rainiersoft.iocl.entity.IoclLocationDetail;
@@ -85,6 +87,9 @@ public class FanSlipManagementServices
 	@Autowired
 	IOCLQuantityDetailsDAO iOCLQuantityDetailsDAO;
 
+	@Autowired
+	IOCLCommentsDAO iOCLCommentsDAO;
+	
 	@Autowired
 	Properties appProps;
 
@@ -279,6 +284,14 @@ public class FanSlipManagementServices
 				getAllLatestFanSlipsDataResponseBean.setFanPinCreation(new SimpleDateFormat(appProps.getProperty("AppDateFormat")).format(ioclFanslipDetail.getFanCreationOn()));
 				getAllLatestFanSlipsDataResponseBean.setFanPinExpiration(new SimpleDateFormat(appProps.getProperty("AppDateFormat")).format(ioclFanslipDetail.getFanExpirationOn()));
 				getAllLatestFanSlipsDataResponseBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+				if(appProps.getProperty("FanExpiredStatus").toString().equals(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus()))
+				{
+					getAllLatestFanSlipsDataResponseBean.setFanStatusExpired(true);
+				}
+				else
+				{
+					getAllLatestFanSlipsDataResponseBean.setFanStatusExpired(false);
+				}
 				getAllLatestFanSlipsDataResponseBean.setLocationCode(ioclFanslipDetail.getIoclLocationDetail().getLocationName());
 				getAllLatestFanSlipsDataResponseBean.setQuantity(ioclFanslipDetail.getIoclQuantitiesDetail().getQuantityName()+"("+ioclFanslipDetail.getIoclQuantitiesDetail().getQuantity()+")");
 				IoclTruckregistrationDetail ioclTruckDetails=iOCLTruckRegistrationDetailsDAO.findTruckByTruckId(ioclFanslipDetail.getTruckId());
@@ -431,7 +444,7 @@ public class FanSlipManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response fanslipReauthorization(int fanId,String userName) throws IOCLWSException
+	public Response fanslipReauthorization(int fanId,String userName,String comments) throws IOCLWSException
 	{
 		LOG.info("Entered into fanslipReauthorization service class method........");
 		try
@@ -442,7 +455,7 @@ public class FanSlipManagementServices
 			IoclUserDetail ioclUserDetail=iOCLUserDetailsDAO.findUserByUserName(userName);
 			int userID=ioclUserDetail.getUserId();
 
-			if(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equals("Expired"))
+			if(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase(appProps.getProperty("FanExpiredStatus")))
 			{
 				DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 				Date createddateobj = new Date();
@@ -453,9 +466,9 @@ public class FanSlipManagementServices
 				Date fanExpirationTime = cal.getTime();
 				LOG.info("fanExpirationTime::::::"+dateFormat.format(fanExpirationTime));
 
-				IoclSupportedPinstatus ioclSupportedCreatedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus("Created");
+				IoclSupportedPinstatus ioclSupportedCreatedPinstatus=iOCLSupportedPinStatusDAO.findPinStatusIdByPinStatus(appProps.getProperty("FanCreatedStatus"));
 
-				ioclFanslipDetailsDAO.updateFanpinExpirationTime(ioclFanslipDetail, ioclSupportedCreatedPinstatus, userID, createddateobj,fanExpirationTime);
+				ioclFanslipDetailsDAO.updateFanpinExpirationTime(ioclFanslipDetail, ioclSupportedCreatedPinstatus, userID, createddateobj,fanExpirationTime,comments);
 
 				fanReauthorizationResponseBean.setFlag(true);
 				fanReauthorizationResponseBean.setMessage("Successfully Reauthorized!!!");
@@ -475,7 +488,7 @@ public class FanSlipManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
-	public Response stoppingBatch(int fanId,String userName) throws IOCLWSException
+	public Response stoppingBatch(int fanId,String userName,String comments) throws IOCLWSException
 	{
 		LOG.info("Entered into stoppingBatch service class method........");
 		try
@@ -491,17 +504,29 @@ public class FanSlipManagementServices
 			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
 			Date updatedOn = new Date();
 
-			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedPinstatus, userID, updatedOn, "");
+			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedPinstatus, userID, updatedOn,comments);
 			
 			stoppingBatchResponseBean.setFlag(true);
 			stoppingBatchResponseBean.setMessage("Successfully Aborted!!");
 			
-			return  Response.status(Response.Status.OK).entity(stoppingBatchResponseBean).build();
+			return Response.status(Response.Status.OK).entity(stoppingBatchResponseBean).build();
 		}
 		catch (Exception exception) 
 		{
 			LOG.info("Logging the occured exception in the service class stoppingBatch method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
+	public Response getComments(String type) throws IOCLWSException
+	{
+		List<String> commentsList=new ArrayList<String>();
+		List<IoclComments> listOfComments=iOCLCommentsDAO.findCommentsByType(type);
+		for(IoclComments ioclComments:listOfComments)
+		{
+			commentsList.add(ioclComments.getCommentName());
+		}
+		return Response.status(Response.Status.OK).entity(commentsList).build();
 	}
 }

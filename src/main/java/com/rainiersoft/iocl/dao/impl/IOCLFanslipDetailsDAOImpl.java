@@ -38,6 +38,7 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		ioclFanslipDetail.setTruckId(truckID);
 		ioclFanslipDetail.setFanCreationOn(createdOn);
 		ioclFanslipDetail.setQuantity(quantity);
+		ioclFanslipDetail.setTransformedPreset(Long.toHexString(Double.doubleToLongBits(Long.parseLong(quantity))));
 		ioclFanslipDetail.setVehicleWgt(vehicleWgt);
 		ioclFanslipDetail.setDestination(destination);
 		ioclFanslipDetail.setIoclLocationDetail(locationId);
@@ -125,12 +126,13 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 	}
 
 	@Override
-	public void updateFanpinExpirationTime(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus, int userID, Date updatedOn,Date fanExpirationDate) 
+	public void updateFanpinExpirationTime(IoclFanslipDetail ioclFanslipDetail,IoclSupportedPinstatus ioclSupportedPinstatus, int userID, Date updatedOn,Date fanExpirationDate,String comments) 
 	{
 		ioclFanslipDetail.setIoclSupportedPinstatus(ioclSupportedPinstatus);
 		ioclFanslipDetail.setFanUpdatedBy(userID);
 		ioclFanslipDetail.setFanUpdatedOn(updatedOn);
 		ioclFanslipDetail.setFanExpirationOn(fanExpirationDate);
+		ioclFanslipDetail.setComments(comments);
 		saveOrUpdate(ioclFanslipDetail);
 	}
 }

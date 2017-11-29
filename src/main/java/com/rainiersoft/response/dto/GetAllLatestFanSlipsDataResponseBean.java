@@ -31,8 +31,15 @@ public class GetAllLatestFanSlipsDataResponseBean
 	private String fanPinCreation;
 	private String fanPinExpiration;
 	private int quantityID;
+	private boolean isFanStatusExpired;
 	private String comments;
 	
+	public boolean isFanStatusExpired() {
+		return isFanStatusExpired;
+	}
+	public void setFanStatusExpired(boolean isFanStatusExpired) {
+		this.isFanStatusExpired = isFanStatusExpired;
+	}
 	public String getComments() {
 		return comments;
 	}
