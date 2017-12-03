@@ -89,7 +89,7 @@ public class FanSlipManagementServices
 
 	@Autowired
 	IOCLCommentsDAO iOCLCommentsDAO;
-	
+
 	@Autowired
 	Properties appProps;
 
@@ -303,7 +303,13 @@ public class FanSlipManagementServices
 				getAllLatestFanSlipsDataResponseBean.setQuantityID(ioclFanslipDetail.getIoclQuantitiesDetail().getQuantityId());
 				getAllLatestFanSlipsDataResponseBean.setPreSet(ioclFanslipDetail.getQuantity());
 				getAllLatestFanSlipsDataResponseBean.setComments(ioclFanslipDetail.getComments());
+				if(null!=ioclFanslipDetail.getBccompletedtime())
+					getAllLatestFanSlipsDataResponseBean.setBatchEndTime(new SimpleDateFormat(appProps.getProperty("AppDateFormat")).format(ioclFanslipDetail.getBccompletedtime()));
+				if(null!=ioclFanslipDetail.getBcinputtime())
+					getAllLatestFanSlipsDataResponseBean.setBatchStartTime(new SimpleDateFormat(appProps.getProperty("AppDateFormat")).format(ioclFanslipDetail.getBcinputtime()));
+
 				List<IoclBcBayoperation> listOfBCUpdates=iOCLBCBayOperationsDAO.findBayUpdatesByFanPin(ioclFanslipDetail.getFanPin());
+
 				LOG.info("findBayUpdatesByFanPin::::::::"+listOfBCUpdates);
 
 				//Fpin is generated but truck has not reached the point, so the BC table might not contain records for the truck.
@@ -313,7 +319,9 @@ public class FanSlipManagementServices
 				}
 				else
 				{
-					getAllLatestFanSlipsDataResponseBean.setBayStatus(listOfBCUpdates.get(0).getIoclSupportedBayoperationalstatus().getOperationalStatus());	
+					getAllLatestFanSlipsDataResponseBean.setBayStatus(listOfBCUpdates.get(0).getIoclSupportedBayoperationalstatus().getOperationalStatus());
+					if(null!=listOfBCUpdates.get(0).getLoadedQuantity())
+						getAllLatestFanSlipsDataResponseBean.setLoadedQuantity(listOfBCUpdates.get(0).getLoadedQuantity());
 				}
 
 				listGetAllLatestFanSlipsDataResponseBean.add(getAllLatestFanSlipsDataResponseBean);
@@ -505,10 +513,10 @@ public class FanSlipManagementServices
 			Date updatedOn = new Date();
 
 			ioclFanslipDetailsDAO.updateFanPinDetails(ioclFanslipDetail, ioclSupportedPinstatus, userID, updatedOn,comments);
-			
+
 			stoppingBatchResponseBean.setFlag(true);
 			stoppingBatchResponseBean.setMessage("Successfully Aborted!!");
-			
+
 			return Response.status(Response.Status.OK).entity(stoppingBatchResponseBean).build();
 		}
 		catch (Exception exception) 
@@ -517,7 +525,7 @@ public class FanSlipManagementServices
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
 	}
-	
+
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,rollbackFor=IOCLWSException.class)
 	public Response getComments(String type) throws IOCLWSException
 	{

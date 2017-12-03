@@ -41,18 +41,26 @@ public class IOCLAllDetailsDAOImpl extends GenericDAOImpl<IoclAlldetail, Long> i
 	}
 
 	@Override
-	public List<IoclAlldetail> findTotalizerDetails(int pageNumber, int pageSize, Date startDate, Date endDate)
+	public List<IoclAlldetail> findTotalizerDetails(int pageNumber, int pageSize, Date startDate, Date endDate,String bayNum)
 	{
-		Session session=getCurrentSession();
-		String countQ = "Select count(i.fanslipnum) from IoclAlldetail i where StartTime>= :startDate and StartTime<= :endDate";
-		Query countQuery = session.createQuery(countQ);
-		countQuery.setParameter("startDate",startDate);
-		countQuery.setParameter("endDate",endDate);
-
-		Long countResults = (Long) countQuery.uniqueResult();
-		int lastPageNumber = (int) (Math.ceil(countResults / pageSize));
-
-		Query query = getCurrentSession().createQuery("Select sum(i.totalizerendvalue) from IoclAlldetail i group by bayNo");
+		String countQ = "";
+		Query query=null;
+		if(bayNum.equalsIgnoreCase("ALL"))
+		{
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate";
+			query = getCurrentSession().createQuery(countQ);
+			query.setParameter("startDate",startDate);
+			query.setParameter("endDate",endDate);
+		}
+		else
+		{
+			int bayNumber=Integer.parseInt(bayNum);
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber";
+			query = getCurrentSession().createQuery(countQ);
+			query.setParameter("startDate",startDate);
+			query.setParameter("endDate",endDate);
+			query.setParameter("bayNumber",bayNumber);
+		}
 		query.setFirstResult((pageNumber-1) * pageSize);
 		query.setMaxResults(pageSize);
 		List<IoclAlldetail> allDetails= (List<IoclAlldetail>)query.list();

@@ -24,10 +24,12 @@ public class ReportMangTest
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date selDate=(Date)dateFormat.parse("2017-11-28");
 		//Response res=qms.getBayWiseLoadingReport(1, 3,selDate,selDate,"ALL");
-		Response res=qms.exportBayWiseLoadingReport("2017-11-28","2017-11-28","2");
-		System.out.println(res.getHeaders());
+		
+		Response res=qms.getTruckFillingReport(1, 3,selDate,selDate);
+	
+		//Response res=qms.exportBayWiseLoadingReport("2017-11-28","2017-11-28","ALL");
+		System.out.println(res.getEntity());
 		//qms.addQunatity("BigTruck","100","Active");
 		//qms.updateQuantity(1,"Big","10000","Not Active",true,true);
-	}	
-
+	}
 }

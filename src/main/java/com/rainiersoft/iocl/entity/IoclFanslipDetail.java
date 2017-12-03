@@ -88,6 +88,12 @@ public class IoclFanslipDetail implements Serializable {
 	
 	@Column(name="Comments")
 	private String comments;
+	
+	@Column(name="bcinputtime")
+	private Date bcinputtime;
+	
+	@Column(name="bccompletedtime")
+	private Date bccompletedtime;
 
 	//bi-directional many-to-one association to IoclContractorDetail
 	@ManyToOne
@@ -120,6 +126,22 @@ public class IoclFanslipDetail implements Serializable {
 		this.transformedPreset = transformedPreset;
 	}
 	
+	public Date getBcinputtime() {
+		return bcinputtime;
+	}
+
+	public void setBcinputtime(Date bcinputtime) {
+		this.bcinputtime = bcinputtime;
+	}
+
+	public Date getBccompletedtime() {
+		return bccompletedtime;
+	}
+
+	public void setBccompletedtime(Date bccompletedtime) {
+		this.bccompletedtime = bccompletedtime;
+	}
+
 	public String getComments() {
 		return comments;
 	}

@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
 	@NamedQuery(name="IoclBcBayoperation.findAll", query="SELECT i FROM IoclBcBayoperation i"),
 	@NamedQuery(name="findBayUpdatesByBC",query="select f from IoclBcBayoperation f where f.BCInputTime > :pastDate and f.BCInputTime < :currDate and f.bayNum=:bayNum"),
-	@NamedQuery(name="findBayUpdatesByFanPin",query="select f from IoclBcBayoperation f where f.fanPin=:fanPin"),
+	@NamedQuery(name="findBayUpdatesByFanPin",query="select f from IoclBcBayoperation f where f.fanPin=:fanPin order by BCInputTime desc"),
 	@NamedQuery(name="findTopBayUpdatesByBC",query="select f from IoclBcBayoperation f where f.BCInputTime > :pastDate and f.BCInputTime < :currDate and f.bayNum=:bayNum order by BCInputTime desc")
 })
 public class IoclBcBayoperation implements Serializable {
@@ -53,6 +53,9 @@ public class IoclBcBayoperation implements Serializable {
 
 	@Column(name="FanPin")
 	private String fanPin;
+	
+	@Column(name="LoadedQuantity")
+	private String loadedQuantity;
 
 	@ManyToOne
 	@JoinColumn(name="OperationalStatusId")
@@ -69,6 +72,14 @@ public class IoclBcBayoperation implements Serializable {
 		this.recId = recId;
 	}
 
+	public String getLoadedQuantity() {
+		return loadedQuantity;
+	}
+
+	public void setLoadedQuantity(String loadedQuantity) {
+		this.loadedQuantity = loadedQuantity;
+	}
+	
 	public int getBayNum() {
 		return this.bayNum;
 	}

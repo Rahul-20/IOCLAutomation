@@ -2,12 +2,7 @@ package com.rainiersoft.response.dto;
 
 public class BaywiseReportDataBean 
 {
-	@Override
-	public String toString() {
-		return "BaywiseReportDataBean [TruckNo=" + TruckNo + ", FanNumber=" + FanNumber + ", Customer=" + Customer
-				+ ", InvoiceQty=" + InvoiceQty + ", FilledQty=" + FilledQty + ", StartTime=" + StartTime + ", EndTime="
-				+ EndTime + "]";
-	}
+	private String fanCreationDate;
 	private String TruckNo;
 	private int FanNumber;
 	private String Customer;
@@ -16,6 +11,12 @@ public class BaywiseReportDataBean
 	private String StartTime;
 	private String EndTime;
 	
+	public String getFanCreationDate() {
+		return fanCreationDate;
+	}
+	public void setFanCreationDate(String fanCreationDate) {
+		this.fanCreationDate = fanCreationDate;
+	}
 	public String getTruckNo() {
 		return TruckNo;
 	}

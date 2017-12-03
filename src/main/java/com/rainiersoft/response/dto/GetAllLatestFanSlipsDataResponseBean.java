@@ -33,7 +33,28 @@ public class GetAllLatestFanSlipsDataResponseBean
 	private int quantityID;
 	private boolean isFanStatusExpired;
 	private String comments;
+	private String loadedQuantity;
+	private String batchStartTime;
+	private String batchEndTime;
 	
+	public String getLoadedQuantity() {
+		return loadedQuantity;
+	}
+	public void setLoadedQuantity(String loadedQuantity) {
+		this.loadedQuantity = loadedQuantity;
+	}
+	public String getBatchStartTime() {
+		return batchStartTime;
+	}
+	public void setBatchStartTime(String batchStartTime) {
+		this.batchStartTime = batchStartTime;
+	}
+	public String getBatchEndTime() {
+		return batchEndTime;
+	}
+	public void setBatchEndTime(String batchEndTime) {
+		this.batchEndTime = batchEndTime;
+	}
 	public boolean isFanStatusExpired() {
 		return isFanStatusExpired;
 	}

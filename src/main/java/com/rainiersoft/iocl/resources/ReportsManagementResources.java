@@ -8,7 +8,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
@@ -54,7 +53,7 @@ public class ReportsManagementResources
 	@Path("/exportBayWiseLoadingReport")
 	@PermitAll
 	@GET
-	@Produces({MediaType.APPLICATION_OCTET_STREAM})
+	@Produces("application/pdf")
 	public Response exportBayWiseLoadingReport(@QueryParam("BayNum") String bayNum,@QueryParam("StartDate") String startDate,@QueryParam("EndDate") String endDate) throws IOCLWSException
 	{
 		LOG.info("Entered into exportBayWiseLoadingReport resource class method........"+bayNum+".."+startDate+"..."+endDate);
@@ -79,7 +78,7 @@ public class ReportsManagementResources
 		LOG.info("Entered into getTotalizerReport resource class method........");
 		try
 		{
-			return reportsManagementServices.getTotalizerReport(reportsRequestBean.getPageNumber(),reportsRequestBean.getPageSize(),reportsRequestBean.getStartDate(),reportsRequestBean.getEndDate());
+			return reportsManagementServices.getTotalizerReport(reportsRequestBean.getPageNumber(),reportsRequestBean.getPageSize(),reportsRequestBean.getStartDate(),reportsRequestBean.getEndDate(),reportsRequestBean.getBayNumber());
 		}
 		catch(IOCLWSException ioclwsException)
 		{
@@ -87,4 +86,60 @@ public class ReportsManagementResources
 			throw ioclwsException;
 		}
 	}
+	
+	@Path("/exportTotalizerReport")
+	@PermitAll
+	@GET
+	@Produces("application/pdf")
+	public Response exportTotalizerReport(@QueryParam("BayNum") String bayNum,@QueryParam("StartDate") String startDate,@QueryParam("EndDate") String endDate) throws IOCLWSException
+	{
+		LOG.info("Entered into exportBayWiseLoadingReport resource class method........"+bayNum+".."+startDate+"..."+endDate);
+		try
+		{
+			return reportsManagementServices.exportTotalizerReport(startDate,endDate,bayNum);
+		}
+		catch(IOCLWSException ioclwsException)
+		{
+			LOG.info("Logging the occured exception in the resouce class exportBayWiseLoadingReport method........"+ioclwsException);
+			throw ioclwsException;
+		}
+	}
+	
+	@Path("/getTruckFillingReport")
+	@PermitAll
+	@POST
+	@Consumes({"application/json"})
+	@Produces({"application/json"})
+	public Response getTruckFillingReport(ReportsRequestBean reportsRequestBean) throws IOCLWSException
+	{
+		LOG.info("Entered into getTruckFillingReport resource class method........");
+		try
+		{
+			return reportsManagementServices.getTruckFillingReport(reportsRequestBean.getPageNumber(),reportsRequestBean.getPageSize(),reportsRequestBean.getStartDate(),reportsRequestBean.getEndDate());
+		}
+		catch(IOCLWSException ioclwsException)
+		{
+			LOG.info("Logging the occured exception in the resouce class getTruckFillingReport method........"+ioclwsException);
+			throw ioclwsException;
+		}
+	}
+	
+	@Path("/exportTruckFillingReport")
+	@PermitAll
+	@GET
+	@Produces("application/pdf")
+	public Response exportTruckFillingReport(@QueryParam("BayNum") String bayNum,@QueryParam("StartDate") String startDate,@QueryParam("EndDate") String endDate) throws IOCLWSException
+	{
+		LOG.info("Entered into exportTruckFillingReport resource class method........"+bayNum+".."+startDate+"..."+endDate);
+		try
+		{
+			return reportsManagementServices.exportTruckFillingReport(startDate,endDate);
+		}
+		catch(IOCLWSException ioclwsException)
+		{
+			LOG.info("Logging the occured exception in the resouce class exportTruckFillingReport method........"+ioclwsException);
+			throw ioclwsException;
+		}
+	}
+
 }

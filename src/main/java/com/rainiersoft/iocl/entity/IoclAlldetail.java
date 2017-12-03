@@ -13,6 +13,19 @@ import java.util.Date;
 @Table(name="iocl_alldetails")
 @NamedQuery(name="IoclAlldetail.findAll", query="SELECT i FROM IoclAlldetail i")
 public class IoclAlldetail implements Serializable {
+	@Override
+	public String toString() {
+		return "IoclAlldetail [fanslipnum=" + fanslipnum + ", bayNo=" + bayNo + ", bccompletedtime=" + bccompletedtime
+				+ ", bcinputtime=" + bcinputtime + ", comments=" + comments + ", contractorName=" + contractorName
+				+ ", destination=" + destination + ", fanCreatedBy=" + fanCreatedBy + ", fanCreationOn=" + fanCreationOn
+				+ ", fanExpirationOn=" + fanExpirationOn + ", fanPin=" + fanPin + ", fanPinStatus=" + fanPinStatus
+				+ ", fanUpdatedBy=" + fanUpdatedBy + ", fanUpdatedOn=" + fanUpdatedOn + ", loadedQuantity="
+				+ loadedQuantity + ", locationName=" + locationName + ", preset=" + preset + ", quantity=" + quantity
+				+ ", startTime=" + startTime + ", totalizerendvalue=" + totalizerendvalue + ", totalizerstartvalue="
+				+ totalizerstartvalue + ", truckNo=" + truckNo + ", vehicleWgt=" + vehicleWgt + ", customer=" + customer
+				+ "]";
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -67,6 +80,16 @@ public class IoclAlldetail implements Serializable {
 	private String truckNo;
 
 	private String vehicleWgt;
+	
+	private String customer;
+
+	public String getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(String customer) {
+		this.customer = customer;
+	}
 
 	public IoclAlldetail() {
 	}

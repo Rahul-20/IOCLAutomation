@@ -13,5 +13,5 @@ public interface IOCLAllDetailsDAO extends GenericDAO<IoclAlldetail, Long>
 	
 	public Long findTotalNumberOfRecords(Date startDate,Date endDate,String bayNum);
 	
-	public List<IoclAlldetail> findTotalizerDetails(int pageNumber,int pageSize,Date startDate,Date endDate);
+	public List<IoclAlldetail> findTotalizerDetails(int pageNumber,int pageSize,Date startDate,Date endDate,String bayNum);
 }
