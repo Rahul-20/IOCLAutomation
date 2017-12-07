@@ -46,6 +46,8 @@ public class IoclAlldetail implements Serializable {
 	private String destination;
 
 	private int fanCreatedBy;
+	
+	private String operationalStatus;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fanCreationOn;
@@ -82,6 +84,14 @@ public class IoclAlldetail implements Serializable {
 	private String vehicleWgt;
 	
 	private String customer;
+	
+	public String getOperationalStatus() {
+		return operationalStatus;
+	}
+
+	public void setOperationalStatus(String operationalStatus) {
+		this.operationalStatus = operationalStatus;
+	}
 
 	public String getCustomer() {
 		return customer;

@@ -4,6 +4,7 @@ public class BaywiseReportDataBean
 {
 	private String fanCreationDate;
 	private String TruckNo;
+	private int bayNumber;
 	private int FanNumber;
 	private String Customer;
 	private String InvoiceQty;
@@ -16,6 +17,12 @@ public class BaywiseReportDataBean
 	}
 	public void setFanCreationDate(String fanCreationDate) {
 		this.fanCreationDate = fanCreationDate;
+	}
+	public int getBayNumber() {
+		return bayNumber;
+	}
+	public void setBayNumber(int bayNumber) {
+		this.bayNumber = bayNumber;
 	}
 	public String getTruckNo() {
 		return TruckNo;

@@ -2,6 +2,7 @@ package com.rainiersoft.response.dto;
 
 public class TruckFillingReportDataBean 
 {
+	private String bayNo;
 	private String truckNo;
 	private String fanSlipNum;
 	private String presetQty;
@@ -9,6 +10,12 @@ public class TruckFillingReportDataBean
 	private String startTime;
 	private String endTime;
 	
+	public String getBayNo() {
+		return bayNo;
+	}
+	public void setBayNo(String bayNo) {
+		this.bayNo = bayNo;
+	}
 	public String getTruckNo() {
 		return truckNo;
 	}

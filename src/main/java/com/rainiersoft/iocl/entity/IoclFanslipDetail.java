@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
 @Table(name="iocl_fanslip_details")
 @NamedQueries({
 	@NamedQuery(name="IoclFanslipDetail.findAll", query="SELECT i FROM IoclFanslipDetail i"),
-	@NamedQuery(name="findFanPinStatusByFanPin", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin"),
+	@NamedQuery(name="findFanPinStatusByFanPin", query="SELECT i FROM IoclFanslipDetail i where i.fanPin=:fanPin order by i.fanId desc"),
 	@NamedQuery(name="findFanSlipDetailsByFanPinAndBayNum", query="SELECT i FROM IoclFanslipDetail i where fanPin=:fanPin and bayNo=:bayNo"),
 	@NamedQuery(name="findFanPinByFanId", query="SELECT i FROM IoclFanslipDetail i where fanId=:fanId"),
 	@NamedQuery(name="findAnyBayIsAssignedInPast",query="select f from IoclFanslipDetail f where f.fanCreationOn >= :pastDate and f.fanCreationOn <= :currDate and f.bayNo=:bayNo"),

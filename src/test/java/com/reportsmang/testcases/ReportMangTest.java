@@ -17,18 +17,23 @@ public class ReportMangTest
 	{
 		ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
 		System.out.println("sc::" + ac);
-		
+
 		ReportsManagementServices qms=(ReportsManagementServices) ac.getBean("reportsManagementServices");
 		//Response res=qms.getBayWiseLoadingReport(1, 2,new Date(),new Date());
-		
+
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date selDate=(Date)dateFormat.parse("2017-11-28");
-		//Response res=qms.getBayWiseLoadingReport(1, 3,selDate,selDate,"ALL");
+		Response res=qms.exportTruckFillingReport("2017-11-27 01:00:00","2017-12-06 23:00:00");
+		System.err.println("Respone....."+res.getEntity());
+
+	//	Response res=qms.getTruckFillingReport(1, 3,selDate,selDate);
+
 		
-		Response res=qms.getTruckFillingReport(1, 3,selDate,selDate);
-	
-		//Response res=qms.exportBayWiseLoadingReport("2017-11-28","2017-11-28","ALL");
-		System.out.println(res.getEntity());
+
+		//pdfu.createPdfFile(header,l,"SAMple.pdf");
+
+		//Response res=qms.exportTotalizerReport("2017-11-27 01:00:00","2017-12-06 23:00:00","ALL");
+		//System.out.println(res.getEntity());
 		//qms.addQunatity("BigTruck","100","Active");
 		//qms.updateQuantity(1,"Big","10000","Not Active",true,true);
 	}

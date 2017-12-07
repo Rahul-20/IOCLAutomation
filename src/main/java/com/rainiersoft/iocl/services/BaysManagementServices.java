@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
 
+import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -538,20 +539,28 @@ public class BaysManagementServices
 							//else different status, then assign one more and keep in queue list
 							//check top 10 records, count of different status, if greater then 2 put in queue
 							IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(ioclBcBayoperation.getFanPin());
-							if((ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Expired")) || (ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Cancelled")))
+							LOG.info("ioclFanslipDetail......"+ioclFanslipDetail);
+							if(null!=ioclFanslipDetail)
 							{
-								LOG.info("Fanslip is expired continue......");
-								continue;
+								if((ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Expired")) || (ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus().equalsIgnoreCase("Cancelled")))
+								{
+									LOG.info("Fanslip is expired continue......");
+									continue;
+								}
 							}
 
-							if(!(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("completed")))
+							if(null!=ioclBcBayoperation)
 							{
-								LOG.info("Add the fanslip........");
-								pinSet.add(ioclBcBayoperation.getFanPin());
-								allCompletedFlag=false;
-								queueCounter=queueCounter+1;
+								if(!(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus().equalsIgnoreCase("completed")))
+								{
+									LOG.info("Add the fanslip........");
+									pinSet.add(ioclBcBayoperation.getFanPin());
+									allCompletedFlag=false;
+									queueCounter=queueCounter+1;
+								}
 							}
 						}
+						LOG.info("Before......"+allCompletedFlag);
 						if(allCompletedFlag)
 						{
 							availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
@@ -565,31 +574,31 @@ public class BaysManagementServices
 							/*for(String pinMap : pinSet)
 							{*/
 							//FanslipsAssignedBean fanslipsAssignedBean=new FanslipsAssignedBean();
-							LOG.info("pinSetSize......"+pinSet.size());
-							if(pinSet.size()<supportedQueueSize)
-							{
-								//fanslipsAssignedBean.setFanPin(pinMap);
-								//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
-								//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
-								//listFanslipsAssignedBean.add(fanslipsAssignedBean);
-								availableBaysResponseBean.setBayNumber(bayNumber);
-								availableBaysResponseBean.setBayName(bayName);
-								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
-								availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayAvailableInqueueFlag"));
-								//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-							}
-							else if(pinSet.size()==supportedQueueSize)
-							{
-								//fanslipsAssignedBean.setFanPin(pinMap);
-								//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
-								//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
-								//listFanslipsAssignedBean.add(fanslipsAssignedBean);
-								availableBaysResponseBean.setBayNumber(bayNumber);
-								availableBaysResponseBean.setBayName(bayName);
-								availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
-								availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayNotAvailableFlag"));
-								//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
-							}
+								LOG.info("Elsee....."+pinSet.size());
+								if(pinSet.size()<supportedQueueSize)
+								{
+									//fanslipsAssignedBean.setFanPin(pinMap);
+									//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
+									//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+									//listFanslipsAssignedBean.add(fanslipsAssignedBean);
+									availableBaysResponseBean.setBayNumber(bayNumber);
+									availableBaysResponseBean.setBayName(bayName);
+									availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
+									availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayAvailableInqueueFlag"));
+									//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
+								}
+								else if(pinSet.size()==supportedQueueSize)
+								{
+									//fanslipsAssignedBean.setFanPin(pinMap);
+									//IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanPinStatusByFanPin(pinMap);
+									//fanslipsAssignedBean.setFanPinStatus(ioclFanslipDetail.getIoclSupportedPinstatus().getFanPinStatus());
+									//listFanslipsAssignedBean.add(fanslipsAssignedBean);
+									availableBaysResponseBean.setBayNumber(bayNumber);
+									availableBaysResponseBean.setBayName(bayName);
+									availableBaysResponseBean.setBayFunctionalStatus(functionalStatus);
+									availableBaysResponseBean.setBayAvailableStatus(appProps.getProperty("BayNotAvailableFlag"));
+									//availableBaysResponseBean.setFanslipsAssignedBean(listFanslipsAssignedBean);
+								}
 							//}
 							queueBays.add(availableBaysResponseBean);
 						}
@@ -881,7 +890,7 @@ public class BaysManagementServices
 					availableBaysResponseBean.setBayName(bayName);
 					IoclBcBayoperation ioclBcBayoperation=listOfBCUpdates.get(0);
 					availableBaysResponseBean.setBayAvailableStatus(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus());
-					
+
 					if(appProps.getProperty("BayOperationalStoppedStatus").toString().equalsIgnoreCase(ioclBcBayoperation.getIoclSupportedBayoperationalstatus().getOperationalStatus()))
 					{
 						availableBaysResponseBean.setStoppedFlag(true);
@@ -890,7 +899,7 @@ public class BaysManagementServices
 					{
 						availableBaysResponseBean.setStoppedFlag(false);
 					}
-					
+
 					IoclFanslipDetail ioclFanslipDetail=iOCLFanslipDetailsDAO.findFanSlipDetailsByFanPinAndBayNum(ioclBcBayoperation.getFanPin(),ioclBcBayoperation.getBayNum());
 					availableBaysResponseBean.setContractorName(ioclFanslipDetail.getIoclContractorDetail().getContractorName());
 					availableBaysResponseBean.setDestination(ioclFanslipDetail.getDestination());

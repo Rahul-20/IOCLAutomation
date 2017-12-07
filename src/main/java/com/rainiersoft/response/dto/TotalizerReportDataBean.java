@@ -4,10 +4,31 @@ public class TotalizerReportDataBean
 {
 	private String date;
 	private int bayNum;
+	private String fanSlipNum;
+	private String StartTime;
+	private String EndTime;
 	private String openingReading;
 	private String closingReading;
 	private String loadedQuantity;
 	
+	public String getFanSlipNum() {
+		return fanSlipNum;
+	}
+	public void setFanSlipNum(String fanSlipNum) {
+		this.fanSlipNum = fanSlipNum;
+	}
+	public String getStartTime() {
+		return StartTime;
+	}
+	public void setStartTime(String startTime) {
+		StartTime = startTime;
+	}
+	public String getEndTime() {
+		return EndTime;
+	}
+	public void setEndTime(String endTime) {
+		EndTime = endTime;
+	}
 	public String getDate() {
 		return date;
 	}

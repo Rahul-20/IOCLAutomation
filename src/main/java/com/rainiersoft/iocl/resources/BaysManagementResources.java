@@ -40,7 +40,7 @@ public class BaysManagementResources
 	public BaysManagementResources() {}
 
 	@Path("/getAllBayDetails")
-	@RolesAllowed({"Admin", "Super Admin"})
+	@PermitAll
 	@GET
 	@Consumes({"application/json"})
 	@Produces({"application/json"})

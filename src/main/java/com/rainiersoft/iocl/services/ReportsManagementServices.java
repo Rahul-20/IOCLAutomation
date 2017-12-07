@@ -55,7 +55,7 @@ public class ReportsManagementServices
 	Properties appProps;
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response getBayWiseLoadingReport(int pageNumber,int pageSize,Date startDate,Date endDate,String bayNum) throws IOCLWSException
+	public Response getBayWiseLoadingReport(int pageNumber,int pageSize,String startDate,String endDate,String bayNum) throws IOCLWSException
 	{
 		LOG.info("Entered into getBayWiseLoadingReport service class method........");
 		BayWiseLoadingReportResponseBean bayWiseLoadingReportResponseBean=new BayWiseLoadingReportResponseBean();
@@ -67,21 +67,25 @@ public class ReportsManagementServices
 			paginationDataBean.setPageNumber(pageNumber);
 			paginationDataBean.setPageSize(pageSize);
 
-			Calendar calendar = Calendar.getInstance();
+			DateFormat dformat=new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date sDate=dformat.parse(startDate);
+			Date eDate=dformat.parse(endDate);
+
+			/*Calendar calendar = Calendar.getInstance();
 			calendar.setTime(startDate);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
 			calendar.set(Calendar.MINUTE, 0);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND, 0);
 			Date sDate=calendar.getTime();
-
-			calendar.setTime(endDate);
+			 */
+			/*calendar.setTime(endDate);
 			calendar.set(Calendar.HOUR_OF_DAY, 23);
 			calendar.set(Calendar.MINUTE, 59);
 			calendar.set(Calendar.SECOND, 59);
 			calendar.set(Calendar.MILLISECOND, 999);
 			Date eDate=calendar.getTime();
-
+			 */
 			Long totalNumberOfRecords=iOCLAllDetailsDAO.findTotalNumberOfRecords(sDate, eDate,bayNum);
 
 			LOG.info("totalNumberOfRecords........."+totalNumberOfRecords);
@@ -91,22 +95,28 @@ public class ReportsManagementServices
 
 			List<IoclAlldetail> listIoclAlldetails=iOCLAllDetailsDAO.findAllDetails(pageNumber,pageSize,sDate,eDate,bayNum);
 
+			System.out.println("listIoclAlldetails.........."+listIoclAlldetails);
+
 			List<BaywiseReportDataBean> listBaywiseReportDataBean=new ArrayList<BaywiseReportDataBean>();
 
 			for(IoclAlldetail IoclAlldetail:listIoclAlldetails)
 			{
+				System.out.println(IoclAlldetail);
 				BaywiseReportDataBean baywiseReportDataBean=new BaywiseReportDataBean();
 				baywiseReportDataBean.setTruckNo(IoclAlldetail.getTruckNo());
 				baywiseReportDataBean.setCustomer(IoclAlldetail.getCustomer());
+				baywiseReportDataBean.setFanNumber(IoclAlldetail.getFanslipnum());
+
 				if(null!=IoclAlldetail.getBccompletedtime())
 					baywiseReportDataBean.setEndTime(IoclAlldetail.getBccompletedtime().toString());
 				if(null!=IoclAlldetail.getStartTime())
-					baywiseReportDataBean.setStartTime(IoclAlldetail.getStartTime().toString());
-				baywiseReportDataBean.setFanNumber(IoclAlldetail.getFanslipnum());
-				if(null!=IoclAlldetail.getLoadedQuantity())
-					baywiseReportDataBean.setFilledQty(IoclAlldetail.getLoadedQuantity());
-				baywiseReportDataBean.setInvoiceQty(IoclAlldetail.getQuantity());
+					baywiseReportDataBean.setStartTime(IoclAlldetail.getStartTime().toString());				
+				if(null!=IoclAlldetail.getLoadedQuantity() && IoclAlldetail.getLoadedQuantity().length()>0)
+					baywiseReportDataBean.setFilledQty(String.valueOf(Math.round(Float.parseFloat(IoclAlldetail.getLoadedQuantity()))));
+
+				baywiseReportDataBean.setInvoiceQty(IoclAlldetail.getPreset());
 				baywiseReportDataBean.setFanCreationDate(IoclAlldetail.getFanCreationOn().toString());
+				baywiseReportDataBean.setBayNumber(IoclAlldetail.getBayNo());
 				listBaywiseReportDataBean.add(baywiseReportDataBean);
 			}
 			dataMap.put("data", listBaywiseReportDataBean);
@@ -123,7 +133,7 @@ public class ReportsManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response getTotalizerReport(int pageNumber,int pageSize,Date startDate,Date endDate,String bayNum) throws IOCLWSException
+	public Response getTotalizerReport(int pageNumber,int pageSize,String startDate,String endDate,String bayNum) throws IOCLWSException
 	{
 		LOG.info("Entered into getTotalizerReport service class method........");
 		TotalizerReportResponseBean totalizerReportResponseBean=new TotalizerReportResponseBean();
@@ -138,7 +148,7 @@ public class ReportsManagementServices
 			paginationDataBean.setPageNumber(pageNumber);
 			paginationDataBean.setPageSize(pageSize);
 
-			Calendar calendar = Calendar.getInstance();
+			/*			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(startDate);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
 			calendar.set(Calendar.MINUTE, 0);
@@ -151,7 +161,11 @@ public class ReportsManagementServices
 			calendar.set(Calendar.MINUTE, 59);
 			calendar.set(Calendar.SECOND, 59);
 			calendar.set(Calendar.MILLISECOND, 999);
-			Date eDate=calendar.getTime();
+			Date eDate=calendar.getTime();*/
+
+			DateFormat dformat=new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date sDate=dformat.parse(startDate);
+			Date eDate=dformat.parse(endDate);
 
 			Long totalNumberOfRecords=iOCLAllDetailsDAO.findTotalNumberOfRecords(sDate, eDate,bayNum);
 
@@ -168,14 +182,20 @@ public class ReportsManagementServices
 			{
 				TotalizerReportDataBean totalizerReportDataBean=new TotalizerReportDataBean();
 				totalizerReportDataBean.setBayNum(IoclAlldetail.getBayNo());
-				if(null!=IoclAlldetail.getTotalizerendvalue())
-					totalizerReportDataBean.setClosingReading(IoclAlldetail.getTotalizerendvalue());
-				if(null!=IoclAlldetail.getTotalizerstartvalue())
-					totalizerReportDataBean.setOpeningReading(IoclAlldetail.getTotalizerstartvalue());
-				if(null!=IoclAlldetail.getLoadedQuantity())
-					totalizerReportDataBean.setLoadedQuantity(IoclAlldetail.getLoadedQuantity());
+				if(null!=IoclAlldetail.getTotalizerendvalue() && IoclAlldetail.getTotalizerendvalue().length()>0)
+					totalizerReportDataBean.setClosingReading(String.valueOf(Math.round(Float.parseFloat(IoclAlldetail.getTotalizerendvalue()))));
+				if(null!=IoclAlldetail.getTotalizerstartvalue() && IoclAlldetail.getTotalizerstartvalue().length()>0)
+					totalizerReportDataBean.setOpeningReading(String.valueOf(Math.round(Float.parseFloat(IoclAlldetail.getTotalizerstartvalue()))));
+				if(null!=IoclAlldetail.getLoadedQuantity() &&  IoclAlldetail.getLoadedQuantity().length()>0)
+					totalizerReportDataBean.setLoadedQuantity(String.valueOf(Math.round(Float.parseFloat(IoclAlldetail.getLoadedQuantity()))));
 				if(null!=IoclAlldetail.getStartTime())
 					totalizerReportDataBean.setDate(IoclAlldetail.getStartTime().toString());
+				if(null!=IoclAlldetail.getStartTime())
+					totalizerReportDataBean.setStartTime(IoclAlldetail.getStartTime().toString());
+				if(null!=IoclAlldetail.getBccompletedtime())
+					totalizerReportDataBean.setEndTime(IoclAlldetail.getBccompletedtime().toString());
+				totalizerReportDataBean.setFanSlipNum(String.valueOf(IoclAlldetail.getFanslipnum()));
+
 				listTotalizerReportDataBean.add(totalizerReportDataBean);
 			}
 			dataMap.put("data", listTotalizerReportDataBean);
@@ -198,7 +218,7 @@ public class ReportsManagementServices
 		String fileName="";
 		try
 		{
-			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("DatePickerFormat"));
+			/*DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("DatePickerFormat"));
 			Calendar calendar = Calendar.getInstance();
 			Date selDate=(Date)dateFormat.parse(startDate);
 			calendar.setTime(selDate);
@@ -214,9 +234,18 @@ public class ReportsManagementServices
 			calendar.set(Calendar.MINUTE, 59);
 			calendar.set(Calendar.SECOND, 59);
 			calendar.set(Calendar.MILLISECOND, 999);
-			Date eDate=calendar.getTime();
+			Date eDate=calendar.getTime();*/
+			LOG.info("Properties......"+appProps.getProperty("AppDateFormat"));
+			DateFormat dformat=new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date sDate=dformat.parse(startDate);
+			LOG.info("sDate....."+sDate);
+			Date eDate=dformat.parse(endDate);
+			LOG.info("eDate....."+eDate);
+
 
 			List<IoclAlldetail> listIoclAlldetails=iOCLAllDetailsDAO.findAllDetailsByStartDateAndEndDate(sDate,eDate,bayNum);
+
+			System.out.println("listIoclAlldetails......."+listIoclAlldetails);
 
 			String[] header=IOCLConstants.BayWiseLoadingReportHeader;
 
@@ -232,19 +261,27 @@ public class ReportsManagementServices
 					startTime=ioclAlldetail.getStartTime().toString();	
 				if(null!=ioclAlldetail.getBccompletedtime())
 					endTime=ioclAlldetail.getBccompletedtime().toString();	
-				if(null!=ioclAlldetail.getLoadedQuantity())
-					loadedQty=ioclAlldetail.getLoadedQuantity().toString();
-				
-				String[] data=new String[]{String.valueOf(ioclAlldetail.getBayNo()),ioclAlldetail.getFanCreationOn().toString(),ioclAlldetail.getTruckNo(),String.valueOf(ioclAlldetail.getFanslipnum()),ioclAlldetail.getCustomer(),ioclAlldetail.getPreset(),loadedQty,startTime,endTime};
+				if(null!=ioclAlldetail.getLoadedQuantity() && ioclAlldetail.getLoadedQuantity().length()>0)
+					loadedQty=String.valueOf(Math.round(Float.parseFloat(ioclAlldetail.getLoadedQuantity())));
+
+				String[] data=new String[]{String.valueOf(ioclAlldetail.getBayNo()),String.valueOf(ioclAlldetail.getFanslipnum()),ioclAlldetail.getTruckNo(),startTime,endTime,ioclAlldetail.getPreset(),loadedQty};
 				listOfRows.add(data);
 			}
 
-			final String tempFileName=this.createTempFile();
-			this.generatePDFDoc(header,listOfRows,tempFileName);
+			final String tempFileName=this.createTempFile("BayWiseLoading");
+
+			//Create Report Details
+			List<String[]> reportDetails=new ArrayList<String[]>();
+			String[] reportName={"Report Name:","BayWise Loading Report"};
+			String[] reportStartDate={"Start Date:",startDate};
+			String[] reportEndDate={"End Date:",endDate};
+			reportDetails.add(reportName);
+			reportDetails.add(reportStartDate);
+			reportDetails.add(reportEndDate);
+
+			this.generatePDFDoc(header,reportDetails,listOfRows,tempFileName,"");
 
 			final File file = new File(appProps.getProperty("TempReportFilePath")+tempFileName);
-
-			//PDFUtilities.manipulatePdf(appProps.getProperty("TempReportFilePath")+"//"+tempFileName,appProps.getProperty("TempReportFilePath")+"//abc.pdf");
 
 			fileName="BayWiseLoading_BayNum"+"("+bayNum+")"+"_"+startDate+"_"+endDate+IOCLConstants.FileExtension;
 
@@ -267,6 +304,7 @@ public class ReportsManagementServices
 		}
 		catch (Exception exception) 
 		{
+			exception.printStackTrace();
 			LOG.info("Logging the occured exception in the service class exportBayWiseLoadingReport method catch block........"+exception);
 			throw new IOCLWSException(ErrorMessageConstants.Unprocessable_Entity_Code,ErrorMessageConstants.Internal_Error);
 		}
@@ -279,7 +317,7 @@ public class ReportsManagementServices
 		String fileName="";
 		try
 		{
-			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("DatePickerFormat"));
+			/*DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("DatePickerFormat"));
 			Calendar calendar = Calendar.getInstance();
 			Date selDate=(Date)dateFormat.parse(startDate);
 			calendar.setTime(selDate);
@@ -295,7 +333,11 @@ public class ReportsManagementServices
 			calendar.set(Calendar.MINUTE, 59);
 			calendar.set(Calendar.SECOND, 59);
 			calendar.set(Calendar.MILLISECOND, 999);
-			Date eDate=calendar.getTime();
+			Date eDate=calendar.getTime();*/
+
+			DateFormat dformat=new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date sDate=dformat.parse(startDate);
+			Date eDate=dformat.parse(endDate);
 
 			List<IoclAlldetail> listIoclAlldetails=iOCLAllDetailsDAO.findAllDetailsByStartDateAndEndDate(sDate,eDate,bayNum);
 
@@ -307,24 +349,45 @@ public class ReportsManagementServices
 				String totalizerStartValue="";
 				String totalizerEndValue="";
 				String loadedQuantity="";
-				
-				if(null!=ioclAlldetail.getTotalizerstartvalue())
-					totalizerStartValue=ioclAlldetail.getTotalizerstartvalue();
-				if(null!=ioclAlldetail.getTotalizerendvalue())
-					totalizerEndValue=ioclAlldetail.getTotalizerendvalue();
-				if(null!=ioclAlldetail.getLoadedQuantity())
-					loadedQuantity=ioclAlldetail.getLoadedQuantity();
-			
-				String[] data=new String[]{String.valueOf(ioclAlldetail.getStartTime()),String.valueOf(ioclAlldetail.getBayNo()),totalizerStartValue,totalizerEndValue,loadedQuantity};
+				String startTime="";
+				String endTime="";
+
+				if(null!=ioclAlldetail.getStartTime())
+					startTime=ioclAlldetail.getStartTime().toString();
+				if(null!=ioclAlldetail.getBccompletedtime())
+					endTime=ioclAlldetail.getBccompletedtime().toString();
+				if(null!=ioclAlldetail.getTotalizerstartvalue() && ioclAlldetail.getTotalizerstartvalue().length()>0)
+					totalizerStartValue=String.valueOf(Math.round(Float.parseFloat(ioclAlldetail.getTotalizerstartvalue())));
+				if(null!=ioclAlldetail.getTotalizerendvalue() && ioclAlldetail.getTotalizerendvalue().length()>0)
+					totalizerEndValue=String.valueOf(Math.round(Float.parseFloat(ioclAlldetail.getTotalizerendvalue())));
+				if(null!=ioclAlldetail.getLoadedQuantity() && ioclAlldetail.getLoadedQuantity().length()>0)
+					loadedQuantity=String.valueOf(Math.round(Float.parseFloat(ioclAlldetail.getLoadedQuantity())));
+
+				String[] data=new String[]{String.valueOf(ioclAlldetail.getBayNo()),String.valueOf(ioclAlldetail.getFanslipnum()),startTime,endTime,totalizerStartValue,totalizerEndValue,loadedQuantity};
 				listOfRows.add(data);
 			}
 
-			final String tempFileName=this.createTempFile();
-			this.generatePDFDoc(header,listOfRows,tempFileName);
+			String sumOfLoadedQty="";
+			if(listIoclAlldetails.size()>0)
+			{
+				sumOfLoadedQty=iOCLAllDetailsDAO.findSumOfLoadedByStartDateAndEndDate(sDate,eDate,"ALL");
+				if(sumOfLoadedQty.length()>0)
+					sumOfLoadedQty=String.valueOf(Math.round(Float.parseFloat(sumOfLoadedQty)));
+			}
+			final String tempFileName=this.createTempFile("TotalizerReport");
+
+			//Create Report Details
+			List<String[]> reportDetails=new ArrayList<String[]>();
+			String[] reportName={"Report Name:","Totalizer Report"};
+			String[] reportStartDate={"Start Date:",startDate};
+			String[] reportEndDate={"End Date:",endDate};
+			reportDetails.add(reportName);
+			reportDetails.add(reportStartDate);
+			reportDetails.add(reportEndDate);
+
+			this.generatePDFDoc(header,reportDetails,listOfRows,tempFileName,sumOfLoadedQty);
 
 			final File file = new File(appProps.getProperty("TempReportFilePath")+tempFileName);
-
-			//PDFUtilities.manipulatePdf(appProps.getProperty("TempReportFilePath")+"//"+tempFileName,appProps.getProperty("TempReportFilePath")+"//abc.pdf");
 
 			fileName="TotalizerReport_BayNum"+"("+bayNum+")"+"_"+startDate+"_"+endDate+IOCLConstants.FileExtension;
 
@@ -359,7 +422,7 @@ public class ReportsManagementServices
 		String fileName="";
 		try
 		{
-			DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("DatePickerFormat"));
+			/*DateFormat dateFormat = new SimpleDateFormat(appProps.getProperty("DatePickerFormat"));
 			Calendar calendar = Calendar.getInstance();
 			Date selDate=(Date)dateFormat.parse(startDate);
 			calendar.setTime(selDate);
@@ -375,7 +438,11 @@ public class ReportsManagementServices
 			calendar.set(Calendar.MINUTE, 59);
 			calendar.set(Calendar.SECOND, 59);
 			calendar.set(Calendar.MILLISECOND, 999);
-			Date eDate=calendar.getTime();
+			Date eDate=calendar.getTime();*/
+
+			DateFormat dformat=new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date sDate=dformat.parse(startDate);
+			Date eDate=dformat.parse(endDate);
 
 			List<IoclAlldetail> listIoclAlldetails=iOCLAllDetailsDAO.findAllDetailsByStartDateAndEndDate(sDate,eDate,"ALL");
 
@@ -391,19 +458,26 @@ public class ReportsManagementServices
 					startTime=ioclAlldetail.getStartTime().toString();
 				if(null!=ioclAlldetail.getBccompletedtime())
 					endTime=ioclAlldetail.getBccompletedtime().toString();
-				if(null!=ioclAlldetail.getLoadedQuantity())
-					loadedQuantity=ioclAlldetail.getLoadedQuantity();
-				
-				String[] data=new String[]{ioclAlldetail.getTruckNo(),String.valueOf(ioclAlldetail.getFanslipnum()),ioclAlldetail.getPreset(),loadedQuantity,startTime,endTime};
+				if(null!=ioclAlldetail.getLoadedQuantity() && ioclAlldetail.getLoadedQuantity().length()>0)
+					loadedQuantity=String.valueOf(Math.round(Float.parseFloat(ioclAlldetail.getLoadedQuantity())));
+
+				String[] data=new String[]{String.valueOf(ioclAlldetail.getBayNo()),String.valueOf(ioclAlldetail.getFanslipnum()),ioclAlldetail.getTruckNo(),startTime,endTime,ioclAlldetail.getPreset(),loadedQuantity};
 				listOfRows.add(data);
 			}
 
-			final String tempFileName=this.createTempFile();
-			this.generatePDFDoc(header,listOfRows,tempFileName);
+			final String tempFileName=this.createTempFile("TruckFilling");
+			//Create Report Details
+			List<String[]> reportDetails=new ArrayList<String[]>();
+			String[] reportName={"Report Name:","Truck Filling Report"};
+			String[] reportStartDate={"Start Date:",startDate};
+			String[] reportEndDate={"End Date:",endDate};
+			reportDetails.add(reportName);
+			reportDetails.add(reportStartDate);
+			reportDetails.add(reportEndDate);
+
+			this.generatePDFDoc(header,reportDetails,listOfRows,tempFileName,"");
 
 			final File file = new File(appProps.getProperty("TempReportFilePath")+tempFileName);
-
-			//PDFUtilities.manipulatePdf(appProps.getProperty("TempReportFilePath")+"//"+tempFileName,appProps.getProperty("TempReportFilePath")+"//abc.pdf");
 
 			fileName="TruckFillingReport_"+startDate+"_"+endDate+IOCLConstants.FileExtension;
 
@@ -432,7 +506,7 @@ public class ReportsManagementServices
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED,isolation=Isolation.READ_COMMITTED,readOnly=false,rollbackFor=IOCLWSException.class)
-	public Response getTruckFillingReport(int pageNumber,int pageSize,Date startDate,Date endDate) throws IOCLWSException
+	public Response getTruckFillingReport(int pageNumber,int pageSize,String startDate,String endDate) throws IOCLWSException
 	{
 		LOG.info("Entered into getTruckFillingReport service class method........");
 		TruckFillingReportResponseBean truckFillingReportResponseBean=new TruckFillingReportResponseBean();
@@ -444,7 +518,7 @@ public class ReportsManagementServices
 			paginationDataBean.setPageNumber(pageNumber);
 			paginationDataBean.setPageSize(pageSize);
 
-			Calendar calendar = Calendar.getInstance();
+			/*Calendar calendar = Calendar.getInstance();
 			calendar.setTime(startDate);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
 			calendar.set(Calendar.MINUTE, 0);
@@ -457,7 +531,11 @@ public class ReportsManagementServices
 			calendar.set(Calendar.MINUTE, 59);
 			calendar.set(Calendar.SECOND, 59);
 			calendar.set(Calendar.MILLISECOND, 999);
-			Date eDate=calendar.getTime();
+			Date eDate=calendar.getTime();*/
+
+			DateFormat dformat=new SimpleDateFormat(appProps.getProperty("AppDateFormat"));
+			Date sDate=dformat.parse(startDate);
+			Date eDate=dformat.parse(endDate);
 
 			Long totalNumberOfRecords=iOCLAllDetailsDAO.findTotalNumberOfRecords(sDate, eDate,"ALL");
 
@@ -469,7 +547,7 @@ public class ReportsManagementServices
 			List<IoclAlldetail> listIoclAlldetails=iOCLAllDetailsDAO.findAllDetails(pageNumber, pageSize, sDate, eDate,"ALL");
 
 			LOG.info("listIoclAlldetails.........."+listIoclAlldetails);
-			
+
 			List<TruckFillingReportDataBean> listTruckFillingReportDataBean=new ArrayList<TruckFillingReportDataBean>();
 
 			for(IoclAlldetail ioclAlldetail:listIoclAlldetails)
@@ -477,11 +555,12 @@ public class ReportsManagementServices
 				TruckFillingReportDataBean truckFillingReportDataBean=new TruckFillingReportDataBean();
 				if(null!=ioclAlldetail.getBccompletedtime())
 					truckFillingReportDataBean.setEndTime(ioclAlldetail.getBccompletedtime().toString());
-				if(null!=ioclAlldetail.getLoadedQuantity())
-					truckFillingReportDataBean.setLoadedQty(ioclAlldetail.getLoadedQuantity());
+				if(null!=ioclAlldetail.getLoadedQuantity() && ioclAlldetail.getLoadedQuantity().length()>0)
+					truckFillingReportDataBean.setLoadedQty(String.valueOf(Math.round(Float.parseFloat(ioclAlldetail.getLoadedQuantity()))));
 				if(null!=ioclAlldetail.getStartTime())
 					truckFillingReportDataBean.setStartTime(ioclAlldetail.getStartTime().toString());
 
+				truckFillingReportDataBean.setBayNo(String.valueOf(ioclAlldetail.getBayNo()));
 				truckFillingReportDataBean.setFanSlipNum(String.valueOf(ioclAlldetail.getFanslipnum()));
 				truckFillingReportDataBean.setPresetQty(ioclAlldetail.getPreset());
 				truckFillingReportDataBean.setTruckNo(ioclAlldetail.getTruckNo());
@@ -500,19 +579,18 @@ public class ReportsManagementServices
 		return Response.status(Response.Status.OK).entity(truckFillingReportResponseBean).build();
 	}
 
-	private void generatePDFDoc(String[] header,List<String[]> data,String tempFileName) throws URISyntaxException, IOException, DocumentException
+	private void generatePDFDoc(String[] header,List<String[]> reportDetails,List<String[]> data,String tempFileName,String calculatedValue) throws URISyntaxException, IOException, DocumentException
 	{
 		PDFUtilities pdfObj=new PDFUtilities(header.length,appProps);
-		pdfObj.createPdfFile(header, data, tempFileName);
+		pdfObj.createPdfFile(header,reportDetails,data,tempFileName,calculatedValue);
 	}
 
-	private String createTempFile()
+	private String createTempFile(String reportName)
 	{
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		Date currentTime=new Date();
 		String fileTime=dateFormat.format(currentTime);
-		String fileName="BayWiseLoading_"+fileTime+IOCLConstants.FileExtension;
+		String fileName=reportName+"_"+fileTime+IOCLConstants.FileExtension;
 		return fileName;
 	}
-
 }

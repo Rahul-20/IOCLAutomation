@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import com.rainiersoft.iocl.dao.IOCLAllDetailsDAO;
@@ -20,19 +19,23 @@ public class IOCLAllDetailsDAOImpl extends GenericDAOImpl<IoclAlldetail, Long> i
 		Query query=null;
 		if(bayNum.equalsIgnoreCase("ALL"))
 		{
-			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate";
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		else
 		{
 			int bayNumber=Integer.parseInt(bayNum);
-			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber";
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
 			query.setParameter("bayNumber",bayNumber);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		query.setFirstResult((pageNumber-1) * pageSize);
 		query.setMaxResults(pageSize);
@@ -47,19 +50,23 @@ public class IOCLAllDetailsDAOImpl extends GenericDAOImpl<IoclAlldetail, Long> i
 		Query query=null;
 		if(bayNum.equalsIgnoreCase("ALL"))
 		{
-			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate";
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		else
 		{
 			int bayNumber=Integer.parseInt(bayNum);
-			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber";
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
 			query.setParameter("bayNumber",bayNumber);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		query.setFirstResult((pageNumber-1) * pageSize);
 		query.setMaxResults(pageSize);
@@ -74,19 +81,23 @@ public class IOCLAllDetailsDAOImpl extends GenericDAOImpl<IoclAlldetail, Long> i
 		Query query=null;
 		if(bayNum.equalsIgnoreCase("ALL"))
 		{
-			countQ = "Select count(i.fanslipnum) from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate";
+			countQ = "Select count(i.fanslipnum) from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		else
 		{
 			int bayNumber=Integer.parseInt(bayNum);
-			countQ = "Select count(i.fanslipnum) from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber";
+			countQ = "Select count(i.fanslipnum) from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
 			query.setParameter("bayNumber",bayNumber);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		Long countResults = (Long) query.uniqueResult();
 		return countResults;
@@ -99,21 +110,56 @@ public class IOCLAllDetailsDAOImpl extends GenericDAOImpl<IoclAlldetail, Long> i
 		Query query=null;
 		if(bayNum.equalsIgnoreCase("ALL"))
 		{
-			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate";
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		else
 		{
 			int bayNumber=Integer.parseInt(bayNum);
-			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber";
+			countQ = "Select i from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
 			query = getCurrentSession().createQuery(countQ);
 			query.setParameter("startDate",startDate);
 			query.setParameter("endDate",endDate);
 			query.setParameter("bayNumber",bayNumber);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
 		}
 		List<IoclAlldetail> allDetails= (List<IoclAlldetail>)query.list();
+		System.out.println(allDetails);
 		return allDetails;
+	}
+
+	@Override
+	public String findSumOfLoadedByStartDateAndEndDate(Date startDate, Date endDate, String bayNum) 
+	{
+		String countQ = "";
+		Query query=null;
+		if(bayNum.equalsIgnoreCase("ALL"))
+		{
+			countQ = "Select sum(i.loadedQuantity) from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
+			query = getCurrentSession().createQuery(countQ);
+			query.setParameter("startDate",startDate);
+			query.setParameter("endDate",endDate);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
+		}
+		else
+		{
+			int bayNumber=Integer.parseInt(bayNum);
+			countQ = "Select sum(i.loadedQuantity) from IoclAlldetail i where i.startTime>= :startDate and i.startTime<= :endDate and i.bayNo= :bayNumber and (i.operationalStatus= :statusCompleted or i.operationalStatus= :statusAborted)";
+			query = getCurrentSession().createQuery(countQ);
+			query.setParameter("startDate",startDate);
+			query.setParameter("endDate",endDate);
+			query.setParameter("bayNumber",bayNumber);
+			query.setParameter("statusCompleted","Completed");
+			query.setParameter("statusAborted","Aborted");
+		}
+		String sumVal=(String) query.list().get(0);
+		System.out.println("sumVal........."+sumVal);
+		return sumVal;
 	}
 }

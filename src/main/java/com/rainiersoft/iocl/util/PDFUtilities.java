@@ -5,29 +5,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
 
 
@@ -43,30 +29,45 @@ public class PDFUtilities
 		table = new PdfPTable(numOfCol);
 	}
 
-	public void createPdfFile(String[] header,List<String[]> data,String tempFileName) throws URISyntaxException, IOException, DocumentException
+	public PDFUtilities(int numOfCol)
+	{
+		table = new PdfPTable(numOfCol);
+		table.setSpacingBefore(130.0f);
+	}
+
+	public void createPdfFile(String[] header,List<String[]> reportDetails,List<String[]> data,String tempFileName,String calculatedValue) throws URISyntaxException, IOException, DocumentException
 	{
 		Document document = new Document(PageSize.A4);
-		System.out.println("appProps...."+appProps);
 		PdfWriter writer=PdfWriter.getInstance(document, new FileOutputStream(appProps.getProperty("TempReportFilePath")+tempFileName));
+		document.open();
 		writer.setPageEvent(new WatermarkPageEvent());
 
-		document.open();
-
-		/*Image image = Image.getInstance("C:\\Users\\erapami\\Desktop\\ab.PNG");
-		image.setBackgroundColor(BaseColor.WHITE);
-		image.scaleToFit(100,100);  
-		image.setAbsolutePosition(20, 20);
-		//image.setAbsolutePosition((rect.getLeft() + rect.getRight()) / 2 - 45, rect.getTop() - 50);
-		image.setAlignment(Element.ALIGN_CENTER);          
-		writer.getDirectContent().addImage(image);
-		document.add(image);*/
-
+		this.addDetailsTableHeader(reportDetails,document);
 		this.addTableHeader(table,header);
-		this.addRows(table,data);
-		//this.addCustomRows(table);
+		this.addRows(table,data,calculatedValue);
 
 		document.add(table);
 		document.close();
+	}
+
+	private void addDetailsTableHeader(List<String[]> details,Document document) throws DocumentException 
+	{
+		PdfPTable detailsTable=new PdfPTable(2);
+		detailsTable.setSpacingAfter(40.0f);
+		for(String[] arr:details)
+		{	
+			for(String row:arr)
+			{
+				PdfPCell detailsCell = new PdfPCell();
+				detailsCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+				detailsCell.setBorderColor(BaseColor.BLACK);
+				detailsCell.setBorder(Rectangle.NO_BORDER);
+				detailsCell.setBorderWidth(1);
+				detailsCell.setPhrase(new Phrase(5f,row,FontFactory.getFont(FontFactory.TIMES,8f)));
+				detailsTable.addCell(detailsCell);
+			}
+		}
+		document.add(detailsTable);
 	}
 
 	private void addTableHeader(PdfPTable table,String[] docHeader) 
@@ -77,43 +78,50 @@ public class PDFUtilities
 			header.setBackgroundColor(BaseColor.LIGHT_GRAY);
 			header.setBorderColor(BaseColor.BLACK);
 			header.setBorderWidth(1);
+			header.setPaddingTop(8.0f);
 			header.setPhrase(new Phrase(15f,columnHeader,FontFactory.getFont(FontFactory.TIMES_BOLD,8f)));
 			table.addCell(header);
 		}
 	}
 
-	private void addRows(PdfPTable table,List<String[]> data) 
+	private void addRows(PdfPTable table,List<String[]> data,String calculatedValue) 
 	{
 		for(String[] arr:data)
 		{
 			for(String row:arr)
-			{
-				System.out.println("Roww..."+row);
-				//table.addCell(row);			
+			{			
 				table.addCell(new Phrase(12f,row,FontFactory.getFont(FontFactory.TIMES,8f)));
 			}
 		}
+
+		if(calculatedValue.length()>0)
+		{
+			PdfPCell cell=new PdfPCell(new Phrase(12f,"Total",FontFactory.getFont(FontFactory.TIMES,12f)));
+			cell.setColspan(6);
+			table.addCell(cell);
+			table.addCell(new Phrase(12f,calculatedValue,FontFactory.getFont(FontFactory.TIMES,8f)));
+		}
 	}
 
-	private void addCustomRows(PdfPTable table) throws URISyntaxException, BadElementException, IOException 
+	/*private void addCustomRows(PdfPTable table) throws URISyntaxException, BadElementException, IOException 
 	{
-		/*	Path path = Paths.get(ClassLoader.getSystemResource("Java_logo.png").toURI());
+		Path path = Paths.get(ClassLoader.getSystemResource("Java_logo.png").toURI());
 		Image img = Image.getInstance(path.toAbsolutePath().toString());
 		img.scalePercent(10);
 
 		PdfPCell imageCell = new PdfPCell(img);
-		table.addCell(imageCell);*/
+		table.addCell(imageCell);
 
-		/*PdfPCell horizontalAlignCell = new PdfPCell(new Phrase("row 2, col 2"));
+		PdfPCell horizontalAlignCell = new PdfPCell(new Phrase("row 2, col 2"));
 		horizontalAlignCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(horizontalAlignCell);
 
 		PdfPCell verticalAlignCell = new PdfPCell(new Phrase("row 2, col 3"));
 		verticalAlignCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
-		table.addCell(verticalAlignCell);*/
-	}
+		table.addCell(verticalAlignCell);
+	}*/
 
-	public static void manipulatePdf(String src,String dest) throws IOException, DocumentException 
+	/*public static void manipulatePdf(String src,String dest) throws IOException, DocumentException 
 	{
 		PdfReader reader = new PdfReader(src);
 		int n = reader.getNumberOfPages();
@@ -147,5 +155,5 @@ public class PDFUtilities
 		}
 		stamper.close();
 		reader.close();
-	}
+	}*/
 }

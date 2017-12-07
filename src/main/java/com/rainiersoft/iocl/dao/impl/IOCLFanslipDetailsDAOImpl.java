@@ -69,6 +69,8 @@ public class IOCLFanslipDetailsDAOImpl extends GenericDAOImpl<IoclFanslipDetail,
 		Session session = getCurrentSession();
 		Query query = session.getNamedQuery("findFanPinStatusByFanPin");
 		query.setParameter("fanPin", fanPin);
+		query.setFirstResult(0);
+		query.setMaxResults(1);
 		IoclFanslipDetail ioclFanslipDetail = (IoclFanslipDetail)findObject(query);
 		return ioclFanslipDetail;
 	}
