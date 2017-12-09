@@ -57,10 +57,10 @@ public class WatermarkPageEvent extends PdfPageEventHelper
 	@Override
 	public void onEndPage(PdfWriter writer, Document document)
 	{
-		PdfContentByte contentbytes = writer.getDirectContent();
-		String mainHeader=IOCLConstants.PdfCommonHeader;
+		//PdfContentByte contentbytes = writer.getDirectContent();
+		//String mainHeader=IOCLConstants.PdfCommonHeader;
 		
-		ColumnText.showTextAligned(contentbytes,Element.ALIGN_CENTER,new Phrase(mainHeader,new Font(Font.FontFamily.HELVETICA,10,Font.BOLD)),(document.right()-document.left())/2+document.leftMargin(),document.top()+10,0);
+		//ColumnText.showTextAligned(contentbytes,Element.ALIGN_CENTER,new Phrase(mainHeader,new Font(Font.FontFamily.HELVETICA,10,Font.BOLD)),(document.right()-document.left())/2+document.leftMargin(),document.top()+10,0);
 		
 		/*//800 parameter is height
 		if(writer.getPageNumber() == 1)

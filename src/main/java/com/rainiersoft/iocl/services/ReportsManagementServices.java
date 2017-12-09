@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -245,14 +244,13 @@ public class ReportsManagementServices
 
 			List<IoclAlldetail> listIoclAlldetails=iOCLAllDetailsDAO.findAllDetailsByStartDateAndEndDate(sDate,eDate,bayNum);
 
-			System.out.println("listIoclAlldetails......."+listIoclAlldetails);
+			LOG.info("listIoclAlldetails......."+listIoclAlldetails);
 
 			String[] header=IOCLConstants.BayWiseLoadingReportHeader;
 
 			List<String[]> listOfRows=new ArrayList<String[]>();
 			for(IoclAlldetail ioclAlldetail:listIoclAlldetails)
 			{
-				System.out.println("ico....."+ioclAlldetail);
 				String startTime="";
 				String endTime="";
 				String loadedQty="";
@@ -270,14 +268,27 @@ public class ReportsManagementServices
 
 			final String tempFileName=this.createTempFile("BayWiseLoading");
 
-			//Create Report Details
-			List<String[]> reportDetails=new ArrayList<String[]>();
+			//Create Report Details if table is using then below code is necessary
+			/*List<String[]> reportDetails=new ArrayList<String[]>();
 			String[] reportName={"Report Name:","BayWise Loading Report"};
 			String[] reportStartDate={"Start Date:",startDate};
 			String[] reportEndDate={"End Date:",endDate};
 			reportDetails.add(reportName);
 			reportDetails.add(reportStartDate);
-			reportDetails.add(reportEndDate);
+			reportDetails.add(reportEndDate);*/
+
+			//Create Report Details
+			Map<String,String> reportDetails=new HashMap<String,String>();
+
+			DateFormat reportPrintDateFormat=new SimpleDateFormat("dd/MM/yyyy");			
+			String printDate=reportPrintDateFormat.format(new Date()).toString();
+			String reportStartDate=IOCLConstants.pdfStartDateLabel+startDate;
+			String reportEndDate=IOCLConstants.pdfEndDateLabel+endDate;
+			String reportPrintDate=IOCLConstants.pdfPrintDateLabel+printDate;
+			reportDetails.put("ReportName",IOCLConstants.PdfBayWiseReportHeader);
+			reportDetails.put("StartDate",reportStartDate);
+			reportDetails.put("EndDate",reportEndDate);
+			reportDetails.put("PrintDate",reportPrintDate);
 
 			this.generatePDFDoc(header,reportDetails,listOfRows,tempFileName,"");
 
@@ -376,15 +387,28 @@ public class ReportsManagementServices
 			}
 			final String tempFileName=this.createTempFile("TotalizerReport");
 
-			//Create Report Details
-			List<String[]> reportDetails=new ArrayList<String[]>();
+			//Create Report Details if table is used
+			/*List<String[]> reportDetails=new ArrayList<String[]>();
 			String[] reportName={"Report Name:","Totalizer Report"};
 			String[] reportStartDate={"Start Date:",startDate};
 			String[] reportEndDate={"End Date:",endDate};
 			reportDetails.add(reportName);
 			reportDetails.add(reportStartDate);
-			reportDetails.add(reportEndDate);
+			reportDetails.add(reportEndDate);*/
 
+			//Create Report Details
+			Map<String,String> reportDetails=new HashMap<String,String>();
+			
+			DateFormat reportPrintDateFormat=new SimpleDateFormat("dd/MM/yyyy");			
+			String printDate=reportPrintDateFormat.format(new Date()).toString();
+			String reportStartDate=IOCLConstants.pdfStartDateLabel+startDate;
+			String reportEndDate=IOCLConstants.pdfEndDateLabel+endDate;
+			String reportPrintDate=IOCLConstants.pdfPrintDateLabel+printDate;
+			reportDetails.put("ReportName",IOCLConstants.PdfTotalizerReportHeader);
+			reportDetails.put("StartDate",reportStartDate);
+			reportDetails.put("EndDate",reportEndDate);
+			reportDetails.put("PrintDate",reportPrintDate);
+			
 			this.generatePDFDoc(header,reportDetails,listOfRows,tempFileName,sumOfLoadedQty);
 
 			final File file = new File(appProps.getProperty("TempReportFilePath")+tempFileName);
@@ -466,14 +490,26 @@ public class ReportsManagementServices
 			}
 
 			final String tempFileName=this.createTempFile("TruckFilling");
-			//Create Report Details
-			List<String[]> reportDetails=new ArrayList<String[]>();
+			//Create Report Details for table
+			/*List<String[]> reportDetails=new ArrayList<String[]>();
 			String[] reportName={"Report Name:","Truck Filling Report"};
 			String[] reportStartDate={"Start Date:",startDate};
 			String[] reportEndDate={"End Date:",endDate};
 			reportDetails.add(reportName);
 			reportDetails.add(reportStartDate);
-			reportDetails.add(reportEndDate);
+			reportDetails.add(reportEndDate);*/
+
+			//Create Report Details
+			Map<String,String> reportDetails=new HashMap<String,String>();
+			DateFormat reportPrintDateFormat=new SimpleDateFormat("dd/MM/yyyy");			
+			String printDate=reportPrintDateFormat.format(new Date()).toString();
+			String reportStartDate=IOCLConstants.pdfStartDateLabel+startDate;
+			String reportEndDate=IOCLConstants.pdfEndDateLabel+endDate;
+			String reportPrintDate=IOCLConstants.pdfPrintDateLabel+printDate;
+			reportDetails.put("ReportName",IOCLConstants.PdfTruckFillingReportHeader);
+			reportDetails.put("StartDate",reportStartDate);
+			reportDetails.put("EndDate",reportEndDate);
+			reportDetails.put("PrintDate",reportPrintDate);
 
 			this.generatePDFDoc(header,reportDetails,listOfRows,tempFileName,"");
 
@@ -579,7 +615,7 @@ public class ReportsManagementServices
 		return Response.status(Response.Status.OK).entity(truckFillingReportResponseBean).build();
 	}
 
-	private void generatePDFDoc(String[] header,List<String[]> reportDetails,List<String[]> data,String tempFileName,String calculatedValue) throws URISyntaxException, IOException, DocumentException
+	private void generatePDFDoc(String[] header,Map<String,String> reportDetails,List<String[]> data,String tempFileName,String calculatedValue) throws URISyntaxException, IOException, DocumentException
 	{
 		PDFUtilities pdfObj=new PDFUtilities(header.length,appProps);
 		pdfObj.createPdfFile(header,reportDetails,data,tempFileName,calculatedValue);

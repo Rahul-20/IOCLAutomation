@@ -4,14 +4,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -32,17 +41,26 @@ public class PDFUtilities
 	public PDFUtilities(int numOfCol)
 	{
 		table = new PdfPTable(numOfCol);
-		table.setSpacingBefore(130.0f);
 	}
 
-	public void createPdfFile(String[] header,List<String[]> reportDetails,List<String[]> data,String tempFileName,String calculatedValue) throws URISyntaxException, IOException, DocumentException
+	public void createPdfFile(String[] header,Map<String,String> reportDetails,List<String[]> data,String tempFileName,String calculatedValue) throws URISyntaxException, IOException, DocumentException
 	{
 		Document document = new Document(PageSize.A4);
 		PdfWriter writer=PdfWriter.getInstance(document, new FileOutputStream(appProps.getProperty("TempReportFilePath")+tempFileName));
 		document.open();
+
+		this.addCommonAndReportDetailsHeader(writer,document,reportDetails);
+		Image image = Image.getInstance(getClass().getClassLoader().getResource("iocllogo.png"));
+		image.setAbsolutePosition(10f, 765f);
+		document.add(image);
+
 		writer.setPageEvent(new WatermarkPageEvent());
 
-		this.addDetailsTableHeader(reportDetails,document);
+		//http://itext.2136553.n4.nabble.com/PdfPTable-setSpacingBefore-not-honoured-if-pdfptable-added-as-first-element-to-document-td2162942.html#a2162943
+		document.add(new Paragraph(Chunk.NEWLINE));
+
+		//this.addDetailsTableHeader(reportDetails,document); 
+		this.table.setSpacingBefore(100.0f);
 		this.addTableHeader(table,header);
 		this.addRows(table,data,calculatedValue);
 
@@ -50,23 +68,52 @@ public class PDFUtilities
 		document.close();
 	}
 
+	private void addCommonAndReportDetailsHeader(PdfWriter writer,Document document,Map<String,String> reportDetails)
+	{
+		PdfContentByte contentbytes = writer.getDirectContent();
+		ColumnText.showTextAligned(contentbytes,Element.ALIGN_CENTER,new Phrase(IOCLConstants.PdfCommonHeader,new Font(Font.FontFamily.TIMES_ROMAN,20,Font.BOLD)),(document.right()-document.left())/2+document.leftMargin(),document.top()+10,0);
+		ColumnText.showTextAligned(contentbytes,Element.ALIGN_CENTER,new Phrase(IOCLConstants.PdfCommonSubHeader,new Font(Font.FontFamily.TIMES_ROMAN,12,Font.BOLD)),297.5f,800,0);
+		ColumnText.showTextAligned(contentbytes,Element.ALIGN_CENTER,new Phrase(reportDetails.get("ReportName"),new Font(Font.FontFamily.TIMES_ROMAN,10,Font.BOLD)),298.5f,760,0);
+
+
+		ColumnText.showTextAligned(contentbytes,Element.ALIGN_LEFT,new Phrase(reportDetails.get("StartDate"),new Font(Font.FontFamily.TIMES_ROMAN,8,Font.BOLD)),90,730,0);
+		ColumnText.showTextAligned(contentbytes,Element.ALIGN_LEFT,new Phrase(reportDetails.get("EndDate"),new Font(Font.FontFamily.TIMES_ROMAN,8,Font.BOLD)),90,720,0);
+		ColumnText.showTextAligned(contentbytes,Element.ALIGN_LEFT,new Phrase(reportDetails.get("PrintDate"),new Font(Font.FontFamily.TIMES_ROMAN,8,Font.BOLD)),430,730,0);
+	}
+
 	private void addDetailsTableHeader(List<String[]> details,Document document) throws DocumentException 
 	{
 		PdfPTable detailsTable=new PdfPTable(2);
-		detailsTable.setSpacingAfter(40.0f);
+		detailsTable.setSpacingBefore(250.0f);
 		for(String[] arr:details)
 		{	
 			for(String row:arr)
 			{
 				PdfPCell detailsCell = new PdfPCell();
-				detailsCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-				detailsCell.setBorderColor(BaseColor.BLACK);
+				detailsCell.setBackgroundColor(BaseColor.WHITE);
+				detailsCell.setBorderColor(BaseColor.WHITE);
 				detailsCell.setBorder(Rectangle.NO_BORDER);
 				detailsCell.setBorderWidth(1);
-				detailsCell.setPhrase(new Phrase(5f,row,FontFactory.getFont(FontFactory.TIMES,8f)));
+				detailsCell.setPhrase(new Phrase(5f,row,FontFactory.getFont(FontFactory.TIMES,8f,Font.BOLD)));
+				detailsTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				detailsTable.setWidthPercentage(40.0f);
 				detailsTable.addCell(detailsCell);
 			}
 		}
+
+		PdfPTable printTable=new PdfPTable(2);
+		PdfPCell detailsCell = new PdfPCell();
+		detailsCell.setBackgroundColor(BaseColor.WHITE);
+		detailsCell.setBorderColor(BaseColor.WHITE);
+		detailsCell.setBorder(Rectangle.NO_BORDER);
+		detailsCell.setBorderWidth(1);
+		detailsCell.setPhrase(new Phrase(5f,"PrintDate:",FontFactory.getFont(FontFactory.TIMES,8f)));
+		detailsTable.setHorizontalAlignment(Element.ALIGN_LEFT);
+		//detailsTable.setSpacingBefore(500.0f);
+		detailsTable.setWidthPercentage(20.0f);
+		detailsTable.addCell(detailsCell);
+		//document.add(printTable);
+
 		document.add(detailsTable);
 	}
 
