@@ -381,7 +381,7 @@ public class ReportsManagementServices
 			String sumOfLoadedQty="";
 			if(listIoclAlldetails.size()>0)
 			{
-				sumOfLoadedQty=iOCLAllDetailsDAO.findSumOfLoadedByStartDateAndEndDate(sDate,eDate,"ALL");
+				sumOfLoadedQty=iOCLAllDetailsDAO.findSumOfLoadedByStartDateAndEndDate(sDate,eDate,bayNum);
 				if(sumOfLoadedQty.length()>0)
 					sumOfLoadedQty=String.valueOf(Math.round(Float.parseFloat(sumOfLoadedQty)));
 			}
